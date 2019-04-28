@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      class="h-100">
+    <head th:replace="layout :: head">
+    </head>
+    <body class="h-100">
+        <div class="d-flex flex-column h-100">
+            <div th:replace="layout :: navbar"></div>
+            <div class="container mt-5 flex-fill">
+                <form name="f"
+                      th:action="@{/{orga}/feed/profile(orga=${#authentication.getPrincipal().getOrganization()})}"
+                      method="post" th:object="${settings}">
+
+                    <div class="form-group">
+                        <!-- TODO dataslider looks quite nice, it requires additional js tho.
+                        TODO See https://seiyria.com/bootstrap-slider/ for examples -->
+                        <label for="ex1"> Dauer bis zur Benachrichtigung in Minuten</label>
+                        <input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="10"
+                               data-slider-max="120"
+                               data-slider-step="1" th:data-slider-value="${settings.getNotificationCheckInterval()}"
+                               th:field="*{notificationCheckInterval}" required="required"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="notSetting"> Benachrichtigungseinstellung</label>
+                        <select th:field="*{notificationSetting}" id="notSetting" required="required">
+                            <option th:each="item : ${notificationSettings}" th:value="${item.name()}"
+                                    th:text="${item.name()}"></option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Speichern</button>
+
+                </form>
+            </div>
+            <footer th:replace="layout :: footer"></footer>
+        </div>
+    </body>
+</html>

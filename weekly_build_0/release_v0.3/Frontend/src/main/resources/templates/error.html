@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" class="h-100">
+    <head>
+        <title>Jack the Clipper --Error</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}"/>
+        <script th:src="@{/webjars/jquery/3.3.0/jquery.js}"></script>
+
+    </head>
+    <body class="h-100">
+        <div class="d-flex flex-column h-100">
+
+            <div th:replace="layout :: navbar"></div>
+
+
+            <!--
+            ${timestamp}
+            ${path} => Pfad indem der Fehler angefallen ist
+            ${error} => namentliches Alias
+            ${status} => Http-Code
+            ${message} => Fehlermeldung
+            ${exception}
+            ${trace} => stacktrace
+
+            -->
+            <div class="container margin-top-20 flex-fill">
+                <div class="text-center">
+                    <div class="row">
+                        <div class="col-md-3">
+
+                        </div>
+                        <div class="col-md-6">
+
+                            <div class="alert alert-danger" style="margin-top: 210px">
+                                <div th:text="|Error occured: ${timestamp}|"></div>
+                                <div th:switch="${status}">
+                                    <div th:case="403">
+                                        <h3>Sorry you don't have access to this service.</h3><br/>
+                                        Please contact your administrator
+                                        <form th:action="@{/logout}" method="post">
+                                            <input style="margin-top: 8px;" type="submit" class="btn" value="Logout"/>
+                                        </form>
+
+                                    </div>
+
+                                    <div th:case="404">
+                                        <h3>Sorry, this page does not exist.</h3><br/>
+                                        Please do refrain from tinkering with the URI<br/>
+                                        You can go back <a th:href="@{/}">here</a>
+
+                                    </div>
+
+                                    <div th:case="500">
+                                        <h3>Sorry for the inconvenience</h3><br/>
+                                        We'll be back right away
+                                    </div>
+
+                                    <div th:case="*">
+                                        <h3 th:text="${error}"></h3><br/>
+                                        <span th:if="${message} != 'No message available'" th:text="${message}"></span>
+                                        <!--<span
+                                            th:text="|Please contact your administrators and tell them about this statuscode: ${status}|"></span>
+            -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3"></div>
+
+                    </div>
+                </div>
+            </div>
+            <footer th:replace="layout :: footer"></footer>
+        </div>
+    </body>
+</html>

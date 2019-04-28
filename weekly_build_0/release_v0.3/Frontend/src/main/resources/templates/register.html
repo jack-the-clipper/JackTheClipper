@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" class="h-100">
+	<head th:replace="layout :: head">
+	</head>
+	<body class="h-100">
+    <div class="d-flex flex-column h-100">
+		<div th:replace="layout :: navbar"></div>
+            <div class="container mt-5 flex-fill">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <form th:object="${user}" th:action="@{/{orga}/register(orga=${org})}" method="post">
+                                    <input type="hidden" th:field="*{userId}">
+                                    <input type="hidden" th:field="*{userRole}">
+                                    <div class="form-group">
+                                        <label for="inputUserName">Benutzername</label>
+                                        <input type="text" class="form-control" id="inputUserName" required="required"
+                                               placeholder="Benutzername" th:field="*{name}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEmail">E-Mail Adresse</label>
+                                        <input type="text" class="form-control" id="inputEmail" required="required"
+                                               placeholder="E-Mail Adresse" th:field="*{eMail}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputPassword">Passwort</label>
+                                        <input type="password" class="form-control" id="inputPassword" required="required"
+                                               placeholder="Passwort">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirmPassword">Passwort bestätigen</label>
+                                        <input type="password" class="form-control" id="confirmPassword" required="required"
+                                               placeholder="Passwort bestätigen" th:field="*{password}">
+                                    </div>
+                                    <select name="ouId" class="custom-select" required="required">
+                                        <option th:each="ou: ${OUs}" th:value="${ou.getId()}"
+                                                th:text="${ou.getName()}"></option>
+                                    </select>
+
+
+                                    <button class="btn btn-primary mt-4">registrieren</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer th:replace="layout :: footer"></footer>
+        </div>
+	</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" class="h-100">
+    <head th:replace="layout :: head">
+    </head>
+    <body class="h-100">
+
+        <div class="modal fade" id="addFeedModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabel">Quelle hinzufügen</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:object="${emptyFeed}"
+                              th:action="@{/{orga}/feed/update(addFeed=${true},orga=${#authentication.getPrincipal().getOrganization()})}" method="post"
+                              id="modalForm">
+                            <div class="form-group">
+                                <label for="inputName">Name</label>
+                                <input type="text" class="form-control" id="inputName" placeholder="Name"
+                                       th:field="*{name}" required="required">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputSearchWords">Suchwörter</label>
+                                <input type="text" class="form-control" id="inputSearchWords"
+                                       placeholder="Suchwörter" th:field="*{filter.keywords}" required="required">
+                            </div>
+                            <div class="form-group">
+                                <label class="" for="sourcesModal">Quellen</label>
+                                <select id="sourcesModal" th:field="*{feedSources}" required="required"
+                                        multiple="multiple" class="selectpicker form-control" title="Quellen auswählen"
+                                        data-selected-text-format="static">
+                                    <option th:each="source:${sources}" th:value="${source}"
+                                            th:text="${source.name}">
+                                    </option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                        <button type="submit" class="btn btn-primary odom-submit" >Bestätigen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-column h-100">
+            <div th:replace="layout :: navbar"></div>
+            <div class="container-fluid flex-grow-1">
+                <div class="row h-100">
+                    <div class="col-sm-3 col-lg-2 px-1 bg-light">
+                        <div class="py-2 sticky-top flex-grow-1">
+                            <div class="nav flex-sm-column">
+                                <div class="btn btn-default">
+                                    <a th:each="feed : ${feeds}" class="nav-link" th:text="${feed.getName()}"
+                                       th:href="@{/{orga}/feed/edit(feedId=${feed.getId()},orga=${#authentication.getPrincipal().getOrganization()})}">Feed1
+                                    </a>
+                                </div>
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#addFeedModal">Feed
+                                    hinzufügen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="container mt-5">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-6">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h1>Feed bearbeiten</h1>
+                                            <form th:object="${feed}"
+                                                  th:action="@{/{orga}/feed/update(orga=${#authentication.getPrincipal().getOrganization()})}"
+                                                  method="post">
+                                                <input type="hidden" th:field="*{id}">
+                                                <input type="hidden" th:field="*{filter.id}">
+                                                <input type="hidden" th:field="*{filter.expressions}">
+                                                <div class="form-group">
+                                                    <label for="name">Feedname</label>
+                                                    <input type="text" class="form-control" id="name"
+                                                           th:field="*{name}" required="required">
+                                                    <label for="keywords">Suchwörter</label>
+                                                    <input type="text" class="form-control" id="keywords"
+                                                           placeholder="Suchwörter" th:field="*{filter.keywords}"
+                                                           name="keywords" required="required">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="" for="sources">Quellen</label>
+                                                    <select id="sources" th:field="*{feedSources}" required="required"
+                                                            multiple="multiple" class="selectpicker form-control" title="Quellen auswählen"
+                                                            data-selected-text-format="static">
+                                                        <option th:each="source:${sources}" th:value="${source}"
+                                                                th:text="${source.name}">
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <button class="btn btn-primary mt-4">Änderungen übernehmen</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer th:replace="layout :: footer"></footer>
+        </div>
+        <script>
+            $(function () {
+                $('body').on('click', '.odom-submit', function (e) {
+                    $('#modalForm').submit();
+                    $('#addFeedModal').modal('hide');
+                });
+            });
+        </script>
+    </body>
+</html>

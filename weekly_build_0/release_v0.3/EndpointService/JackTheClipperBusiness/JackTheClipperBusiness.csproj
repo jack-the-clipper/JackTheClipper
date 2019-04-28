@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\JackTheClipperCommon\JackTheClipperCommon.csproj" />
+    <ProjectReference Include="..\JackTheClipperData\JackTheClipperData.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
+    <PackageReference Include="PdfSharpCore" Version="1.1.0" />
+    <PackageReference Include="System.ServiceModel.Syndication" Version="4.5.0" />
+  </ItemGroup>
+
+</Project>

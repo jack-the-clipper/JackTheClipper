@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" class="h-100">
+    <head th:replace="layout :: head">
+    </head>
+    <body class="h-100">
+        <div class="d-flex flex-column h-100">
+            <div th:replace="layout :: navbar"></div>
+            <div class="modal fade" id="addSourceModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalLabel">Quelle hinzufügen</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form th:action="@{/admin/addSource}" th:object="${source}" id="modalForm" method="post">
+                                <div class="form-group">
+                                    <label for="inputSourceName">Name</label>
+                                    <input type="text" class="form-control" id="inputSourceName" placeholder="Name"
+                                           th:field="*{name}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="uri">URL</label>
+                                    <input type="text" class="form-control" id="uri" placeholder="URL"
+                                           th:field="*{uri}">
+                                </div>
+                                <label for="types">Quellentyp</label>
+                                <select th:field="*{contentType}" id="types" class="custom-select">
+                                    <option th:each="type : ${contentTypes}" th:value="${type.name()}"
+                                            th:text="${type.name()}"></option>
+                                </select>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                            <button type="button" class="btn btn-primary odom-submit">Bestätigen</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container flex-fill">
+                <ul class="list-group mt-4">
+                    <li th:each="item : ${sources}" th:text="${item.name}"></li>
+                    <li th:if="${sources.isEmpty()==true}"> Keine Quellen vorhanden</li>
+                </ul>
+                <button class="btn btn-primary mt-4" data-toggle="modal" data-target="#addSourceModal">Quelle hinzufügen
+                </button>
+            </div>
+            <script>$(function () {
+                $('body').on('click', '.odom-submit', function (e) {
+                    $('#modalForm').submit();
+                    $('#addSourceModal').modal('hide');
+                });
+            });</script>
+            <footer th:replace="layout :: footer"></footer>
+        </div>
+    </body>
+</html>

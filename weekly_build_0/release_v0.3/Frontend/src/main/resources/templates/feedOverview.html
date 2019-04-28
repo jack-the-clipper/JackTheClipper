@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" class="h-100">
+    <head th:replace="layout :: head">
+    </head>
+    <body class="h-100">
+        <div class="d-flex flex-column h-100">
+            <div th:replace="layout :: navbar"></div>
+            <div class="container pl-2 pr-2 flex-fill">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                        Feed auswählen
+                    </button>
+                    <div class="dropdown-menu">
+                        <a th:each="feed : ${feeds}" class="dropdown-item"
+                           th:href="@{/{orga}/feed(feedId=${feed.getId()},orga=${#authentication.getPrincipal().getOrganization()})}"
+                           th:text="${feed.getName()}">
+                            Feed1</a>
+                    </div>
+                </div>
+                <h2 th:text="${name}">Feed1</h2>
+                <div th:each="article : ${articles}">
+                    <h3><a href="#" th:text="${article.getTitle()}"></a></h3>
+                    <p th:text="${article.getShortText()}"></p>
+                    <a th:href="${article.getLink()}" target="_self">Zur Quelle</a>
+                </div>
+            </div>
+            <footer th:replace="layout :: footer"></footer>
+        </div>
+    </body>
+</html>

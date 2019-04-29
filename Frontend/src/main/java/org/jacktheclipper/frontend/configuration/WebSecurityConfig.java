@@ -64,8 +64,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 authorizeRequests().
                 antMatchers("/*/login").permitAll().
                 antMatchers("/*/register").permitAll().
-                antMatchers("/privacypolicy").permitAll().
-                antMatchers("/impressum").permitAll().
+                antMatchers("/*/privacypolicy").permitAll().
+                antMatchers("/*/impressum").permitAll().
                 antMatchers("/css/**", "/webjars/**", "/img/**", "/bootstrap_select/**").permitAll().
                 antMatchers("/**").authenticated().and().httpBasic();
     }

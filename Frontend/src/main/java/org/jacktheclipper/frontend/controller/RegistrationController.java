@@ -61,6 +61,7 @@ public class RegistrationController {
     public String registerPage(Model model, @PathVariable("organization") String organization) {
         //TODO static Frontend User
         model.addAttribute("OUs", ouService.getOrganizationalUnits(null));
+        model.addAttribute("org", organization);
         model.addAttribute("user", new User(null, UserRole.User, "", "", "", organization));
         return "register";
     }
@@ -97,9 +98,14 @@ public class RegistrationController {
                             User.class);
             if (ResponseEntityUtils.successful(response)) {
                 String password = user.getPassword();
+                String eMail = user.geteMail();
                 user = response.getBody();
-                user.setPassword(password); //necessary to automatically log the user in since
-                // backend does not provide password
+                //necessary to automatically log the user in since backend does not provide password
+                user.setPassword(password);
+                //Backend stopped passing the email for some reason, so theres a need to store it
+                // and set it again for the automatic login
+                user.seteMail(eMail);//
+
                 login(request, user);
             } else {
                 log.info("Failed registration for user [{}]", user);
@@ -113,7 +119,7 @@ public class RegistrationController {
             return "register";
         }
 
-        return "redirect:/feed/edit";
+        return "redirect:/"+organization+"/feed/edit";
     }
 
     /**

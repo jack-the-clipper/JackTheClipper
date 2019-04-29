@@ -3,6 +3,7 @@ package org.jacktheclipper.frontend.authentication;
 import org.jacktheclipper.frontend.utils.Constants;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.thymeleaf.util.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +20,11 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         String organization =
                 (String) request.getSession().getAttribute(Constants.SAVED_ORGANIZATION_KEY);
 
-        response.sendRedirect("/" + organization + "/login?error");
+        organization = organization == null ? "default" : organization;
+        String hostPart = request.getRequestURL().toString().replace(request.getRequestURI(), "");
+        String contextPath = StringUtils.isEmpty(request.getContextPath()) ? "" :
+                request.getContextPath();
+        String redirectUri = hostPart + contextPath + "/" + organization + "/login?error";
+        response.sendRedirect(redirectUri);
     }
 }

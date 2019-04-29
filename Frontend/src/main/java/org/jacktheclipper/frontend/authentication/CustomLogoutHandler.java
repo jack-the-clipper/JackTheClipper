@@ -4,6 +4,7 @@ import org.jacktheclipper.frontend.utils.AuthenticationUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
+import org.thymeleaf.util.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +31,10 @@ public class CustomLogoutHandler extends SimpleUrlLogoutSuccessHandler
         String organization = AuthenticationUtils.getOrganization(authentication);
         //TODO can be removed as soon as backend passes organization in a user object
         organization = organization == null ? "default" : organization;
-        response.sendRedirect("/" + organization + "/login?logout");
+        String hostPart = request.getRequestURL().toString().replace(request.getRequestURI(), "");
+        String contextPath = StringUtils.isEmpty(request.getContextPath()) ? "" :
+                request.getContextPath();
+        String redirectUri = hostPart + contextPath + "/" + organization + "/login?logout";
+        response.sendRedirect(redirectUri);
     }
 }

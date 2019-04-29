@@ -88,9 +88,9 @@ public class UserConfigController {
      */
     @PostMapping("/update")
     public String updateFeed(@ModelAttribute("feed") Feed feed,
-                             @ModelAttribute("emptyFeed") Feed newlyAdded,
-                             @RequestParam(value = "addFeed", required = false) Boolean addRequest,
-                             Authentication auth) {
+                             @ModelAttribute("emptyFeed") Feed newlyAdded, @RequestParam(value =
+            "addFeed", required = false) Boolean addRequest, Authentication auth, @PathVariable(
+                    "organization") String organization) {
 
         UUID userId = AuthenticationUtils.getUserId(auth);
         Feed toWorkWith;
@@ -104,7 +104,7 @@ public class UserConfigController {
                 userId));
         feedService.updateFeeds(toWorkWith, userId);
 
-        return "redirect:/feed/edit";
+        return "redirect:/" + organization + "/feed/edit";
     }
 
     /**
@@ -136,12 +136,12 @@ public class UserConfigController {
     @PostMapping("/profile")
     public String updateProfile(@ModelAttribute("settings") UserSettings settings,
                                 Authentication auth,
-                                @PathVariable("organization")String organization) {
+                                @PathVariable("organization") String organization) {
 
         UUID userId = AuthenticationUtils.getUserId(auth);
         feedService.updateNotificationSettings(settings.getNotificationCheckInterval(), userId,
                 settings.getNotificationSetting());
-        return "redirect:/"+organization+"/feed/profile";
+        return "redirect:/" + organization + "/feed/profile";
     }
 
 }

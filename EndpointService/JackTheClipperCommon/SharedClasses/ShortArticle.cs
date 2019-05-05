@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace JackTheClipperCommon.SharedClasses
@@ -36,6 +35,12 @@ namespace JackTheClipperCommon.SharedClasses
         public string Link { get; private set; }
 
         /// <summary>
+        /// Gets the image link.
+        /// </summary>
+        [DataMember(Name = "ImageLink", EmitDefaultValue = false)]
+        public string ImageLink { get; private set; }
+
+        /// <summary>
         /// Gets the published date.
         /// </summary>
         [DataMember(Name = "ArticlePublished")]
@@ -60,10 +65,11 @@ namespace JackTheClipperCommon.SharedClasses
         /// <param name="title">The title.</param>
         /// <param name="shortText">The short text.</param>
         /// <param name="link">The link.</param>
+        /// <param name="imageLink">The image link.</param>
         /// <param name="published">The published date.</param>
         /// <param name="indexed">The indexed date.</param>
         /// <param name="indexingSourceId">The indexing source identifier.</param>
-        public ShortArticle(Guid id, string title, string shortText, string link, DateTime published, DateTime indexed, Guid indexingSourceId)
+        public ShortArticle(Guid id, string title, string shortText, string link, string imageLink, DateTime published, DateTime indexed, Guid indexingSourceId)
         {
             Id = id;
             Title = title;
@@ -72,6 +78,7 @@ namespace JackTheClipperCommon.SharedClasses
             Published = published;
             Indexed = indexed;
             IndexingSourceId = indexingSourceId;
+            ImageLink = imageLink;
         }
     }
 }

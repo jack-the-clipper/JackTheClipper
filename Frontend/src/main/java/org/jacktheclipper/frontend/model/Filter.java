@@ -15,16 +15,18 @@ public class Filter {
     private UUID id;
     private List<String> keywords;
     private List<String> expressions;
+    private List<String> blackList;
 
     public Filter() {
 
     }
 
-    public Filter(UUID id, List<String> keywords, List<String> expressions) {
+    public Filter(UUID id, List<String> keywords, List<String> expressions,List<String> blackList) {
 
         this.id = id;
         this.keywords = keywords;
         this.expressions = expressions;
+        this.blackList = blackList;
     }
 
     public UUID getId() {
@@ -58,5 +60,16 @@ public class Filter {
     public void setExpressions(List<String> expressions) {
 
         this.expressions = expressions;
+    }
+
+    public List<String> getBlackList() {
+
+        return blackList;
+    }
+
+    @JsonProperty("FilterBlacklist")
+    public void setBlackList(List<String> blackList) {
+
+        this.blackList = blackList;
     }
 }

@@ -8,6 +8,7 @@ import org.jacktheclipper.frontend.utils.RestTemplateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -59,19 +60,19 @@ public class SourceService {
         try {
             String uriParameters = "/addsource?userId=" + userId.toString();
             RestTemplate restTemplate = RestTemplateUtils.getRestTemplate();
-            ResponseEntity<MethodResult> response = restTemplate.exchange(backendUrl +
-                            uriParameters+ userId.toString(), HttpMethod.PUT,
-                    RestTemplateUtils.prepareBasicHttpEntity(source), MethodResult.class);
-            if(ResponseEntityUtils.successful(response)){
-                switch (response.getBody().getState()){
+            ResponseEntity<MethodResult> response =
+                    restTemplate.exchange(backendUrl + uriParameters, HttpMethod.PUT,
+                            RestTemplateUtils.prepareBasicHttpEntity(source), MethodResult.class);
+            if (ResponseEntityUtils.successful(response)) {
+                switch (response.getBody().getState()) {
 
                     case Successful:
-                        log.debug("Successfully added source [{}]",source);
+                        log.debug("Successfully added source [{}]", source);
                         break;
                     case UnknownError:
                         throw new BackendException(response.getBody().getMessage());
                     case Timeout:
-                        throw new BackendException("Request to ["+uriParameters+"] timed out");
+                        throw new BackendException("Request to [" + uriParameters + "] timed out");
                 }
             }
         } catch (HttpClientErrorException.BadRequest exception) {
@@ -100,5 +101,70 @@ public class SourceService {
             }
         }
         return returnValues;
+    }
+
+    /**
+     * Tells the backend to erase the source with the supplied UUID from the database
+     *
+     * @param userId   The user attempting the deletion
+     * @param sourceId The id of the source that should be deleted
+     */
+    public void deleteSource(UUID userId, UUID sourceId) {
+
+        RestTemplate restTemplate = RestTemplateUtils.getRestTemplate();
+        String uri =
+                backendUrl + "/deletesource?userId=" + userId.toString() + "&sourceId=" + sourceId.toString();
+        ResponseEntity<MethodResult> response = restTemplate.exchange(uri, HttpMethod.DELETE,
+                null, MethodResult.class);
+        if (ResponseEntityUtils.successful(response)) {
+            switch (response.getBody().getState()) {
+
+                case Successful:
+                    log.debug("Successfully deleted source with id [{}]", sourceId);
+                    return;
+                case UnknownError:
+                    throw new BackendException(response.getBody().getMessage());
+                case Timeout:
+                    throw new BackendException("Request to delete source with id[" + sourceId +
+                            "] " + "timed out");
+            }
+        }
+        throw new BackendException("Request to delete source with id[" + sourceId + "] " +
+                "failed");
+    }
+
+    /**
+     * Updates the source. This requires the source to have an id present. Otherwise this method
+     * will not work
+     *
+     * @param userId The id of the user doing the update
+     * @param source The updated version of the source
+     */
+    public void updateSource(UUID userId, Source source) {
+
+        if (source.getId() == null) {
+            throw new NullPointerException("Source#id cannot be null if you want to update it. A "
+                    + "null id " + "implies that this source did not exist before.");
+        }
+        RestTemplate restTemplate = RestTemplateUtils.getRestTemplate();
+        HttpEntity<Source> entity = RestTemplateUtils.prepareBasicHttpEntity(source);
+        String uri =
+                backendUrl + "/changesource?userId=" + userId.toString() + "&tochange=" + source.getId().toString();
+        ResponseEntity<MethodResult> response = restTemplate.exchange(uri, HttpMethod.PUT, entity
+                , MethodResult.class);
+        if (ResponseEntityUtils.successful(response)) {
+            switch (response.getBody().getState()) {
+
+                case Successful:
+                    log.debug("Successfully updated source [{}]", source);
+                    return;
+                case UnknownError:
+                    throw new BackendException(response.getBody().getMessage());
+                case Timeout:
+                    throw new BackendException("Request to update source with id[" + source.getId().toString() + "] " + "timed out");
+            }
+        }
+        throw new BackendException("Request to update source with id[" + source.getId().toString() + "] " + "failed");
+
     }
 }

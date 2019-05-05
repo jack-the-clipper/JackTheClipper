@@ -19,7 +19,6 @@ namespace JackTheClipperCommon.Extensions
         /// <returns>
         ///   <c>true</c> if the specified result is succeeded; otherwise, <c>false</c>.
         /// </returns>
-        [ContractAnnotation("=> true, result: notnull;")]
         public static bool IsSucceeded(this MethodResult result)
         {
             return result != null && result.Status == SuccessState.Successful;

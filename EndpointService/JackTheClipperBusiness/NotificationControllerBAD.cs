@@ -7,7 +7,6 @@ using JackTheClipperCommon;
 using JackTheClipperCommon.Configuration;
 using JackTheClipperCommon.Enums;
 using JackTheClipperCommon.Extensions;
-using JackTheClipperCommon.Interfaces;
 using JackTheClipperCommon.Localization;
 using JackTheClipperData;
 
@@ -35,9 +34,8 @@ namespace JackTheClipperBusiness
             {
                 try
                 {
-                    var userController = Factory.GetControllerInstance<IClipperUserAPI>();
                     var users = Factory.GetControllerInstance<IClipperDatabase>().GetAllUsers();
-                    Parallel.ForEach(users, (user) =>
+                    Parallel.ForEach(users, async (user) =>
                     {
                         if (user.Settings != null && user.Settings.NotificationSettings != NotificationSetting.None)
                         {
@@ -46,12 +44,11 @@ namespace JackTheClipperBusiness
                                 DateTime.UtcNow)
                             {
                                 LastCheckTime[user.Id] = DateTime.UtcNow;
-                                var feeds = user.Settings.Feeds.ToList().AsParallel()
-                                    .SelectMany(feed => userController.GetFeed(user, feed))
-                                    .Where(x => x.Indexed >= lastFetched)
-                                    .Distinct(ArticleComparer.ShortArticleComparer)
-                                    .OrderByDescending(x => x.Published)
-                                    .ToList();
+
+                                var feeds =
+                                    await DatabaseAdapterFactory
+                                          .GetControllerInstance<IIndexerService>()
+                                          .GetCompleteFeedAsync(user, lastFetched);
 
                                 if (feeds.Any())
                                 {
@@ -59,11 +56,11 @@ namespace JackTheClipperBusiness
                                     if (user.Settings.NotificationSettings == NotificationSetting.PdfPerMail)
                                     {
                                         var pdf = PdfGeneratorBAD.GeneratePdf(feeds);
-                                        MailControllerBAD.QuerySendMailAsync(user, ClipperTexts.DefaultMailSubject, defText, pdf);
+                                        MailController.QuerySendMailAsync(user, ClipperTexts.DefaultMailSubject, defText, pdf, "Clipper.pdf");
                                     }
                                     else
                                     {
-                                        MailControllerBAD.QuerySendMailAsync(user, ClipperTexts.DefaultMailSubject, defText);
+                                        MailController.QuerySendMailAsync(user, ClipperTexts.DefaultMailSubject, defText);
                                     }
                                 }
                             }

@@ -174,6 +174,11 @@ namespace JackTheClipperData
             return reader.IsDBNull(ordinal) ? null : reader.GetString(ordinal);
         }
 
+        /// <summary>
+        /// Appends the parameters.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        /// <param name="parameters">The parameters.</param>
         public static void AppendParameters(this MySqlCommand command, MySqlParameter[] parameters)
         {
             if (parameters != null)
@@ -182,6 +187,12 @@ namespace JackTheClipperData
             }
         }
 
+        /// <summary>
+        /// Converts the given parameters to a stored procedure out param.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="type">The type.</param>
+        /// <returns>The generated out param.</returns>
         public static MySqlParameter ToStoredProcedureOutParam(this string name, MySqlDbType type)
         {
             return new MySqlParameter(name, type) {Direction = ParameterDirection.Output};

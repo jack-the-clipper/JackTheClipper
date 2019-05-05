@@ -5,6 +5,7 @@ import org.jacktheclipper.frontend.model.Feed;
 import org.jacktheclipper.frontend.model.UserSettings;
 import org.jacktheclipper.frontend.service.FeedService;
 import org.jacktheclipper.frontend.service.SourceService;
+import org.jacktheclipper.frontend.service.UserService;
 import org.jacktheclipper.frontend.utils.AuthenticationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,11 +31,15 @@ public class UserConfigController {
 
     private final SourceService sourceService;
 
+    private final UserService userService;
+
     @Autowired
-    public UserConfigController(FeedService feedService, SourceService sourceService) {
+    public UserConfigController(FeedService feedService, SourceService sourceService,
+                                UserService userService) {
 
         this.feedService = feedService;
         this.sourceService = sourceService;
+        this.userService = userService;
     }
 
     /**
@@ -94,7 +99,7 @@ public class UserConfigController {
 
         UUID userId = AuthenticationUtils.getUserId(auth);
         Feed toWorkWith;
-        if (addRequest != null) {
+        if (addRequest != null && addRequest) {
             toWorkWith = newlyAdded;
         } else {
             toWorkWith = feed;
@@ -103,8 +108,9 @@ public class UserConfigController {
         toWorkWith.setFeedSources(sourceService.recoverSources(toWorkWith.getFeedSources(),
                 userId));
         feedService.updateFeeds(toWorkWith, userId);
-
-        return "redirect:/" + organization + "/feed/edit";
+        String redirectQuery = toWorkWith.getId() != null ?
+                "?feedId=" + toWorkWith.getId().toString() : "";
+        return "redirect:/" + organization + "/feed/edit" + redirectQuery;
     }
 
     /**

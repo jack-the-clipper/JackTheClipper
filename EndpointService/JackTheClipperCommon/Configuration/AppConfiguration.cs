@@ -21,12 +21,10 @@ namespace JackTheClipperCommon.Configuration
         public static bool MailConfigurationSSL { get; private set; }
         public static string MailConfigurationFELoginLink { get; private set; }
         public static string SqlServerConnectionString { get; private set; }
-
-        ////TODO
-        public static bool ClearIndex
-        {
-            get { return true; }
-        }
+        public static bool ElasticClearIndex { get; private set; }
+        public static string ElasticPermanentIndexName { get; private set; }
+        public static string ElasticTemporaryIndexName { get; private set; }
+        public static string ElasticRssSpeedIndexName { get; private set; }
 
         /// <summary>
         /// Set the default configuration settings for the connection.
@@ -54,6 +52,10 @@ namespace JackTheClipperCommon.Configuration
             MailConfigurationSSL = bool.Parse(configuration["MailConfiguration:SSL"]);
             MailConfigurationFELoginLink = configuration["MailConfiguration:FrontEndLoginLink"];
             SqlServerConnectionString = configuration["ServerConfiguration:SQLConnectionString"];
+            ElasticPermanentIndexName = configuration["ServerConfiguration:ElasticPermanentIndex"];
+            ElasticTemporaryIndexName = configuration["ServerConfiguration:ElasticTemporaryIndex"];
+            ElasticRssSpeedIndexName = configuration["ServerConfiguration:ElasticRssSpeedIndex"];
+            ElasticClearIndex = bool.Parse(configuration["ServerConfiguration:ClearElasticIndexes"] ?? "false");
         }
     }
 }

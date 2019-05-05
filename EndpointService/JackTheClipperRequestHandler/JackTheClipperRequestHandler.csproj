@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <Version>0.3.1</Version>
+    <Version>0.3.2</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -24,5 +24,4 @@
     <ProjectReference Include="..\JackTheClipperBusiness\JackTheClipperBusiness.csproj" />
     <ProjectReference Include="..\JackTheClipperCommon\JackTheClipperCommon.csproj" />
   </ItemGroup>
-
 </Project>

@@ -37,7 +37,7 @@ namespace JackTheClipperRequestHandler
 
         private static void StartInternalServices()
         {
-            if (AppConfiguration.ClearIndex)
+            if (AppConfiguration.ElasticClearIndex)
             {
                 Factory.GetControllerInstance<ICrawlerController>().ClearAllIndexes();
             }

@@ -4,58 +4,171 @@
     <head th:replace="layout :: head">
     </head>
     <body class="h-100">
+        <script>
+            function showAddSourceModal() {
+                $("#modalLabel").text("Quelle hinzufügen");
+                $("#inputSourceName").val("");
+                $("#uri").val("");
+                $("#types").val($("#types").children()[0].value);
+                $("#xpath").val("").prop("disabled", false);
+                $("#regex").val("").prop("disabled", false);
+                $("#blacklist").val("");
+                $("#inputId").prop("disabled", true);
+                $("#modalForm").attr("action", "[[@{/admin/addSource}]]");
+                $("#sourceModal").modal("show");
+            }
+
+            function showEditSourceModal(ev) {
+                $("#modalLabel").innerText = "Quelle bearbeiten";
+                $("#inputSourceName").val($(ev.target).parent().parent().children()[0].innerText);
+                $("#uri").val($(ev.target).parent().parent().children()[1].innerText);
+                $("#types").val($(ev.target).parent().parent().children()[2].innerText);
+                if($(ev.target).parent().parent().children()[2].innerText !== "Rss") {
+                    $("#xpath").val($(ev.target).parent().parent().children()[3].innerText);
+                    $("#regex").val($(ev.target).parent().parent().children()[4].innerText);
+                } else {
+                    $("#xpath").val("").prop("disabled", true);
+                    $("#regex").val("").prop("disabled", true);
+                }
+                $("#blacklist").val($(ev.target).parent().parent().children()[5].innerText);
+                $("#inputId").val($(ev.target).parent().parent().attr("id")).prop("disabled", false);
+                $("#modalForm").attr("action", "[[@{/admin/sources/update}]]");
+                $("#sourceModal").modal("show");
+            }
+
+            function showDeleteSourceModal(ev) {
+                var sourceName = $(ev.target).parent().parent().children()[0].innerText;
+                var sourceId = $(ev.target).parent().parent().attr("id");
+                $("#deleteSourceModalBody").text("Wollen Sie die Quelle " + sourceName + " wirklich löschen?");
+                $("#confirmDeleteButton").attr("onclick", "deleteSource('" + sourceId + "')");
+                $("#deleteSourceModal").modal("show");
+            }
+
+            function deleteSource(sourceId) {
+                //TODO Request an das Backend senden
+                $.ajax({
+                    url: "[[@{/admin/sources/delete}]]?sourceId=" + sourceId,
+                    method: 'POST'
+                }).done(function() {
+                   location.reload();
+                });
+            }
+
+            $(document).ready(function() {
+                $("#types").change(function() {
+                    if ($("#types").val() !== "Rss") {
+                        $("#xpath").val("").prop("disabled", false);
+                        $("#regex").val("").prop("disabled", false);
+                    } else {
+                        $("#xpath").val("").prop("disabled", true);
+                        $("#regex").val("").prop("disabled", true);
+                    }
+                });
+            });
+        </script>
         <div class="d-flex flex-column h-100">
-            <div th:replace="layout :: navbar"></div>
-            <div class="modal fade" id="addSourceModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+            <div th:replace="layout :: navbar (name='Quellen bearbeiten')"></div>
+            <div class="modal fade" id="sourceModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalLabel">Quelle hinzufügen</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form th:action="@{/admin/addSource}" th:object="${source}" id="modalForm" method="post">
-                                <div class="form-group">
-                                    <label for="inputSourceName">Name</label>
-                                    <input type="text" class="form-control" id="inputSourceName" placeholder="Name"
-                                           th:field="*{name}">
-                                </div>
-                                <div class="form-group">
-                                    <label for="uri">URL</label>
-                                    <input type="text" class="form-control" id="uri" placeholder="URL"
-                                           th:field="*{uri}">
-                                </div>
-                                <label for="types">Quellentyp</label>
-                                <select th:field="*{contentType}" id="types" class="custom-select">
-                                    <option th:each="type : ${contentTypes}" th:value="${type.name()}"
-                                            th:text="${type.name()}"></option>
-                                </select>
-                            </form>
+                        <form th:action="@{/admin/addSource}" th:object="${source}" id="modalForm" method="post">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalLabel">Quelle hinzufügen</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="inputSourceName">Name</label>
+                                        <input type="text" class="form-control" id="inputSourceName" placeholder="Name"
+                                               th:field="*{name}" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="uri">URL</label>
+                                        <input type="text" class="form-control" id="uri" placeholder="URL"
+                                               th:field="*{uri}" required="required">
+                                    </div>
+                                    <label for="types">Quellentyp</label>
+                                    <select th:field="*{contentType}" id="types" class="custom-select">
+                                        <option th:each="type : ${contentTypes}" th:value="${type.name()}"
+                                                th:text="${type.name()}"></option>
+                                    </select>
+                                    <div class="form-group">
+                                        <label for="xpath">XPath</label>
+                                        <input type="text" class="form-control" id="xpath" placeholder="XPath"
+                                               th:field="*{xPath}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="regex">Regex</label>
+                                        <input type="text" class="form-control" id="regex" placeholder="Regex"
+                                               th:field="*{regEx}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="blacklist">Blacklist</label>
+                                        <input type="text" class="form-control" id="blacklist" placeholder="Blacklist"
+                                               th:field="*{blackList}">
+                                    </div>
+                                    <input type="hidden" id="inputId" disabled th:field="*{id}">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                                <button type="submit" class="btn btn-primary odom-submit">Bestätigen</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="deleteSourceModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body" id="deleteSourceModalBody">
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
-                            <button type="button" class="btn btn-primary odom-submit">Bestätigen</button>
+                            <button type="button" class="btn btn-primary" id="confirmDeleteButton">Bestätigen</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="container flex-fill">
-                <ul class="list-group mt-4">
-                    <li th:each="item : ${sources}" th:text="${item.name}"></li>
-                    <li th:if="${sources.isEmpty()==true}"> Keine Quellen vorhanden</li>
-                </ul>
-                <button class="btn btn-primary mt-4" data-toggle="modal" data-target="#addSourceModal">Quelle hinzufügen
-                </button>
+            <div class="container flex-fill mt-5">
+                <div class="row">
+                    <div class="col-12 table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">URL</th>
+                                <th scope="col">Typ</th>
+                                <th scope="col">XPath</th>
+                                <th scope="col">Regex</th>
+                                <th scope="col">Blacklist</th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item : ${sources}" th:id="${item.getId()}">
+                                <td th:text="${item.getName()}"></td>
+                                <td th:text="${item.getUri()}"></td>
+                                <td th:text="${item.getContentType()}"></td>
+                                <td th:if="${item.getContentType() == rssType}">---</td>
+                                <td th:unless="${item.getContentType() == rssType}" th:text="${item.getxPath()}"></td>
+                                <td th:if="${item.getContentType() == rssType}">---</td>
+                                <td th:unless="${item.getContentType() == rssType}" th:text="${item.getRegEx()}"></td>
+                                <td th:if="${item.getBlackList() != null}" th:text="${T(java.lang.String).join(',', item.getBlackList())}"></td>
+                                <td th:unless="${item.getBlackList() != null}"></td>
+                                <td><button class="btn btn-primary" onclick="showEditSourceModal(event)">Bearbeiten</button></td>
+                                <td><button class="btn btn-primary" onclick="showDeleteSourceModal(event)">Entfernen</button></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-primary mt-4 ml-auto" onclick="showAddSourceModal()">Quelle hinzufügen
+                    </button>
+                </div>
             </div>
-            <script>$(function () {
-                $('body').on('click', '.odom-submit', function (e) {
-                    $('#modalForm').submit();
-                    $('#addSourceModal').modal('hide');
-                });
-            });</script>
             <footer th:replace="layout :: footer"></footer>
         </div>
     </body>

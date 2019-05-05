@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using JackTheClipperBusiness;
 using JackTheClipperCommon.Enums;
+using JackTheClipperCommon.Extensions;
 using JackTheClipperCommon.Interfaces;
 using JackTheClipperCommon.SharedClasses;
 using Microsoft.AspNetCore.Mvc;
+using static JackTheClipperBusiness.Factory;
 
 namespace JackTheClipperRequestHandler.Controllers
 {
@@ -20,7 +20,7 @@ namespace JackTheClipperRequestHandler.Controllers
         {
             try
             {
-                var user = Factory.GetControllerInstance<IClipperUserAPI>().TryAuthenticateUser(userMail, userPassword);
+                var user = GetControllerInstance<IClipperUserAPI>().TryAuthenticateUser(userMail, userPassword);
                 if (user != null)
                 {
                     return new ActionResult<User>(user);
@@ -42,7 +42,7 @@ namespace JackTheClipperRequestHandler.Controllers
             try
             {
                 var user = Get<User>(userId);
-                return Factory.GetControllerInstance<IClipperUserAPI>().GetFeedDefinitions(user);
+                return GetControllerInstance<IClipperUserAPI>().GetFeedDefinitions(user);
             }
             catch (Exception error)
             {
@@ -54,12 +54,12 @@ namespace JackTheClipperRequestHandler.Controllers
         //Ok
         [Route("getfeed")]
         [HttpGet]
-        public IReadOnlyCollection<ShortArticle> GetFeed([FromQuery]Guid userId, [FromQuery]Guid feedId)
+        public IReadOnlyCollection<ShortArticle> GetFeed([FromQuery]Guid userId, [FromQuery]Guid feedId, [FromQuery]int page, [FromQuery]bool showArchived)
         {
             try
             {
                 var user = Get<User>(userId);
-                return Factory.GetControllerInstance<IClipperUserAPI>().GetFeed(user, user.GetFeed(feedId));
+                return GetControllerInstance<IClipperUserAPI>().GetFeed(user, user.GetFeed(feedId), page, showArchived);
             }
             catch (Exception error)
             {
@@ -75,8 +75,7 @@ namespace JackTheClipperRequestHandler.Controllers
         {
             try
             {
-                var user = Get<User>(userId);
-                return Factory.GetControllerInstance<IClipperUserAPI>().GetArticle(user, new ShortArticle(articleId, null, null, null, DateTime.UtcNow, default(DateTime), Guid.Empty));
+                return GetControllerInstance<IClipperUserAPI>().GetArticle(articleId);
             }
             catch (Exception error)
             {
@@ -93,7 +92,7 @@ namespace JackTheClipperRequestHandler.Controllers
             try
             {
                 var user = Get<User>(userId);
-                return Factory.GetControllerInstance<IClipperUserAPI>().GetUserSettings(user);
+                return GetControllerInstance<IClipperUserAPI>().GetUserSettings(user);
             }
             catch (Exception error)
             {
@@ -110,29 +109,77 @@ namespace JackTheClipperRequestHandler.Controllers
             try
             {
                 var user = Get<User>(userId);
-                return Factory.GetControllerInstance<IClipperUserAPI>().SaveUserSettings(user, toSave);
+                return GetControllerInstance<IClipperUserAPI>().SaveUserSettings(user, toSave);
             }
             catch (Exception error)
             {
                 Console.WriteLine(error);
-                return new MethodResult(SuccessState.UnknownError, "Bad things happend");
+                return new MethodResult(SuccessState.UnknownError, "Bad things happened");
             }
         }
 
         //Ok
         [Route("reset")]
-        [HttpGet]
-        public MethodResult ResetPassword([FromQuery]string userMail)
+        [HttpPut] 
+        public ActionResult ResetPassword([FromQuery]string userMail)
         {
             try
             {
-                return Factory.GetControllerInstance<IClipperUserAPI>().ResetPassword(userMail);
+               var result = GetControllerInstance<IClipperUserAPI>().ResetPassword(userMail);
+               if (result.IsSucceeded())
+               {
+                   return Ok();
+               }
             }
             catch (Exception error)
             {
                 Console.WriteLine(error);
-                return new MethodResult(SuccessState.UnknownError, "Bad things happend");
             }
+
+            return BadRequest();
+        }
+
+        [Route("changepassword")]
+        [HttpPut]
+        public ActionResult ChangePassword([FromQuery] Guid userId, [FromQuery] string newPassword)
+        {
+            try
+            {
+                var user = GetObjectInstanceById<User>(userId);
+
+                var result = GetControllerInstance<IClipperUserAPI>().ChangePassword(user, newPassword);
+                if (result.IsSucceeded())
+                {
+                    return Ok();
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error);
+            }
+
+            return BadRequest();
+        }
+
+        [Route("changemailaddress")]
+        [HttpPut]
+        public ActionResult ChangeMailAddress([FromQuery]Guid userId, [FromQuery] string newUserMail)
+        {
+            try
+            {
+                var user = Get<User>(userId);
+                var result = GetControllerInstance<IClipperUserAPI>().ChangeMailAddress(user, newUserMail);
+                if (result.IsSucceeded())
+                {
+                    return Ok();
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error);
+            }
+
+            return BadRequest();
         }
 
         //Ok
@@ -143,7 +190,7 @@ namespace JackTheClipperRequestHandler.Controllers
             try
             {
                 var user = Get<User>(userId);
-                return new ActionResult<IReadOnlyList<Source>>(Factory.GetControllerInstance<IClipperUserAPI>().GetAvailableSources(user));
+                return new ActionResult<IReadOnlyList<Source>>(GetControllerInstance<IClipperUserAPI>().GetAvailableSources(user));
             }
             catch (Exception error)
             {
@@ -160,8 +207,8 @@ namespace JackTheClipperRequestHandler.Controllers
         {
             try
             {
-                return new ActionResult<User>(Factory.GetControllerInstance<IClipperUserAPI>().AddUser(
-                    userMail, userName, password, (Role)Enum.Parse(typeof(Role), role), unit));
+                return new ActionResult<User>(GetControllerInstance<IClipperUserAPI>().AddUser(
+                    userMail, userName, password, (Role)Enum.Parse(typeof(Role), role), unit, false, true));
             }
             catch (Exception error)
             {
@@ -172,7 +219,7 @@ namespace JackTheClipperRequestHandler.Controllers
 
         internal static T Get<T>(Guid id) where T : class
         {
-            return Factory.GetObjectInstanceById<T>(id);
+            return GetObjectInstanceById<T>(id);
         }
     }
 }

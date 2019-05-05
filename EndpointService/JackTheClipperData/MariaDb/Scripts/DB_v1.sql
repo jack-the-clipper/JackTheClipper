@@ -121,30 +121,30 @@ ENGINE=InnoDB
 ;
 
 ALTER TABLE tbUserOrganizationalUnit
-ADD CONSTRAINT FOREIGN KEY (coOrganizationalUnitId) REFERENCES tborganizationalunit(coId),
-ADD CONSTRAINT FOREIGN KEY (coUserId) REFERENCES tbuser(coId); 
+ADD CONSTRAINT fk1 FOREIGN KEY (coOrganizationalUnitId) REFERENCES tborganizationalunit(coId) ON DELETE CASCADE,
+ADD CONSTRAINT fk2 FOREIGN KEY (coUserId) REFERENCES tbuser(coId) ON DELETE CASCADE; 
 
 ALTER TABLE tborganizationalunit
-ADD CONSTRAINT FOREIGN KEY (coParentId) REFERENCES tborganizationalunit(coId),
-ADD CONSTRAINT FOREIGN KEY (coSettingsId) REFERENCES tbUserSettings(coId);
+ADD CONSTRAINT fk3 FOREIGN KEY (coParentId) REFERENCES tborganizationalunit(coId) ON DELETE CASCADE,
+ADD CONSTRAINT fk4 FOREIGN KEY (coSettingsId) REFERENCES tbUserSettings(coId) ON DELETE CASCADE;
 
 ALTER TABLE tbOrganizationalUnitSettingsSource
-ADD CONSTRAINT FOREIGN KEY (coOrganizationalUnitSettingsId) REFERENCES tborganizationalunit(coId),
-ADD CONSTRAINT FOREIGN KEY (coSourceId) REFERENCES tbsource(coId); 
+ADD CONSTRAINT fk5 FOREIGN KEY (coOrganizationalUnitSettingsId) REFERENCES tborganizationalunit(coId) ON DELETE CASCADE,
+ADD CONSTRAINT fk6 FOREIGN KEY (coSourceId) REFERENCES tbsource(coId) ON DELETE CASCADE; 
 
 ALTER TABLE tbfeedsource
-ADD CONSTRAINT FOREIGN KEY (coFeedId) REFERENCES tbfeed(coId),
-ADD CONSTRAINT FOREIGN KEY (coSourceId) REFERENCES tbsource(coId); 
+ADD CONSTRAINT fk7 FOREIGN KEY (coFeedId) REFERENCES tbfeed(coId) ON DELETE CASCADE,
+ADD CONSTRAINT fk8 FOREIGN KEY (coSourceId) REFERENCES tbsource(coId) ON DELETE CASCADE; 
 
 ALTER TABLE tbSettingsFeeds
-ADD CONSTRAINT FOREIGN KEY (coFeedId) REFERENCES tbfeed(coId),
-ADD CONSTRAINT FOREIGN KEY (coSettingsId) REFERENCES tbusersettings(coId); 
+ADD CONSTRAINT fk9 FOREIGN KEY (coFeedId) REFERENCES tbfeed(coId) ON DELETE CASCADE,
+ADD CONSTRAINT fk10 FOREIGN KEY (coSettingsId) REFERENCES tbusersettings(coId) ON DELETE CASCADE; 
 
 alter table tbfeed
-add constraint foreign key (coFilterId) References tbfeedfilter(coId);
+add constraint fk11 foreign key (coFilterId) References tbfeedfilter(coId) ON DELETE CASCADE;
 
 alter table tbuser
-add constraint foreign key (coSettingsId) References tbusersettings(coId);
+add constraint fk12 foreign key (coSettingsId) References tbusersettings(coId) ON DELETE CASCADE;
 
 DELIMITER //  
 CREATE OR REPLACE FUNCTION BIN_TO_UUID ( uuid BINARY(16) )  

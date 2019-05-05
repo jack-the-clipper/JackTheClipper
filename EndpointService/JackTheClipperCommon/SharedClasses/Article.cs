@@ -15,7 +15,6 @@ namespace JackTheClipperCommon.SharedClasses
         /// <summary>
         /// Gets the text.
         /// </summary>
-        [NotNull]
         [DataMember(Name = "ArticleLongText")]
         public string Text { get; private set; }
 
@@ -24,17 +23,27 @@ namespace JackTheClipperCommon.SharedClasses
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="title">The title.</param>
-        /// <param name="shortText">The short text.</param>
         /// <param name="link">The link.</param>
+        /// <param name="imageLink">The image link.</param>
         /// <param name="text">The text.</param>
         /// <param name="published">The published date.</param>
         /// <param name="indexed">The indexed date.</param>
         /// <param name="indexingSourceId">The indexing source identifier.</param>
-        public Article(Guid id, string title, string shortText, string link, string text, DateTime published,
+        public Article(Guid id, string title, string link, string imageLink, string text, DateTime published,
                        DateTime indexed, Guid indexingSourceId) 
-            : base(id, title, shortText, link, published, indexed, indexingSourceId)
+            : base(id, title, Truncate(text), link, imageLink, published, indexed, indexingSourceId)
         {
             Text = text;
+        }
+
+        public static string Truncate(string input)
+        {
+            if (input != null && input.Length > 200)
+            {
+                return input.Substring(0, 197) + "...";
+            }
+
+            return input;
         }
     }
 }

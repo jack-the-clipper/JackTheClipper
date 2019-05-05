@@ -46,7 +46,7 @@ namespace JackTheClipperBusiness
 
             if (typeof(T) == typeof(ICrawlerController))
             {
-                return (T) (object) CrawlerControllerBAD.GetCrawlerController();
+                return (T) (object) CrawlerController.GetCrawlerController();
             }
 
             if (typeof(T) == typeof(INotificationController))

@@ -29,8 +29,9 @@ namespace JackTheClipperData
         /// </summary>
         /// <param name="mail">The mail.</param>
         /// <param name="password">The password.</param>
+        /// <param name="updateLoginTimeStamp">A value indicating whether the login timestamp should be updated or not.</param>
         /// <returns>The user (if found)</returns>
-        User GetUserByCredentials(string mail, string password);
+        User GetUserByCredentials(string mail, string password, bool updateLoginTimeStamp);
 
         /// <summary>
         /// Gets all sources.
@@ -66,8 +67,10 @@ namespace JackTheClipperData
         /// <param name="password">The password.</param>
         /// <param name="role">The role.</param>
         /// <param name="unit">The unit.</param>
+        /// <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
+        /// <param name="valid">A value whether the user is valid or not.</param>
         /// <returns>The user object of the new user.</returns>
-        User AddUser(string userMail, string userName, string password, Role role, Guid unit);
+        User AddUser(string userMail, string userName, string password, Role role, Guid unit, bool mustChangePassword, bool valid);
 
         /// <summary>
         /// Adds a source.
@@ -75,6 +78,14 @@ namespace JackTheClipperData
         /// <param name="source">The source.</param>
         /// <returns>The object of the new source.</returns>
         Source AddSource(Source source);
+
+
+        /// <summary>
+        /// Deletes the source.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns>succesfull bool</returns>
+        bool DeleteSource(Guid source);
 
         /// <summary>
         /// Saves the user settings.
@@ -84,5 +95,37 @@ namespace JackTheClipperData
         /// <returns>The saved user settings object.</returns>
         [Obsolete]
         UserSettings SaveUserSettings(User user, UserSettings toSave);
+
+        /// <summary>
+        /// Resets the users password.
+        /// </summary>
+        /// <param name="userMail"></param>
+        /// <param name="newPassword">The new password to set.</param>
+        /// <returns>MethodResult indicating success.</returns>
+        MethodResult ResetPassword(string userMail, string newPassword);
+
+        /// <summary>
+        /// Changes the users password.
+        /// </summary>
+        /// <param name="user">The users mail address.</param>
+        /// <param name="newPassword">The new password to set.</param>
+        /// <returns>MethodResult indicating success.</returns>
+        MethodResult ChangePassword(User user, string newPassword);
+
+        /// <summary>
+        /// Changes the users mail address.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="newUserMail">The users new mail address.</param>
+        /// <returns>MethodResult indicating success.</returns>
+        MethodResult ChangeMailAddress(User user, string newUserMail);
+      
+        ///<summary>
+        /// Gets the superset feed filter.
+        /// This is a feed filter which contains all relevant keywords form any feed within the system.
+        /// </summary>
+        /// <returns>The superset feed filter.</returns>
+        Filter GetSuperSetFeed();
+
     }
 }

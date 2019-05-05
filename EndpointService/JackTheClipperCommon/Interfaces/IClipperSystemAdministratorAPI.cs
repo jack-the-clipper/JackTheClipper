@@ -1,4 +1,5 @@
-﻿using JackTheClipperCommon.SharedClasses;
+﻿using System;
+using JackTheClipperCommon.SharedClasses;
 
 namespace JackTheClipperCommon.Interfaces
 {
@@ -21,6 +22,16 @@ namespace JackTheClipperCommon.Interfaces
         /// <param name="user">The user who requests the deletion.</param>
         /// <param name="toAdd">The source to add.</param>
         /// <returns>MethodResult indicating success</returns>
-        MethodResult DeleteSource(User user, Source toAdd);
+        MethodResult DeleteSource(User user, Guid toAdd);
+
+
+        /// <summary>
+        /// Changes the source.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="toChange">Id of the source, which should be changed</param>
+        /// <param name="newSource">The new source.</param>
+        /// <returns>MethodResult indicating success</returns>
+        MethodResult ChangeSource(User user, Guid toChange, Source newSource);
     }
 }

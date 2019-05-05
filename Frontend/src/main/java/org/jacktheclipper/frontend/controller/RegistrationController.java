@@ -4,16 +4,11 @@ package org.jacktheclipper.frontend.controller;
 import org.jacktheclipper.frontend.authentication.CustomAuthenticationToken;
 import org.jacktheclipper.frontend.authentication.User;
 import org.jacktheclipper.frontend.enums.UserRole;
-import org.jacktheclipper.frontend.exception.BackendException;
 import org.jacktheclipper.frontend.service.OuService;
-import org.jacktheclipper.frontend.utils.ResponseEntityUtils;
-import org.jacktheclipper.frontend.utils.RestTemplateUtils;
+import org.jacktheclipper.frontend.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -21,7 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -38,15 +32,15 @@ import static org.springframework.security.web.context.HttpSessionSecurityContex
 public class RegistrationController {
     private static final Logger log = LoggerFactory.getLogger(RegistrationController.class);
     private final OuService ouService;
-
+    private final UserService userService;
     private final AuthenticationManager authManager;
 
-    @Value("${backend.url}")
-    public String backendUrl;
 
     @Autowired
-    public RegistrationController(OuService ouService, AuthenticationManager authManager) {
+    public RegistrationController(OuService ouService, AuthenticationManager authManager,
+                                  UserService userService) {
 
+        this.userService = userService;
         this.ouService = ouService;
         this.authManager = authManager;
     }
@@ -62,7 +56,7 @@ public class RegistrationController {
         //TODO static Frontend User
         model.addAttribute("OUs", ouService.getOrganizationalUnits(null));
         model.addAttribute("org", organization);
-        model.addAttribute("user", new User(null, UserRole.User, "", "", "", organization));
+        model.addAttribute("user", new User(null, UserRole.User, "", "", "", organization, false));
         return "register";
     }
 
@@ -83,34 +77,13 @@ public class RegistrationController {
                                       @PathVariable("organization") String organization) {
 
         model.addAttribute("org", organization);
-        log.info("Attempting registration of User [{}]", user.getName());
-        //TODO will be refactored by the backend
-        String uriParameters =
-                "?userMail=" + user.geteMail() + "&role=" + user.getUserRole().toString() +
-                        "&unit=" + ouId.toString() + "&userName=" + user.getName() + "&password=" + user.getPassword();
 
         try {
-            log.info(backendUrl + "/register" + uriParameters);
-            RestTemplate restTemplate = RestTemplateUtils.getRestTemplate();
-            ResponseEntity<User> response =
-                    restTemplate.exchange(backendUrl + "/register" + uriParameters,
-                            HttpMethod.PUT, RestTemplateUtils.prepareBasicHttpEntity(user),
-                            User.class);
-            if (ResponseEntityUtils.successful(response)) {
-                String password = user.getPassword();
-                String eMail = user.geteMail();
-                user = response.getBody();
-                //necessary to automatically log the user in since backend does not provide password
-                user.setPassword(password);
-                //Backend stopped passing the email for some reason, so theres a need to store it
-                // and set it again for the automatic login
-                user.seteMail(eMail);//
-
-                login(request, user);
-            } else {
-                log.info("Failed registration for user [{}]", user);
-                throw new BackendException("Failed registration");
-            }
+            String password = user.getPassword();
+            user = userService.registerUser(user, ouId);
+            //necessary to automatically log the user in since backend does not provide password
+            user.setPassword(password);
+            login(request, user);
 
         } catch (Exception ex) {
             model.addAttribute("user", user);
@@ -119,7 +92,7 @@ public class RegistrationController {
             return "register";
         }
 
-        return "redirect:/"+organization+"/feed/edit";
+        return "redirect:/" + organization + "/feed/edit";
     }
 
     /**

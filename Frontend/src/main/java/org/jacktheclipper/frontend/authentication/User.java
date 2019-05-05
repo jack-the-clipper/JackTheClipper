@@ -20,6 +20,7 @@ public class User implements Principal {
     private String password;
     private String organization = "PLEASE_CHANGE"; //TODO remove default value when backend
     // passes this parameter
+    private boolean mustChangePassword = false;
 
 
     //Used by Jackson to deserialize from JSON
@@ -28,7 +29,7 @@ public class User implements Principal {
     }
 
     public User(UUID userId, UserRole userRole, String name, String eMail, String password,
-                String organization) {
+                String organization,boolean mustChangePassword) {
 
         this.userId = userId;
         this.userRole = userRole;
@@ -36,6 +37,7 @@ public class User implements Principal {
         this.eMail = eMail;
         this.password = password;
         this.organization = organization;
+        this.mustChangePassword = mustChangePassword;
     }
 
     public UUID getUserId() {
@@ -101,6 +103,7 @@ public class User implements Principal {
         return eMail;
     }
 
+    @JsonProperty("UserMail")
     public void seteMail(String eMail) {
 
         this.eMail = eMail;
@@ -128,5 +131,16 @@ public class User implements Principal {
     public void setOrganization(String organization) {
 
         this.organization = organization;
+    }
+
+    public boolean isMustChangePassword() {
+
+        return mustChangePassword;
+    }
+
+    @JsonProperty("MustChangePassword")
+    public void setMustChangePassword(boolean mustChangePassword) {
+
+        this.mustChangePassword = mustChangePassword;
     }
 }

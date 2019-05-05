@@ -5,7 +5,7 @@
     </head>
     <body class="h-100">
         <div class="d-flex flex-column h-100">
-            <div th:replace="layout :: navbar"></div>
+            <div th:replace="layout :: navbar (name='Feedübersicht')"></div>
             <div class="container pl-2 pr-2 flex-fill">
                 <div class="dropdown">
                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -20,11 +20,56 @@
                 </div>
                 <h2 th:text="${name}">Feed1</h2>
                 <div th:each="article : ${articles}">
-                    <h3><a href="#" th:text="${article.getTitle()}"></a></h3>
+                    <h3><a th:href="@{/{orga}/article/{id} (orga=${#authentication.getPrincipal().getOrganization()},
+                                                            id=${article.getId()})}"
+                           th:text="${article.getTitle()}"></a></h3>
                     <p th:text="${article.getShortText()}"></p>
+                    <p>Veröffentlicht: <span th:text="${article.getPublished().toLocaleString()}"></span></p>
                     <a th:href="${article.getLink()}" target="_self">Zur Quelle</a>
                 </div>
             </div>
+            <nav th:unless="${feedId} == null" aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" th:href="@{/{orga}/feed(feedId=${feedId},
+                                             orga=${#authentication.getPrincipal().getOrganization()},
+                                             page=${0},showArchived=${showArchived})}">Erste Seite
+                        </a>
+                    </li>
+                    <li th:if="${currentPage}>0" class="page-item">
+                        <a class="page-link" th:href="@{/{orga}/feed(feedId=${feedId},
+                                             orga=${#authentication.getPrincipal().getOrganization()},
+                                             page=${currentPage - 1},showArchived=${showArchived})}">
+                            Seite zurück
+                        </a>
+                    </li>
+                    <li th:unless="${currentPage}>0" class="page-item disabled">
+                        <a class="page-link" th:href="@{/{orga}/feed(feedId=${feedId},
+                                             orga=${#authentication.getPrincipal().getOrganization()},
+                                             page=${currentPage - 1},showArchived=${showArchived})}">
+                            Seite zurück
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" th:href="@{/{orga}/feed(feedId=${feedId},
+                                             orga=${#authentication.getPrincipal().getOrganization()},
+                                             page=${currentPage+1},showArchived=${showArchived})}">
+                            Seite vor
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <a class="page-link" th:if="${showArchived}" th:href="@{/{orga}/feed(feedId=${feedId},
+                                             orga=${#authentication.getPrincipal().getOrganization()},
+                                             page=${currentPage},showArchived=${false})}">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Nur
+                    neue Artikel anzeigen</button>
+            </a>
+            <a class="page-link" th:unless="${showArchived}" th:href="@{/{orga}/feed(feedId=${feedId},
+                                             orga=${#authentication.getPrincipal().getOrganization()},
+                                             page=${currentPage},showArchived=${true})}">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Alle Artikel anzeigen</button>
+            </a>
             <footer th:replace="layout :: footer"></footer>
         </div>
     </body>

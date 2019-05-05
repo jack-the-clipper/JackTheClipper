@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jacktheclipper.frontend.enums.NotificationSetting;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Represents default settings for all users registered to it. It might limit the sources to all
@@ -14,13 +15,15 @@ public class OrganizationalUnitSettings extends UserSettings {
 
     public OrganizationalUnitSettings() {
 
+        super();
     }
 
-    public OrganizationalUnitSettings(List<Feed> feeds, NotificationSetting notificationSetting,
+    public OrganizationalUnitSettings(UUID id, List<Feed> feeds,
+                                      NotificationSetting notificationSetting,
                                       int notificationCheckInterval,
-                                      List<Source> availableSources) {
+                                      List<Source> availableSources, int articlesPerPage) {
 
-        super(feeds, notificationSetting, notificationCheckInterval);
+        super(id, feeds, notificationSetting, notificationCheckInterval,articlesPerPage);
         this.availableSources = availableSources;
     }
 

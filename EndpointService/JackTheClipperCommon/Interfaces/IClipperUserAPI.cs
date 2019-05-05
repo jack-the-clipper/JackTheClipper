@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using JackTheClipperCommon.Enums;
 using JackTheClipperCommon.SharedClasses;
 
@@ -30,16 +31,17 @@ namespace JackTheClipperCommon.Interfaces
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="feed">The feed.</param>
+        /// <param name="page">The requested page.</param>
+        /// <param name="showArchived">A value indicating whether the archived articles should be shown or not.</param>
         /// <returns>List of <see cref="ShortArticle"/>s within the feed.</returns>
-        IReadOnlyCollection<ShortArticle> GetFeed(User user, Feed feed);
+        IReadOnlyCollection<ShortArticle> GetFeed(User user, Feed feed, int page, bool showArchived);
 
         /// <summary>
         /// Gets a specific article.
         /// </summary>
-        /// <param name="user">The user.</param>
-        /// <param name="article">The <see cref="ShortArticle"/> of which the <see cref="Article"/> should be determined.</param>
+        /// <param name="articleId">The article id.</param>
         /// <returns>The (full) <see cref="Article"/>.</returns>
-        Article GetArticle(User user, ShortArticle article);
+        Article GetArticle(Guid articleId);
 
         /// <summary>
         /// Gets the user settings.
@@ -64,6 +66,22 @@ namespace JackTheClipperCommon.Interfaces
         MethodResult ResetPassword(string userMail);
 
         /// <summary>
+        /// Attempts to change the password.
+        /// </summary>
+        /// <param name="user">The users mail address</param>
+        /// <param name="newPassword">The new user password.</param>
+        /// <returns>MethodResult indicating success.</returns>
+        MethodResult ChangePassword(User user, string newPassword);
+
+        /// <summary>
+        /// Changes the users mail address.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="newUserMail">The new mail address.</param>
+        /// <returns>MethodResult indicating success.</returns>
+        MethodResult ChangeMailAddress(User user, string newUserMail);
+        
+        /// <summary>
         /// Gets the available sources for a given user.
         /// </summary>
         /// <param name="user">The user.</param>
@@ -78,7 +96,10 @@ namespace JackTheClipperCommon.Interfaces
         /// <param name="password">The new users password.</param>
         /// <param name="role">The new users role.</param>
         /// <param name="unit">The new users unit.</param>
+        /// <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
+        /// <param name="valid">A value whether the user is valid or not.</param>
         /// <returns>The new users <see cref="User"/>object</returns>
-        User AddUser(string userMail, string username, string password, Role role, Guid unit);
+        User AddUser(string userMail, string username, string password, Role role, Guid unit, bool mustChangePassword, bool valid);
+
     }
 }

@@ -20,7 +20,7 @@ namespace JackTheClipperBusiness
             GlobalFontSettings.FontResolver = new FontResolver();
         }
 
-        public static MemoryStream GeneratePdf(List<ShortArticle> content)
+        public static MemoryStream GeneratePdf(IEnumerable<ShortArticle> content)
         {
             try
             {

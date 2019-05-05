@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using JackTheClipperCommon.Enums;
@@ -44,11 +43,27 @@ namespace JackTheClipperCommon.SharedClasses
         }
 
         /// <summary>
+        /// If True User needs to change his PW on login.
+        /// </summary>
+        [DataMember(Name = "MustChangePassword")]
+        public bool MustChangePassword { get; set; }
+
+        /// <summary>
         /// Gets the mail address.
         /// </summary>
         [NotNull]
-        [IgnoreDataMember]
+        [DataMember(Name = "UserMail")]
         public string MailAddress { get; private set; }
+
+        /// <summary>
+        /// Gets the last login time.
+        /// </summary>
+        public DateTime LastLoginTime { get; private set; }
+
+        /// <summary>
+        ///Gets a value indicating whether the user is valid or not.
+        /// </summary>
+        public bool IsValid { get; private set; }
 
         /// <summary>
         /// Gets or sets the settings.
@@ -63,8 +78,10 @@ namespace JackTheClipperCommon.SharedClasses
         /// <param name="mailAddress">The mail address.</param>
         /// <param name="role">The role.</param>
         /// <param name="name">The name.</param>
+        /// <param name="mustChangePassword">Specifies if user has to reset his password</param>
         /// <exception cref="ArgumentNullException">mailAddress is null</exception>
-        public User(Guid id, string mailAddress, Role role, string name, UserSettings settings)
+        public User(Guid id, string mailAddress, Role role, string name, UserSettings settings, bool mustChangePassword,
+                    DateTime lastLoginTime, bool isValid)
         {
             if (string.IsNullOrEmpty(mailAddress))
             {
@@ -76,6 +93,9 @@ namespace JackTheClipperCommon.SharedClasses
             Id = id;
             UserName = name;
             Settings = settings;
+            MustChangePassword = mustChangePassword;
+            LastLoginTime = lastLoginTime;
+            IsValid = isValid;
         }
 
         /// <summary>

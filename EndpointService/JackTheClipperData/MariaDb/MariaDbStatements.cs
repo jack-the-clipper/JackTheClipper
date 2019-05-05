@@ -5,9 +5,15 @@
     /// </summary>
     internal static class MariaDbStatements
     {
-        public const string SelectAllUsers = "select BIN_TO_UUID(coId), coName, coMail, coRole, BIN_TO_UUID(coSettingsId) from tbuser;";
-        public const string SelectUserByCredentials = "select BIN_TO_UUID(coId), coName, coMail, coRole, BIN_TO_UUID(coSettingsId) from tbuser where tbuser.coPasswordHash = @hash and tbuser.coMail = @mail LIMIT 1;";
-        public const string SelectUserById = "select BIN_TO_UUID(coId), coName, coMail, coRole, BIN_TO_UUID(coSettingsId) from tbuser where tbuser.coId = UUID_TO_BIN(@id) LIMIT 1;";
+        public const string SelectAllUsers = "SELECT BIN_TO_UUID(a.coId), a.coName, a.coMail, a.coRole, BIN_TO_UUID(a.coSettingsId), a.coMustChangePassword, a.coValid, " +
+                                             "(SELECT tbuserlogins.coLoginTime FROM tbuserlogins WHERE tbuserlogins.coUserId = a.coId ORDER BY tbuserlogins.coLoginTime DESC LIMIT 1,1) " +
+                                             "FROM tbuser a;";
+        public const string SelectUserByCredentials = "SELECT BIN_TO_UUID(a.coId), a.coName, a.coMail, a.coRole, BIN_TO_UUID(a.coSettingsId), a.coMustChangePassword, a.coValid, " +
+                                                      "(SELECT MAX(tbuserlogins.coLoginTime) FROM tbuserlogins WHERE tbuserlogins.coUserId = a.coId) " +
+                                                      "FROM tbuser a WHERE a.coPasswordHash = @hash AND a.coMail = @mail LIMIT 1;";
+        public const string SelectUserById = "SELECT BIN_TO_UUID(a.coId), a.coName, a.coMail, a.coRole, BIN_TO_UUID(a.coSettingsId), a.coMustChangePassword, a.coValid, " +
+                                             "(SELECT tbuserlogins.coLoginTime FROM tbuserlogins WHERE tbuserlogins.coUserId = a.coId ORDER BY tbuserlogins.coLoginTime DESC LIMIT 1,1) " +
+                                             "FROM tbuser a WHERE a.coId = UUID_TO_BIN(@id) LIMIT 1;";
 
         public const string SelectAllSources = "SELECT BIN_TO_UUID(coId), coUrl, coName, coType, coRegex, coXpath, coBlackList FROM tbSource;";
         public const string SelectSpecificSourceById = "SELECT BIN_TO_UUID(coId), coUrl, coName, coType, coRegex, coXpath, coBlackList FROM tbSource WHERE coID = UUID_TO_BIN(@id) LIMIT 1;";
@@ -25,7 +31,10 @@
                                                       "AND b.coFilterId = c.coId " +
                                                       "AND a.coSettingsId = UUID_TO_BIN(@settingsId);";
 
-        public const string SelectUserSettingsById = "SELECT coNotification, coNotificationInterval " +
+        public const string SelectUserSettingsById = "SELECT coNotification, coNotificationInterval, coNotificationInterval " +
                                                      "FROM tbUserSettings WHERE coid = UUID_TO_BIN(@id) LIMIT 1;";
+
+        public const string SelectSuperSetFeed = "SELECT tbfeedfilter.coKeywords, tbfeedfilter.coBlackList " +
+                                                 "FROM tbfeedfilter";
     }
 }

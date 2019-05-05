@@ -4,6 +4,7 @@
     <head th:fragment="head">
         <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}"/>
         <link rel="stylesheet" type="text/css" th:href="@{/bootstrap_select/css/bootstrap-select.min.css}"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
         <script th:src="@{/webjars/jquery/3.3.0/jquery.js}"></script>
         <script th:src="@{/webjars/bootstrap/4.1.3/js/bootstrap.bundle.min.js}"></script>
         <script th:src="@{/bootstrap_select/js/bootstrap-select.min.js}"></script>
@@ -11,12 +12,16 @@
     <body>
         <div th:fragment="navbar">
             <nav class="navbar navbar-expand-sm navbar-light bg-light">
-                <a sec:authorize="isAuthenticated()" class="navbar-brand mr-auto"
-                   th:href="@{/{orga}/(orga=${#authentication.getPrincipal().getOrganization()})}">
-                    <img th:src="@{/img/logo_40X38.jpg}"
-                         alt="Logo von Jack the Clipper, eine Hand hält eine Schere hoch">
-                </a>
-                <span sec:authorize="isAuthenticated()" class="pull-right">
+                <div class="mr-auto">
+                    <a sec:authorize="isAuthenticated()" class="navbar-brand"
+                       th:href="@{/{orga}/(orga=${#authentication.getPrincipal().getOrganization()})}">
+                        <img th:src="@{/img/logo_40X38.jpg}"
+                             alt="Logo von Jack the Clipper, eine Hand hält eine Schere hoch">
+                    </a>
+                    <span class="navbar-brand mr-auto" th:text="${name}"></span>
+                </div>
+                <!--<span class="navbar-brand mr-auto" th:text="${name}"></span>-->
+                <span sec:authorize="isAuthenticated()" class="ml-auto">
                     <div class="navbar-collapse">
                         <ul class="navbar-nav">
 

@@ -5,7 +5,7 @@
     </head>
     <body class="h-100">
         <div class="d-flex flex-column h-100">
-            <div th:replace="layout :: navbar"></div>
+            <div th:replace="layout :: navbar (name='Profileinstellungen')"></div>
             <div class="container mt-5 flex-fill">
                 <form name="f"
                       th:action="@{/{orga}/feed/profile(orga=${#authentication.getPrincipal().getOrganization()})}"

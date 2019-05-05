@@ -105,11 +105,13 @@ public class FeedService {
      *
      * @param articleId The id of the requested article
      * @param userId    The id of the user requesting the article so that the backend can
-     *                  verify if
-     *                  he has access to it
+     *                  verify if he has access to it
      * @return The article matching the id or null if any error is encountered
+     *
+     * @throws BackendException If the article cannot be found
      */
-    public Article getArticle(UUID articleId, UUID userId) {
+    public Article getArticle(UUID articleId, UUID userId)
+            throws BackendException {
 
         RestTemplate restTemplate = RestTemplateUtils.getRestTemplate();
         ResponseEntity<Article> response =
@@ -117,7 +119,7 @@ public class FeedService {
         if (ResponseEntityUtils.successful(response)) {
             return response.getBody();
         }
-        return null;
+        throw new BackendException("Did not find article with id [" + articleId.toString() + "]");
     }
 
     /**
@@ -134,20 +136,47 @@ public class FeedService {
         UserSettings settings = getSettingsForUser(userId);
         settings.setNotificationCheckInterval(checkInterval);
         settings.setNotificationSetting(notificationSetting);
+        //Code Duplication does not matter since the API will change soonTM
         RestTemplate restTemplate = RestTemplateUtils.getRestTemplate();
-        restTemplate.put(backendUrl + "/saveusersettings?userId=" + userId.toString(), settings);
+        ResponseEntity<MethodResult> response = restTemplate.exchange(backendUrl +
+                "/saveusersettings?userId=" + userId.toString(), HttpMethod.PUT,
+                RestTemplateUtils.prepareBasicHttpEntity(settings), MethodResult.class);
+        if (ResponseEntityUtils.successful(response)) {
+
+            switch (response.getBody().getState()) {
+
+                case Successful:
+                    log.debug("Successfully updated settings for userId [{}]", userId);
+                    break;
+                case Timeout:
+                    throw new BackendException("Request timed out");
+                case UnknownError:
+                    throw new BackendException(response.getBody().getMessage());
+            }
+
+        } else {
+            throw new BackendException("Update of UserSettings for userId [" + userId.toString() + "]" + " failed");
+        }
     }
 
     /**
      * Gets the shortArticles belonging to the requested feed
      *
-     * @param userId The user wishing to see his feed
-     * @param feedId The feed that the user requested
+     * @param userId       The user wishing to see his feed
+     * @param feedId       The feed that the user requested
+     * @param page         The index of the page to get. If null is passed this defaults to 0
+     * @param showArchived Whether to show all indexed articles of this feed or only the recent
+     *                     ones. Defaults to false which means only the recent articles are shown
      * @return A list of articles matching the criteria of the feeds filters
      */
-    public List<ShortArticle> getSpecificFeed(UUID userId, UUID feedId) {
+    public List<ShortArticle> getSpecificFeed(UUID userId, UUID feedId, Integer page,
+                                              Boolean showArchived) {
 
-        String uriParams = "?userId=" + userId.toString() + "&feedId=" + feedId.toString();
+        showArchived = showArchived == null ? false : showArchived;
+        page = page == null ? 0 : page;
+        Assert.isTrue(page>=0,"Cannot get a page with negative index");
+        String uriParams = "?userId=" + userId.toString() + "&feedId=" + feedId.toString() +
+                "&page" + "=" + page + "&showArchived=" + showArchived;
         RestTemplate restTemplate = RestTemplateUtils.getRestTemplate();
         ResponseEntity<ShortArticle[]> response = restTemplate.getForEntity(backendUrl +
                 "/getfeed" + uriParams, ShortArticle[].class);

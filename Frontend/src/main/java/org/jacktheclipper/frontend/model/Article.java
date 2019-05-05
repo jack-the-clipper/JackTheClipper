@@ -13,6 +13,10 @@ public class Article extends ShortArticle {
 
     private String longText;
 
+    public Article(){
+        super();
+    }
+
     public Article(UUID id, String title, String shortText, String link, Date published,
                    Date indexed, UUID indexingSourceId, String longText) {
 

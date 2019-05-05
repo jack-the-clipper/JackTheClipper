@@ -21,6 +21,8 @@ namespace JackTheClipperData.MariaDb
         //// STORED PROCEDURES
 
         private static readonly Guid SystemUnit = Guid.Parse("00000000-BEEF-BEEF-BEEF-000000000000");
+        private static Tuple<DateTime, Filter> superSetFeedCache;
+        private static readonly object LockObj = new object();
 
         #region GetUserById
         /// <summary>
@@ -55,13 +57,20 @@ namespace JackTheClipperData.MariaDb
         /// </summary>
         /// <param name="mail">The mail.</param>
         /// <param name="password">The password.</param>
+        /// <param name="updateLoginTimeStamp">A value indicating whether the login timestamp should be updated or not.</param>
         /// <returns>The user (if found)</returns>
-        public User GetUserByCredentials(string mail, string password)
+        public User GetUserByCredentials(string mail, string password, bool updateLoginTimeStamp)
         {
             var result = GetUsersAsync(MariaDbStatements.SelectUserByCredentials,
                                   new MySqlParameter("hash", password.GetSHA256()),
                                   new MySqlParameter("mail", mail)).Result;
-            return result.First();
+            var user = result.First();
+            if (updateLoginTimeStamp && user != null && user.IsValid)
+            {
+                UpdateLoginTimestampAsync(user.Id).GetAwaiter().GetResult();
+            }
+
+            return user;
         }
         #endregion
 
@@ -137,10 +146,12 @@ namespace JackTheClipperData.MariaDb
         /// <param name="password">The password.</param>
         /// <param name="role">The role.</param>
         /// <param name="unit">The unit.</param>
+        /// <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
+        /// <param name="valid">A value whether the user is valid or not.</param>
         /// <returns>The user object of the new user.</returns>
-        public User AddUser(string userMail, string userName, string password, Role role, Guid unit)
+        public User AddUser(string userMail, string userName, string password, Role role, Guid unit, bool mustChangePassword, bool valid)
         {
-            return AddUserAsync(userMail, userName, password, role, unit).Result;
+            return AddUserAsync(userMail, userName, password, role, unit, mustChangePassword, valid).Result;
         }
         #endregion
 
@@ -156,6 +167,20 @@ namespace JackTheClipperData.MariaDb
         }
         #endregion
 
+        #region DeleteSource
+        /// <summary>
+        /// Deletes the source.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns>
+        /// True if successful
+        /// </returns>
+        public bool DeleteSource(Guid source)
+        {
+            return DeleteSourceAsync(source).Result;
+        }
+         #endregion
+
         #region SaveUserSettings (will be splitted up)
         /// <summary>
         /// Saves the user settings.
@@ -167,6 +192,80 @@ namespace JackTheClipperData.MariaDb
         public UserSettings SaveUserSettings(User user, UserSettings toSave)
         {
             return SaveUserSettings(toSave, user.Settings.Id).Result;
+        }
+        #endregion
+        
+        #region ResetPassword
+        /// <summary>
+        /// Reset the user password.
+        /// </summary>
+        /// <param name="userMail">The users mail address.</param>
+        /// <param name="newPassword">The new password to set.</param>
+        /// <returns>The new random generated password</returns>
+        public MethodResult ResetPassword(string userMail, string newPassword)
+        {
+            return ResetPasswordAsync(userMail, newPassword).Result;
+        }
+        #endregion
+
+        #region ChangePassword
+        /// <summary>
+        /// Change the user password.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="newPassword">The new password to set.</param>
+        /// <returns>The new password which was set by the user.</returns>
+        public MethodResult ChangePassword(User user, string newPassword)
+        {
+           return ResetPassword(user.MailAddress, newPassword);
+        }
+        #endregion
+
+        #region ChangeMailAddress
+        /// <summary>
+        /// Change the users mail address.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="newUserMail">The new mail address to set.</param>
+        /// <returns>MethodResult indicating success.</returns>
+        public MethodResult ChangeMailAddress(User user, string newUserMail)
+        {
+            return ChangeMailAddressAsync(user, newUserMail).Result;
+        }
+        #endregion
+
+        #region GetSuperSetFeed
+        /// <summary>
+        /// Gets the superset feed filter.
+        /// This is a feed filter which contains all relevant keywords form any feed within the system.
+        /// </summary>
+        /// <returns>The superset feed filter.</returns>
+        public Filter GetSuperSetFeed()
+        {
+            var lastResult = superSetFeedCache;
+            if(lastResult != null)
+            {
+                if(DateTime.UtcNow < lastResult.Item1)
+                {
+                    return lastResult.Item2;
+                }
+            }
+
+            lock (LockObj)
+            {
+                lastResult = superSetFeedCache;
+                if (lastResult != null)
+                {
+                    if (DateTime.UtcNow < lastResult.Item1)
+                    {
+                        return lastResult.Item2;
+                    }
+                }
+
+                var result = GetSuperSetFeedAsync().Result;
+                superSetFeedCache = new Tuple<DateTime, Filter>(DateTime.UtcNow.AddSeconds(10), result);
+                return result;
+            }
         }
         #endregion
 
@@ -186,7 +285,7 @@ namespace JackTheClipperData.MariaDb
                 {
                     await conn.OpenAsync();
                     NotificationSetting notification;
-                    int interval;
+                    int interval, articlesPerPage;
                     using (var cmd = new MySqlCommand(MariaDbStatements.SelectUserSettingsById, conn))
                     {
                         cmd.Parameters.AddWithValue("id", id.ToString());
@@ -195,6 +294,7 @@ namespace JackTheClipperData.MariaDb
                             await reader.ReadAsync();
                             notification = reader.GetInt64(0).ConvertToNotification();
                             interval = reader.IsDBNull(1) ? 60 : reader.GetInt32(1);
+                            articlesPerPage = reader.IsDBNull(2) ? 20 : reader.GetInt32(2);
                         }
                     }
 
@@ -219,7 +319,7 @@ namespace JackTheClipperData.MariaDb
                         }
                     }
 
-                    return new UserSettings(id, feedList, notification, interval);
+                    return new UserSettings(id, feedList, notification, interval, articlesPerPage);
                 }
             }
             catch (Exception e)
@@ -252,7 +352,7 @@ namespace JackTheClipperData.MariaDb
         /// Gets all sources by executing the given command
         /// </summary>
         /// <param name="command">The command to execute.</param>
-        /// <param name="parameters">The query prameters.</param>
+        /// <param name="parameters">The query parameters.</param>
         /// <returns>List of sources.</returns>
         private static async Task<List<Source>> GetSourcesAsync(string command, params MySqlParameter[] parameters)
         {
@@ -321,8 +421,11 @@ namespace JackTheClipperData.MariaDb
                                 var mail = reader.GetString(2);
                                 var role = reader.GetInt64(3).ConvertToRole();
                                 var settingsId = Guid.Parse(reader.GetString(4));
+                                var mustChangePassword = reader.GetBoolean(5);
+                                var valid = true || reader.GetBoolean(6); //TODO: enable later
+                                var lastLogin = reader.IsDBNull(7) ? DateTime.MinValue : reader.GetDateTime(7);
                                 var userSettings = await GetUserSettingsAsync(settingsId);
-                                result.Add(new User(id, mail, role, name, userSettings));
+                                result.Add(new User(id, mail, role, name, userSettings, mustChangePassword, lastLogin, valid));
                             }
                         }
                     }
@@ -334,6 +437,35 @@ namespace JackTheClipperData.MariaDb
             }
 
             return result;
+        }
+        #endregion
+
+        #region UpdateLoginTimestampAsync
+        /// <summary>
+        /// Updates the login time stamp.
+        /// </summary>
+        /// <param name="userId">The user id.</param>
+        private static async Task UpdateLoginTimestampAsync(Guid userId)
+        {
+            try
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (var cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = conn;
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandText = MariaDbSP.SP_LOG_USERLOGIN.ToString();
+                        cmd.Parameters.Add(new MySqlParameter("userId", MySqlDbType.VarChar) { Value = userId.ToString() });
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
         #endregion
 
@@ -388,8 +520,10 @@ namespace JackTheClipperData.MariaDb
         /// <param name="password">The password.</param>
         /// <param name="role">The role.</param>
         /// <param name="unit">The unit.</param>
+        /// <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
+        /// <param name="valid">A value whether the user is valid or not.</param>
         /// <returns>The user object of the new user.</returns>
-        private static async Task<User> AddUserAsync(string userMail, string userName, string password, Role role, Guid unit)
+        private static async Task<User> AddUserAsync(string userMail, string userName, string password, Role role, Guid unit, bool mustChangePassword, bool valid)
         {
             try
             {
@@ -404,6 +538,8 @@ namespace JackTheClipperData.MariaDb
                         cmd.Parameters.AddWithValue("pwHash", password.GetSHA256());
                         cmd.Parameters.AddWithValue("role", role.ToDatabaseRole());
                         cmd.Parameters.AddWithValue("unit", unit.ToString());
+                        cmd.Parameters.AddWithValue("mustChangePassword", mustChangePassword);
+                        cmd.Parameters.AddWithValue("valid", valid);
                         cmd.Parameters.Add("newUserId".ToStoredProcedureOutParam(MySqlDbType.VarChar));
                         await cmd.ExecuteNonQueryAsync();
 
@@ -431,18 +567,13 @@ namespace JackTheClipperData.MariaDb
         {
             try
             {
-                if (source.Id != Guid.Empty)
-                {
-                    throw new InvalidOperationException(nameof(source));
-                }
-
                 using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
                 {
                     await conn.OpenAsync();
                     using (var cmd = new MySqlCommand(MariaDbSP.SP_UPDATE_SOURCE.ToString(), conn))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.Add(new MySqlParameter("id", MySqlDbType.VarChar) { Direction = ParameterDirection.InputOutput, Value = DBNull.Value });
+                        cmd.Parameters.Add(new MySqlParameter("id", MySqlDbType.VarChar) { Direction = ParameterDirection.InputOutput, Value = source.Id == Guid.Empty ? (object)DBNull.Value : source.Id.ToString() });
                         cmd.Parameters.Add(new MySqlParameter("url", MySqlDbType.Text) { Value = source.Uri });
                         cmd.Parameters.Add(new MySqlParameter("name", MySqlDbType.Text) { Value = source.Name });
                         cmd.Parameters.Add(new MySqlParameter("type", MySqlDbType.Bit) { Value = source.Type.ToDatabaseContentType() });
@@ -465,6 +596,36 @@ namespace JackTheClipperData.MariaDb
         }
         #endregion
 
+        #region DeleteSourceAsync        
+        /// <summary>
+        /// Deletes the source asynchronous.
+        /// </summary>
+        /// <param name="sourceId">The source id.</param>
+        /// <returns>True if successful false otherwise</returns>
+        private static async Task<bool> DeleteSourceAsync(Guid sourceId)
+        {
+            try
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (var cmd = new MySqlCommand(MariaDbSP.SP_DEL_SOURCE.ToString(), conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add(new MySqlParameter("id", MySqlDbType.VarChar) { Value = sourceId.ToString() });
+                        await cmd.ExecuteNonQueryAsync();
+                        return true;
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error);
+                return false;
+            }
+        }
+        #endregion
+
         #region SaveUserSettings (Will be splitted up)
         /// <summary>
         /// Saves the given user settings.
@@ -480,13 +641,13 @@ namespace JackTheClipperData.MariaDb
                 using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
                 {
                     await conn.OpenAsync();
-                    using (var cmd = new MySqlCommand())
+                    using (var cmd = new MySqlCommand(MariaDbSP.SP_UPDATE_USERSETTINGS.ToString(), conn))
                     {
-                        cmd.Connection = conn;
-                        cmd.CommandText = "call SP_UPDATE_USERSETTINGS(@id, @_interval, @notification);";
+                        cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.Add(new MySqlParameter("id", MySqlDbType.VarChar) {Value = settingsId.ToString()});
                         cmd.Parameters.Add(new MySqlParameter("_interval", MySqlDbType.Int32) {Value = toSave.NotificationCheckIntervalInMinutes});
                         cmd.Parameters.Add(new MySqlParameter("notification", MySqlDbType.Bit) {Value = toSave.NotificationSettings.ToDatabaseNotification()});
+                        cmd.Parameters.Add(new MySqlParameter("articlesPerPage", MySqlDbType.Int32) { Value = toSave.ArticlesPerPage == 0 ? (object)DBNull.Value : toSave.ArticlesPerPage });
                         await cmd.ExecuteNonQueryAsync();
                     }
 
@@ -557,5 +718,101 @@ namespace JackTheClipperData.MariaDb
             return await GetUserSettingsAsync(settingsId);
         }
         #endregion
+
+        #region ResetPassword
+        /// <summary>
+        /// Reset the user password.
+        /// </summary>
+        /// <param name="userMail">The users mail address.</param>
+        /// <param name="password">The new password to set.</param>
+        /// <returns>The new random generated password</returns>
+        private static async Task<MethodResult> ResetPasswordAsync(string userMail, string password)
+        {
+            using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+            {
+                await conn.OpenAsync();
+                using (var cmd = new MySqlCommand(MariaDbSP.SP_RESET_USERPW.ToString(), conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("mail", userMail);
+                    cmd.Parameters.AddWithValue("pwHash", password.GetSHA256());
+                    cmd.Parameters.Add("success".ToStoredProcedureOutParam(MySqlDbType.Bool));
+                    await cmd.ExecuteNonQueryAsync();
+
+                    var newPassword = bool.Parse(cmd.Parameters["success"].Value.ToString());
+                    if (newPassword)
+                    {
+                        return new MethodResult(SuccessState.Successful, "Password got reset.");
+                    }
+                    return new MethodResult(SuccessState.UnknownError, "Ooops. Something went wrong!");
+                }
+            }
+        }
+        #endregion
+
+        #region ChangeMailAddress
+        /// <summary>
+        /// Change the users mail address.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="newUserMail">The new mail address to set.</param>
+        /// <returns>MethodResult indicating success.</returns>
+        private static async Task<MethodResult> ChangeMailAddressAsync(User user, string newUserMail)
+        {
+            using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+            {
+                await conn.OpenAsync();
+                using (var cmd = new MySqlCommand(MariaDbSP.SP_CHANGE_MAILADDRESS.ToString(), conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("userId", user.Id.ToString());
+                    cmd.Parameters.AddWithValue("newMail", newUserMail);
+                    cmd.Parameters.Add("success".ToStoredProcedureOutParam(MySqlDbType.Bool));
+                    await cmd.ExecuteNonQueryAsync();
+
+                    var result = bool.Parse(cmd.Parameters["success"].Value.ToString());
+                    if (result)
+                    {
+                        return new MethodResult(SuccessState.Successful, "Your Mail got changed.");
+                    }
+
+                    return new MethodResult(SuccessState.UnknownError, "Ooops. Something went wrong!");
+                }
+            }
+        }
+        #endregion
+        
+        #region GetSuperSetFeedAsync        
+        /// <summary>
+        /// Gets the superset feed.
+        /// </summary>
+        /// <returns>The superset feed.</returns>
+        private static async Task<Filter> GetSuperSetFeedAsync()
+        {
+            using (new PerfTracer(nameof(GetSuperSetFeedAsync)))
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    var superset = new HashSet<string>();
+                    using (var cmd = new MySqlCommand(MariaDbStatements.SelectSuperSetFeed, conn))
+                    {
+                        using (var reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                var keyWords = reader.GetStringFromNullable(0).ConvertToStringList();
+                                var blackList = reader.GetStringFromNullable(1).ConvertToStringList();
+                                superset.UnionWith(keyWords.Except(blackList));
+                            }
+                        }
+                    }
+
+                    return new Filter(Guid.Empty, superset, null, null);
+                }
+            }
+        }
+        #endregion
     }
+
 }

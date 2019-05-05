@@ -12,7 +12,7 @@ import java.util.UUID;
 public class AuthenticationUtilsTest {
 
     private User user = new User(UUID.fromString("10000000-0000-0000-0000-000000000000"),
-            UserRole.User, "test", "test@example.com", "test", "Example");
+            UserRole.User, "test", "test@example.com", "test", "Example",false);
     private Authentication invalidAuthentication = new UsernamePasswordAuthenticationToken("otto"
             , "georg");
 

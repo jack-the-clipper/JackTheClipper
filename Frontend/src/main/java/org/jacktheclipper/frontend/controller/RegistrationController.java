@@ -6,16 +6,19 @@ import org.jacktheclipper.frontend.authentication.User;
 import org.jacktheclipper.frontend.enums.UserRole;
 import org.jacktheclipper.frontend.service.OuService;
 import org.jacktheclipper.frontend.service.UserService;
+import org.jacktheclipper.frontend.utils.RedirectAttributesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -49,6 +52,7 @@ public class RegistrationController {
      * Prepares the register page for the user
      *
      * @param model
+     * @param organization The organization the user wants to register to
      * @return The page where users can register
      */
     @GetMapping(value = "/{organization}/register")
@@ -56,40 +60,51 @@ public class RegistrationController {
         //TODO static Frontend User
         model.addAttribute("OUs", ouService.getOrganizationalUnits(null));
         model.addAttribute("org", organization);
-        model.addAttribute("user", new User(null, UserRole.User, "", "", "", organization, false));
+        if (!model.containsAttribute("user")) {
+            model.addAttribute("user", new User(null, UserRole.User, "", "", "", organization,
+                    false));
+        }
         return "register";
     }
 
     /**
      * Processes the registration of the user
      *
-     * @param model
-     * @param user    the userobject whose fields are filled by the form
-     * @param ouId    the organization to which the user belongs
-     * @param request holds the session so the user can be logged in immediately after registration
+     * @param redirectAttributes
+     * @param user               the userobject whose fields are filled by the form
+     * @param ouId               the organization to which the user belongs
+     * @param request            holds the session so the user can be logged in immediately after
+     *                           registration
+     * @param organization       The organization the user wants to register to
+     * @param inputPassword      The password from the second field. Used to determine if the user
+     *                           entered two identical passwords
      * @return Sends the user to his feedconfiguration page if the registration was successful
-     * otherwise the registrationpage is loaded again with all the input data
+     * otherwise he is redirected to the registration page with all his previous data (besides
+     * the passwords) being displayed
      */
     @PostMapping(value = "/{organization}/register")
-    public String processRegistration(Model model, @ModelAttribute("user") User user,
-                                      @RequestParam(value = "ouId") UUID ouId,
-                                      HttpServletRequest request,
-                                      @PathVariable("organization") String organization) {
+    public String processRegistration(@ModelAttribute("user") User user, @RequestParam(value =
+            "ouId") UUID ouId, HttpServletRequest request,
+                                      @RequestParam("inputPassword") String inputPassword,
+                                      @PathVariable("organization") String organization,
+                                      final RedirectAttributes redirectAttributes) {
 
-        model.addAttribute("org", organization);
 
         try {
             String password = user.getPassword();
+            if (!user.getPassword().equals(inputPassword)) {
+                throw new BadCredentialsException("Passwörter stimmen nicht überein");
+            }
             user = userService.registerUser(user, ouId);
             //necessary to automatically log the user in since backend does not provide password
             user.setPassword(password);
             login(request, user);
-
         } catch (Exception ex) {
-            model.addAttribute("user", user);
-            model.addAttribute("OUs", ouService.getOrganizationalUnits(null));
             log.info("Got [{}], reason: [{}]", ex.getClass().getName(), ex.getMessage());
-            return "register";
+            RedirectAttributesUtils.populateDefaultRedirectAttributes(redirectAttributes, true,
+                    ex.getMessage());
+            redirectAttributes.addFlashAttribute(user);
+            return "redirect:/" + organization + "/register";
         }
 
         return "redirect:/" + organization + "/feed/edit";

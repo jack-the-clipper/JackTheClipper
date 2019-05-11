@@ -3,7 +3,10 @@ package org.jacktheclipper.frontend.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -18,16 +21,19 @@ public class ShortArticle {
     private String title;
     private String shortText;
     private String link;
-    private Date published;
-    private Date indexed;
+    private LocalDate published;
+    private LocalDate indexed;
     private UUID indexingSourceId;
+    private String imageLink;
+    private static DateTimeFormatter formatter =
+            DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).withLocale(new Locale("de"));
 
     public ShortArticle() {
 
     }
 
-    public ShortArticle(UUID id, String title, String shortText, String link, Date published,
-                        Date indexed, UUID indexingSourceId) {
+    public ShortArticle(UUID id, String title, String shortText, String link, LocalDate published
+            , LocalDate indexed, UUID indexingSourceId, String imageLink) {
 
         this.id = id;
         this.title = title;
@@ -36,6 +42,7 @@ public class ShortArticle {
         this.published = published;
         this.indexed = indexed;
         this.indexingSourceId = indexingSourceId;
+        this.imageLink = imageLink;
     }
 
     public UUID getId() {
@@ -82,25 +89,25 @@ public class ShortArticle {
         this.link = link;
     }
 
-    public Date getPublished() {
+    public LocalDate getPublished() {
 
         return published;
     }
 
     @JsonProperty("ArticlePublished")
-    public void setPublished(Date published) {
+    public void setPublished(LocalDate published) {
 
         this.published = published;
     }
 
 
-    public Date getIndexed() {
+    public LocalDate getIndexed() {
 
         return indexed;
     }
 
     @JsonProperty("ArticleIndexed")
-    public void setIndexed(Date indexed) {
+    public void setIndexed(LocalDate indexed) {
 
         this.indexed = indexed;
     }
@@ -114,5 +121,28 @@ public class ShortArticle {
     public void setIndexingSourceId(UUID indexingSourceId) {
 
         this.indexingSourceId = indexingSourceId;
+    }
+
+    public String getImageLink() {
+
+        return imageLink;
+    }
+
+    @JsonProperty("ImageLink")
+    public void setImageLink(String imageLink) {
+
+        this.imageLink = imageLink;
+    }
+
+    /**
+     * Formats the {@link #published} as a german date.
+     * This allows the feedOverview page to be displayed entirely in german.
+     *
+     * @return The {@link #published} field formatted as a german date. With the month written
+     * out. E. g. 'Mai' instead of '05'.
+     */
+    public String publishedAsGermanDate() {
+
+        return formatter.format(published);
     }
 }

@@ -23,7 +23,7 @@ public class OrganizationalUnitSettings extends UserSettings {
                                       int notificationCheckInterval,
                                       List<Source> availableSources, int articlesPerPage) {
 
-        super(id, feeds, notificationSetting, notificationCheckInterval,articlesPerPage);
+        super(id, feeds, notificationSetting, notificationCheckInterval, articlesPerPage);
         this.availableSources = availableSources;
     }
 

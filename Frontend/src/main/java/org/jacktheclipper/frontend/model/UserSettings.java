@@ -22,7 +22,7 @@ public class UserSettings {
     }
 
     public UserSettings(UUID id, List<Feed> feeds, NotificationSetting notificationSetting,
-                        int notificationCheckInterval,int articlesPerPage) {
+                        int notificationCheckInterval, int articlesPerPage) {
 
         this.id = id;
         this.feeds = feeds;

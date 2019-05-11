@@ -7,7 +7,7 @@
 
         <link rel="stylesheet" th:href="@{~/css/main.css}"/>
     </head>
-    <body class="login-page" class="h-100">
+    <body class="h-100">
 
         <div class="d-flex flex-column h-100">
             <div th:replace="layout :: navbar"></div>
@@ -19,7 +19,20 @@
 
                         </div>
                         <div class="col-md-6">
-                            <div class="alert alert-danger">
+                            <div th:if="${#authentication.getPrincipal().isMustChangePassword()}"
+                                 class="alert alert-danger">
+                                Sie müssen ihr Passwort ändern, bevor sie die Applikation nutzen können. Sie
+                                erreichen die Seite mit einem Klick auf folgenden Button.
+                                <br/>
+                                <a
+                                        th:href="@{/{orga}/feed/profile(orga=${#authentication.getPrincipal().getOrganization()})}">
+                                    <button type="button" class="btn btn-primary">
+                                        Zur Profilseite
+                                    </button>
+                                </a>
+                            </div>
+                            <div th:unless="${#authentication.getPrincipal().isMustChangePassword()}"
+                                 class="alert alert-danger">
                                 <!-- <div th:text="|Error occured: ${timestamp}|"></div>-->
                                 <h3>Sorry you don't have access to this service.</h3><br/>
                                 Please contact your administrator

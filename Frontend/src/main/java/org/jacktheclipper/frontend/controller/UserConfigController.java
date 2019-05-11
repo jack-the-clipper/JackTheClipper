@@ -1,6 +1,9 @@
 package org.jacktheclipper.frontend.controller;
 
+import org.jacktheclipper.frontend.authentication.CustomAuthenticationToken;
+import org.jacktheclipper.frontend.authentication.User;
 import org.jacktheclipper.frontend.enums.NotificationSetting;
+import org.jacktheclipper.frontend.exception.BackendException;
 import org.jacktheclipper.frontend.model.Feed;
 import org.jacktheclipper.frontend.model.UserSettings;
 import org.jacktheclipper.frontend.service.FeedService;
@@ -10,13 +13,23 @@ import org.jacktheclipper.frontend.utils.AuthenticationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.UUID;
+
+import static org.jacktheclipper.frontend.utils.RedirectAttributesUtils.populateDefaultRedirectAttributes;
+import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 /**
  * This class covers all pages that a normal user needs to edit his settings. This includes
@@ -33,13 +46,16 @@ public class UserConfigController {
 
     private final UserService userService;
 
+    private final AuthenticationManager authManager;
+
     @Autowired
     public UserConfigController(FeedService feedService, SourceService sourceService,
-                                UserService userService) {
+                                UserService userService, AuthenticationManager authManager) {
 
         this.feedService = feedService;
         this.sourceService = sourceService;
         this.userService = userService;
+        this.authManager = authManager;
     }
 
     /**
@@ -71,6 +87,7 @@ public class UserConfigController {
         }
         model.addAttribute("name", feed.getName());
         model.addAttribute("emptyFeed", new Feed());
+        model.addAttribute("settingsId", settings.getId());
         model.addAttribute("feed", feed);
         model.addAttribute("feeds", feedService.getUserFeedsNoArticles(userId));
         model.addAttribute("sources", sourceService.getAvailableSources(userId));
@@ -81,36 +98,93 @@ public class UserConfigController {
      * Processes a users's edits to his feeds.
      * This includes updating already existing ones or adding entirely new ones
      *
-     * @param feed       The updated feed. This feed is only used if addRequest is not present or
-     *                   false
-     * @param newlyAdded A newly added feed. This parameter is only used if addRequest is present
-     *                   and true
-     * @param addRequest This parameter determines whether the user wishes to update a feed or
-     *                   add a new one. If it is true and present the user wants to add a feed.
-     *                   Otherwise he wishes to update one
-     * @param auth       The user trying to change his feeds
+     * @param feed               The updated feed. This feed is only used if addRequest is not
+     *                           present or
+     *                           false
+     * @param settingsId         The settings the feed should be added to
+     * @param organization       The organization the user belongs to. This parameter just needs
+     *                           to be
+     *                           bound somewhere in the controller, so Spring is capable of matching
+     *                           paths correctly. It could also be extracted by calling
+     *                           {@link User#getOrganization()}
+     * @param auth               The user trying to change his feed
+     * @param redirectAttributes
      * @return The page where a user can edit his feeds
      */
     @PostMapping("/update")
-    public String updateFeed(@ModelAttribute("feed") Feed feed,
-                             @ModelAttribute("emptyFeed") Feed newlyAdded, @RequestParam(value =
-            "addFeed", required = false) Boolean addRequest, Authentication auth, @PathVariable(
-                    "organization") String organization) {
+    public String updateFeed(@ModelAttribute("feed") Feed feed, Authentication auth,
+                             @RequestParam("settingsId") UUID settingsId, @PathVariable(
+                                     "organization") String organization,
+                             final RedirectAttributes redirectAttributes) {
 
         UUID userId = AuthenticationUtils.getUserId(auth);
-        Feed toWorkWith;
-        if (addRequest != null && addRequest) {
-            toWorkWith = newlyAdded;
-        } else {
-            toWorkWith = feed;
-        }
 
-        toWorkWith.setFeedSources(sourceService.recoverSources(toWorkWith.getFeedSources(),
-                userId));
-        feedService.updateFeeds(toWorkWith, userId);
-        String redirectQuery = toWorkWith.getId() != null ?
-                "?feedId=" + toWorkWith.getId().toString() : "";
+        feed.setFeedSources(sourceService.recoverSources(feed.getFeedSources(), userId));
+
+        String redirectQuery = "?feedId=" + feed.getId();
+        try {
+            feedService.updateFeed(feed, settingsId);
+            populateDefaultRedirectAttributes(redirectAttributes, false,
+                    "Feed " + "erfolgreich " + "aktualisiert");
+        } catch (HttpClientErrorException.BadRequest badRequest) {
+            populateDefaultRedirectAttributes(redirectAttributes, true, "Etwas ist falsch " +
+                    "gelaufen");
+        }
         return "redirect:/" + organization + "/feed/edit" + redirectQuery;
+    }
+
+    /**
+     * Adds a feed to the supplied {@link UserSettings} via their {@link UUID}
+     *
+     * @param feed               The feed that should be added
+     * @param auth               The user adding the feed
+     * @param settingsId         The id of the {@link UserSettings} the {@link Feed} should be
+     *                           added to
+     * @param organization       The organization the user belongs to
+     * @param redirectAttributes
+     * @return The page where a user can edit his feeds
+     */
+    @PostMapping("/addFeed")
+    public String addFeed(@ModelAttribute("emptyFeed") Feed feed, Authentication auth,
+                          @RequestParam("settingsId") UUID settingsId, @PathVariable(
+                                  "organization") String organization,
+                          final RedirectAttributes redirectAttributes) {
+
+        UUID userId = AuthenticationUtils.getUserId(auth);
+        try {
+            feed.setFeedSources(sourceService.recoverSources(feed.getFeedSources(), userId));
+            feedService.addFeed(settingsId, feed);
+            populateDefaultRedirectAttributes(redirectAttributes, false, "Feed erfolgreich " +
+                    "hinzugefügt");
+        } catch (HttpClientErrorException.BadRequest badRequest) {
+            populateDefaultRedirectAttributes(redirectAttributes, true, "Das Hinzufügen des " +
+                    "Feeds ist fehlgeschlagen");
+        }
+        return "redirect:/" + organization + "/feed/edit";
+    }
+
+    /**
+     * Deletes the supplied feed
+     *
+     * @param feedId             The {@link UUID} of the {@link Feed} that should be deleted
+     * @param redirectAttributes
+     * @param organization       The organization the user belongs to
+     * @return The page where a user can edit his feeds
+     */
+    @PostMapping("/remove")
+    public String removeFeed(@RequestParam("feedId") UUID feedId,
+                             final RedirectAttributes redirectAttributes, @PathVariable(
+                                     "organization") String organization) {
+
+        try {
+            feedService.deleteFeed(feedId);
+            populateDefaultRedirectAttributes(redirectAttributes, false, "Feed erfolgreich " +
+                    "entfernt");
+        } catch (HttpClientErrorException.BadRequest badRequest) {
+            populateDefaultRedirectAttributes(redirectAttributes, true, "Feed konnte nicht " +
+                    "gelöscht werden");
+        }
+        return "redirect:/" + organization + "/feed/edit";
     }
 
     /**
@@ -126,6 +200,10 @@ public class UserConfigController {
     public String profile(Model model, Authentication auth) {
 
         UUID userId = AuthenticationUtils.getUserId(auth);
+        if (AuthenticationUtils.isMustChangePassword(auth)) {
+            model.addAttribute("msg", "Bitte ändern Sie Ihr Passwort");
+            model.addAttribute("css", "alert-warning");
+        }
         model.addAttribute("notificationSettings", NotificationSetting.values());
         model.addAttribute("settings", feedService.getSettingsForUser(userId));
         return "accountsettings";
@@ -135,19 +213,139 @@ public class UserConfigController {
     /**
      * Processes a user's request to update his settings
      *
-     * @param settings The (possibly changed) settings of the user
-     * @param auth     The user to whom the settings belong
+     * @param settings           The (possibly changed) settings of the user
+     * @param settingsId         The id of the userSettings
+     * @param organization       The organization the user belongs to
+     * @param redirectAttributes
      * @return The page about the user's profile
      */
     @PostMapping("/profile")
-    public String updateProfile(@ModelAttribute("settings") UserSettings settings,
-                                Authentication auth,
-                                @PathVariable("organization") String organization) {
+    public String updateProfile(@ModelAttribute("settings") UserSettings settings, @RequestParam(
+            "settingsId") UUID settingsId, @PathVariable("organization") String organization,
+                                final RedirectAttributes redirectAttributes) {
+
+        try {
+            feedService.updateNotificationSettings(settings.getNotificationCheckInterval(),
+                    settingsId, settings.getNotificationSetting(), settings.getArticlesPerPage());
+            populateDefaultRedirectAttributes(redirectAttributes, false,
+                    "Benachrichtigungseinstellungen erfolgreich aktualisiert");
+        } catch (BackendException backend) {
+            populateDefaultRedirectAttributes(redirectAttributes, true,
+                    "Benachrichtigungseinstellungen konnten nicht aktualisiert werden");
+        }
+        return "redirect:/" + organization + "/feed/profile";
+    }
+
+
+    /**
+     * @param auth               The user who wants to change the email address
+     * @param email              The new email address
+     * @param password           The users password
+     * @param organization       The organization the user belongs to
+     * @param request
+     * @param redirectAttributes
+     * @return The page about the user's profile
+     */
+    @PostMapping("/changemailaddress")
+    public String changeMailAddress(Authentication auth, @RequestParam("email") String email,
+                                    @RequestParam("password") String password, @PathVariable(
+                                            "organization") String organization,
+                                    HttpServletRequest request,
+                                    final RedirectAttributes redirectAttributes) {
+
 
         UUID userId = AuthenticationUtils.getUserId(auth);
-        feedService.updateNotificationSettings(settings.getNotificationCheckInterval(), userId,
-                settings.getNotificationSetting());
+        if (!email.equals("")) {
+            try {
+                userService.authenticate(AuthenticationUtils.getEmail(auth),
+                        AuthenticationUtils.getOrganization(auth), password);
+                userService.updateMail(userId, email);
+
+                //Updating the actual authentication object swirling around in the httpsession so
+                // information is always accurate
+                User user = (User) auth.getPrincipal();
+                user.seteMail(email);
+                user.setPassword(password);
+                login(request, user);
+                populateDefaultRedirectAttributes(redirectAttributes, false, "E-Mail " +
+                        "erfolgreich geändert");
+            } catch (BackendException ex) {
+                log.info("something went wrong");
+                populateDefaultRedirectAttributes(redirectAttributes, true, "E-Mail konnte nicht "
+                        + "geändert werden");
+            } catch (HttpClientErrorException.BadRequest badRequest) {
+                log.info("Supplied password [{}] did not match actual", password);
+                populateDefaultRedirectAttributes(redirectAttributes, true, "E-Mail konnte " +
+                        "nicht geändert werden");
+            }
+        }
         return "redirect:/" + organization + "/feed/profile";
+    }
+
+    /**
+     * @param auth               The user who wants to change the password
+     * @param newPassword        The new password
+     * @param oldPassword        The users old password
+     * @param organization       The organization the user belongs to
+     * @param request
+     * @param redirectAttributes
+     * @return The page about the user's profile
+     */
+    @PostMapping("/changepassword")
+    public String changePassword(Authentication auth,
+                                 @RequestParam("newPassword") String newPassword, @RequestParam(
+                                         "oldPassword") String oldPassword, @PathVariable(
+                                                 "organization") String organization,
+                                 HttpServletRequest request,
+                                 final RedirectAttributes redirectAttributes) {
+
+        UUID userId = AuthenticationUtils.getUserId(auth);
+
+        if (!newPassword.equals("")) {
+            try {
+                userService.authenticate(AuthenticationUtils.getEmail(auth),
+                        AuthenticationUtils.getOrganization(auth), oldPassword);
+                userService.updatePassword(userId, newPassword);
+
+                //Updating the actual authentication object swirling around in the HttpSession so
+                // information is always accurate
+                User user = (User) auth.getPrincipal();
+                user.setPassword(newPassword);
+                login(request, user);
+                populateDefaultRedirectAttributes(redirectAttributes, false, "Passwort " +
+                        "erfolgreich geändert");
+            } catch (BackendException ex) {
+                log.info("something went wrong");
+                populateDefaultRedirectAttributes(redirectAttributes, true, "Passwort konnte " +
+                        "nicht geändert werden");
+            } catch (HttpClientErrorException.BadRequest badRequest) {
+                log.info("Supplied password [{}] did not match actual", oldPassword);
+                populateDefaultRedirectAttributes(redirectAttributes, true, "Passwort konnte " +
+                        "nicht geändert werden");
+            }
+        }
+        return "redirect:/" + organization + "/feed/profile";
+    }
+
+    /**
+     * Logs the user into the session. This is duplicated code from
+     * {@link RegistrationController#login(HttpServletRequest, User)}
+     * but it will be removed from there soon as being logged in after registering will not be
+     * supported in the final version anymore
+     *
+     * @param request the http-request holding the http session
+     * @param user    the user to authenticate
+     */
+    private void login(HttpServletRequest request, User user) {
+
+        CustomAuthenticationToken authReq = new CustomAuthenticationToken(user,
+                user.getPassword(), user.getOrganization());
+        Authentication auth = authManager.authenticate(authReq);
+
+        SecurityContext sc = SecurityContextHolder.getContext();
+        sc.setAuthentication(auth);
+        HttpSession session = request.getSession(true);
+        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
     }
 
 }

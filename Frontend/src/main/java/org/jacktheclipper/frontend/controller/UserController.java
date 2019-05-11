@@ -6,6 +6,7 @@ import org.jacktheclipper.frontend.model.Feed;
 import org.jacktheclipper.frontend.model.ShortArticle;
 import org.jacktheclipper.frontend.service.FeedService;
 import org.jacktheclipper.frontend.utils.AuthenticationUtils;
+import org.jacktheclipper.frontend.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,19 +53,19 @@ public class UserController {
      *                     shown
      * @param model
      * @param page         Articles belonging to a feed are paginated. This optional parameter
-     *                     determines
-     *                     the index of the requested page. If not present the default value is
-     *                     {@code 0}
+     *                     determines the index of the requested page. If not present the default
+     *                     value is {@code 0}
      * @param showArchived This optional parameter determines whether only the articles indexed
      *                     after the user's last login should be shown or all articles matching
      *                     the feeds filter. Defaults to {@code false}.
+     * @param session
      * @return The page showing the short form of the articles of the selected feed
      */
     @GetMapping("/*/feed")
     public String showFeedOverview(Authentication auth, @RequestParam(value = "feedId", required
             = false) UUID feedId, Model model,
                                    @RequestParam(value = "page", required = false) Integer page,
-                                   @RequestParam(value = "showArchived", required = false) Boolean showArchived) {
+                                   @RequestParam(value = "showArchived", required = false) Boolean showArchived, HttpSession session) {
 
         UUID userId = AuthenticationUtils.getUserId(auth);
         List<Feed> feeds = feedService.getUserFeedsNoArticles(userId);
@@ -82,13 +84,24 @@ public class UserController {
         } else {
             feedToShow = new Feed(null, Collections.EMPTY_LIST, null, "Sie haben keine Feeds");
         }
+        page = page == null ? 0 : page;
+        showArchived = showArchived == null ? false : showArchived;
+        saveQuery(session, feedToShow.getId(), page, showArchived);
         model.addAttribute("articles", feedToShow.getId() != null ?
                 feedService.getSpecificFeed(userId, feedToShow.getId(), page, showArchived) :
                 new ArrayList<ShortArticle>());
+        if (feedToShow.getId() != null) {
+            model.addAttribute("hasNextPage",
+                    !CollectionUtils.isEmpty(feedService.getSpecificFeed(userId,
+                            feedToShow.getId(), page + 1, showArchived)));
+        } else {
+            //default value if feed does not exist
+            model.addAttribute("hasNextPage", false);
+        }
         model.addAttribute("name", feedToShow.getName());
         model.addAttribute("feedId", feedToShow.getId());
-        model.addAttribute("currentPage", page == null ? 0 : page);
-        model.addAttribute("showArchived", showArchived == null ? false : showArchived);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("showArchived", showArchived);
         model.addAttribute("feeds", feeds);
 
         return "feedOverview";
@@ -114,5 +127,24 @@ public class UserController {
         } catch (BackendException bE) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+    }
+
+    /**
+     * Saves the given fields into the user's {@link HttpSession}.
+     * This allows for easy link backs to the feedOverview when accessing an individual
+     * {@link Article} in the Jack the Clipper application. The keys for each field can be found
+     * in {@link Constants}. Which parameter is saved under which key should be clear from naming.
+     *
+     * @param session      The session to save the parameters in
+     * @param feedId       The id of the last visited feed
+     * @param page         The last page visited
+     * @param showArchived Whether all articles relevant to this feed should be shown or only the
+     *                     most recent ones
+     */
+    private void saveQuery(HttpSession session, UUID feedId, Integer page, Boolean showArchived) {
+
+        session.setAttribute(Constants.LAST_VIEWED_FEED_ID, feedId);
+        session.setAttribute(Constants.LAST_VIEWED_FEED_PAGE, page);
+        session.setAttribute(Constants.LAST_VIEWED_FEED_SHOWARCHIVED, showArchived);
     }
 }

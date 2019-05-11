@@ -34,7 +34,8 @@ namespace JackTheClipperCommon
         public void Dispose()
         {
             watch.Stop();
-            Console.WriteLine(DateTime.UtcNow.ToLongTimeString() + name + " took " + this.watch.ElapsedMilliseconds);
+
+            Console.WriteLine(DateTime.UtcNow.ToLongTimeString() + " " + name + " took " + this.watch.ElapsedMilliseconds);
             GC.SuppressFinalize(this);
         }
     }

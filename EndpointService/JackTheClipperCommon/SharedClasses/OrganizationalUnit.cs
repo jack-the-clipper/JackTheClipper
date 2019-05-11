@@ -25,6 +25,12 @@ namespace JackTheClipperCommon.SharedClasses
         public string Name { get; private set; }
 
         /// <summary>
+        /// Gets the belonging admin's mail address.
+        /// </summary>
+        [DataMember(Name = "AdminMailAddress")]
+        public string AdminMailAddress { get; private set; }
+
+        /// <summary>
         /// Gets a value indicating whether this unit is a customer root (="mandant") unit.
         /// </summary>
         [IgnoreDataMember]
@@ -45,12 +51,13 @@ namespace JackTheClipperCommon.SharedClasses
         /// <param name="parentOrganizationalUnit">The parent organizational unit.</param>
         /// <param name="defaultSettings">The default settings.</param>
         public OrganizationalUnit(Guid id, [NotNull] string name, bool customerRoot,
-                                  OrganizationalUnitSettings defaultSettings)
+                                  OrganizationalUnitSettings defaultSettings, string adminMailAddress)
         {
             Id = id;
             Name = name;
             CustomerRoot = customerRoot;
             DefaultSettings = defaultSettings;
+            AdminMailAddress = adminMailAddress;
         }
     }
 }

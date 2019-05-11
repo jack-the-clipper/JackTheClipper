@@ -25,7 +25,7 @@
                                     <input th:if="${org}" type="hidden" id="organization" name="organization"
                                            th:value="${org}">
                                     <div class="form-group">
-                                        <label for="username">E-Mail Adresse</label>
+                                        <label for="username">E-Mail Adresse oder Nutzername</label>
                                         <input type="text" class="form-control" id="username" name="username" placeholder="E-Mail Adresse">
                                     </div>
                                     <div class="form-group">
@@ -33,7 +33,8 @@
                                         <input type="password" class="form-control" id="password" name="password" placeholder="Passwort">
                                     </div>
                                     <button type="submit" class="btn btn-primary">einloggen</button>
-
+                                    <a th:href="@{/{orga}/resetpassword(orga=${org})}" class="float-right">Passwort
+                                        vergessen</a>
                                 </form>
                             </div>
                         </div>

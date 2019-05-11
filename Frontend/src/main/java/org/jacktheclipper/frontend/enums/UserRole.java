@@ -10,7 +10,9 @@ import java.util.List;
  * Represents the roles a user could possibly have
  */
 public enum UserRole {
-    User, StaffChief, SystemAdministrator;
+    User,
+    StaffChief,
+    SystemAdministrator;
 
     /**
      * A method to grant an user authority based on his role.

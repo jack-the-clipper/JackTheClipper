@@ -4,16 +4,20 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.jacktheclipper.frontend.authentication.User;
 import org.jacktheclipper.frontend.exception.BackendException;
 import org.jacktheclipper.frontend.model.MethodResult;
+import org.jacktheclipper.frontend.model.Tuple;
 import org.jacktheclipper.frontend.utils.ResponseEntityUtils;
 import org.jacktheclipper.frontend.utils.RestTemplateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -27,6 +31,14 @@ public class UserService {
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
+    private final OuService ouService;
+
+    @Autowired
+    public UserService(OuService ouService) {
+
+        this.ouService = ouService;
+    }
+
     /**
      * Registers the given user with Jack the Clipper.
      *
@@ -37,12 +49,11 @@ public class UserService {
      */
     public User registerUser(User user, UUID organizationId) {
 
-        log.info("Attempting registration of User [{}]", user.getName());
+        log.debug("Attempting registration of User [{}]", user.getName());
         //TODO will be refactored by the backend
         String uriParameters =
                 "?userMail=" + user.geteMail() + "&role=" + user.getUserRole().toString() +
-                        "&unit=" + organizationId.toString() + "&userName=" + user.getName() +
-                        "&password=" + user.getPassword();
+                        "&principalUnit=" + organizationId.toString() + "&userName=" + user.getName() + "&password=" + user.getPassword();
 
         RestTemplate restTemplate = RestTemplateUtils.getRestTemplate();
         try {
@@ -55,8 +66,8 @@ public class UserService {
                 return response.getBody();
             }
         } catch (Exception ex) {
-            log.info("Failed registration due to [{}] with reason [{}]", ex.getClass().getName()
-                    , ex.getMessage());
+            log.info("Failed registration due to [{}] with reason [{}]", ex.getClass().getName(),
+                    ex.getMessage());
         }
         throw new BackendException("Failed registration");
     }
@@ -168,5 +179,50 @@ public class UserService {
         } catch (Exception ex) {
             throw new BackendException("Could not update user's " + userId.toString() + " mail " + "to" + " " + newEMail);
         }
+    }
+
+    /**
+     * Tries to authenticate the given credentials by throwing them against the backend
+     *
+     * @param username     The name of the user. This might be an emailadress which is unique for
+     *                     every user or a username which is just unique within one organization
+     * @param organization The organization the user presumably belongs to
+     * @param password     The entered password of the user
+     * @return The authenticated user
+     *
+     * @throws HttpClientErrorException.BadRequest If the backend could not authenticate the user
+     */
+    public User authenticate(String username, String organization, String password)
+            throws HttpClientErrorException.BadRequest {
+
+        UUID principalUnit = ouService.mapOuNameToOuUUID(organization);
+        String loginUri =
+                backendUrl + "/login?userMailOrName=" + username + "&userPassword=" + password +
+                        "&principalUnit=" + principalUnit.toString();
+        ResponseEntity<User> response = RestTemplateUtils.getRestTemplate().getForEntity(loginUri
+                , User.class);
+        if (ResponseEntityUtils.successful(response)) {
+            return response.getBody();
+        }
+        //should not land here as before that the request should return HttpStatus 400 and thus
+        // throw an exception
+        throw new BackendException("Could not authenticate User");
+    }
+
+    /**
+     * Resolves the mapping of a {@link org.jacktheclipper.frontend.model.OrganizationalUnit}
+     * name to its id
+     *
+     * @param organization The name of a top level
+     * {@link org.jacktheclipper.frontend.model.OrganizationalUnit}
+     * @return The UUID corresponding to the given organization name
+     */
+    private UUID determineUnitUUID(String organization) {
+
+        List<Tuple<UUID, String>> list = ouService.getTopLevelOrganizations();
+        // call to Optional#get without Optional#isPresent works since we throw a HttpStatus 400
+        // if the organization is not present, aka a login page with a nonexisting orga is
+        // impossible. Thus we will always find one
+        return list.stream().filter(tuple -> tuple.second().equals(organization)).findFirst().get().first();
     }
 }

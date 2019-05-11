@@ -2,7 +2,10 @@ package org.jacktheclipper.frontend.service;
 
 import org.jacktheclipper.frontend.enums.NotificationSetting;
 import org.jacktheclipper.frontend.exception.BackendException;
-import org.jacktheclipper.frontend.model.*;
+import org.jacktheclipper.frontend.model.Article;
+import org.jacktheclipper.frontend.model.Feed;
+import org.jacktheclipper.frontend.model.ShortArticle;
+import org.jacktheclipper.frontend.model.UserSettings;
 import org.jacktheclipper.frontend.utils.ResponseEntityUtils;
 import org.jacktheclipper.frontend.utils.RestTemplateUtils;
 import org.slf4j.Logger;
@@ -12,6 +15,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
@@ -33,17 +37,21 @@ public class FeedService {
      * Returns the settings (and within his feeds) of the given user
      *
      * @param userId The user requesting the settings
-     * @return The settings for the given user or null, if the user was not founnd
+     * @return The {@link UserSettings} for the given user or null, if the user was not found
+     *
+     * @throws BackendException If no userSettings could be found for the supplied
      */
-    public UserSettings getSettingsForUser(UUID userId) {
+    public UserSettings getSettingsForUser(UUID userId)
+            throws BackendException {
 
         ResponseEntity<UserSettings> response = RestTemplateUtils.getRestTemplate().
                 getForEntity(backendUrl + "/getusersettings" + "?userId=" + userId.toString(),
                         UserSettings.class);
         if (ResponseEntityUtils.successful(response)) {
+            log.debug("Found UserSettings for user [{}]", userId);
             return response.getBody();
         }
-        log.warn("No usersettings found for user with id [{}]", userId);
+        log.warn("No UserSettings found for user with id [{}]", userId);
         throw new BackendException("Could not find settings for userId " + userId.toString());
     }
 
@@ -65,37 +73,60 @@ public class FeedService {
     }
 
     /**
-     * Updates the feeds of the given user with the given feed
-     * This method both handles adding and editing a feed
+     * Adds the given feed to the supplied settings
      *
-     * @param feed   The feed which was updated
-     * @param userId The user which the updated feed belongs to
+     * @param settingsId The id of the settings the feed should be added to
+     * @param feed       The feed that should be added
+     * @throws BackendException If the addition of the feed failed
      */
-    public void updateFeeds(Feed feed, UUID userId) {
+    public void addFeed(UUID settingsId, Feed feed)
+            throws BackendException {
 
-        UserSettings settings = getSettingsForUser(userId);
-        settings.getFeeds().remove(feed);
-        settings.getFeeds().add(feed);
+        String uri = backendUrl + "/addfeed?settingsId=" + settingsId.toString();
+        try {
+            RestTemplateUtils.getRestTemplate().exchange(uri, HttpMethod.PUT,
+                    RestTemplateUtils.prepareBasicHttpEntity(feed), String.class);
+        } catch (HttpClientErrorException.BadRequest badRequest) {
+            log.warn("Could not add feed [{}] to settings [{}]", feed, settingsId);
+            throw new BackendException("Could not add feed to settings [" + settingsId.toString() + "]");
+        }
+    }
 
-        RestTemplate restTemplate = RestTemplateUtils.getRestTemplate();
-        ResponseEntity<MethodResult> response = restTemplate.exchange(backendUrl +
-                "/saveusersettings?userId=" + userId.toString(), HttpMethod.PUT,
-                RestTemplateUtils.prepareBasicHttpEntity(settings), MethodResult.class);
-        if (ResponseEntityUtils.successful(response)) {
+    /**
+     * Modifies a feed.
+     *
+     * @param feed       The feed which should be updated
+     * @param settingsId The id of the settings to which the feed should be added
+     * @throws BackendException If the feed could not be updated
+     */
+    public void updateFeed(Feed feed, UUID settingsId)
+            throws BackendException {
 
-            switch (response.getBody().getState()) {
+        String uri = backendUrl + "/modifyfeed?settingsId=" + settingsId.toString();
+        try {
+            RestTemplate restTemplate = RestTemplateUtils.getRestTemplate();
+            restTemplate.put(uri, feed);
+        } catch (HttpClientErrorException.BadRequest badRequest) {
+            throw new BackendException("Could not update feed for settings [" + settingsId.toString() + "]");
+        }
+    }
 
-                case Successful:
-                    log.debug("Successfully updated settings for userId [{}]", userId);
-                    break;
-                case Timeout:
-                    throw new BackendException("Request timed out");
-                case UnknownError:
-                    throw new BackendException(response.getBody().getMessage());
-            }
+    /**
+     * Deletes the feed with the given id
+     *
+     * @param feedId
+     */
+    public void deleteFeed(UUID feedId)
+            throws BackendException {
 
-        } else {
-            throw new BackendException("Update of UserSettings for userId [" + userId.toString() + "]" + " failed");
+        String uri = backendUrl + "/deletefeed?feedId=" + feedId.toString();
+        try {
+            RestTemplate template = RestTemplateUtils.getRestTemplate();
+            template.delete(uri);
+            log.debug("Deleted feed [{}]", feedId);
+        } catch (HttpClientErrorException.BadRequest badRequest) {
+            log.warn("Failed to delete feed [{}]", feedId);
+            throw new BackendException("Could not delete feed [" + feedId + "]");
         }
     }
 
@@ -117,8 +148,10 @@ public class FeedService {
         ResponseEntity<Article> response =
                 restTemplate.getForEntity(backendUrl + "/getarticle" + "?articleId=" + articleId.toString() + "&userId=" + userId.toString(), Article.class);
         if (ResponseEntityUtils.successful(response)) {
+            log.debug("Found article [{}]", articleId);
             return response.getBody();
         }
+        log.info("Could not find article [{}]", articleId);
         throw new BackendException("Did not find article with id [" + articleId.toString() + "]");
     }
 
@@ -126,36 +159,26 @@ public class FeedService {
      * Updates a user's notification settings
      *
      * @param checkInterval       The time between notifications. This cannot be negative
-     * @param userId              The user which wants to update his settings
+     * @param settingsId          The id of the settings to update
      * @param notificationSetting How the notification should be delivered
+     * @param articlesPerPage     How many articles the user wants to see on a feed page
+     * @throws BackendException If the userSettings could not be updated
      */
-    public void updateNotificationSettings(int checkInterval, UUID userId,
-                                           NotificationSetting notificationSetting) {
+    public void updateNotificationSettings(int checkInterval, UUID settingsId,
+                                           NotificationSetting notificationSetting,
+                                           int articlesPerPage)
+            throws BackendException {
 
         Assert.isTrue(checkInterval >= 0, "Time cannot be negative");
-        UserSettings settings = getSettingsForUser(userId);
-        settings.setNotificationCheckInterval(checkInterval);
-        settings.setNotificationSetting(notificationSetting);
-        //Code Duplication does not matter since the API will change soonTM
-        RestTemplate restTemplate = RestTemplateUtils.getRestTemplate();
-        ResponseEntity<MethodResult> response = restTemplate.exchange(backendUrl +
-                "/saveusersettings?userId=" + userId.toString(), HttpMethod.PUT,
-                RestTemplateUtils.prepareBasicHttpEntity(settings), MethodResult.class);
-        if (ResponseEntityUtils.successful(response)) {
+        String uri = backendUrl + "/saveusersettings?settingsId=" + settingsId.toString() +
+                "&notificationCheckInterval=" + checkInterval + "&notificationSetting=" + notificationSetting.name() + "&articlesPerPage=" + articlesPerPage;
 
-            switch (response.getBody().getState()) {
+        try {
+            RestTemplateUtils.getRestTemplate().exchange(uri, HttpMethod.PUT,
+                    RestTemplateUtils.prepareBasicHttpEntity(""), void.class);
+        } catch (HttpClientErrorException.BadRequest badRequest) {
 
-                case Successful:
-                    log.debug("Successfully updated settings for userId [{}]", userId);
-                    break;
-                case Timeout:
-                    throw new BackendException("Request timed out");
-                case UnknownError:
-                    throw new BackendException(response.getBody().getMessage());
-            }
-
-        } else {
-            throw new BackendException("Update of UserSettings for userId [" + userId.toString() + "]" + " failed");
+            throw new BackendException("Update of UserSettings for SettingsId [" + settingsId.toString() + "] failed");
         }
     }
 
@@ -174,15 +197,18 @@ public class FeedService {
 
         showArchived = showArchived == null ? false : showArchived;
         page = page == null ? 0 : page;
-        Assert.isTrue(page>=0,"Cannot get a page with negative index");
+        Assert.isTrue(page >= 0, "Cannot get a page with negative index");
         String uriParams = "?userId=" + userId.toString() + "&feedId=" + feedId.toString() +
-                "&page" + "=" + page + "&showArchived=" + showArchived;
+                "&page=" + page + "&showArchived=" + showArchived;
         RestTemplate restTemplate = RestTemplateUtils.getRestTemplate();
         ResponseEntity<ShortArticle[]> response = restTemplate.getForEntity(backendUrl +
                 "/getfeed" + uriParams, ShortArticle[].class);
         if (ResponseEntityUtils.successful(response)) {
+            log.debug("Found articles for feed [{}]", feedId);
             return Arrays.asList(response.getBody());
         }
+        log.warn("Could not find anything for call with following parameters: feedId [{}], " +
+                "page [{}], showArchived [{}]", feedId, page, showArchived);
         return Collections.emptyList();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using JetBrains.Annotations;
 
@@ -61,5 +62,45 @@ namespace JackTheClipperCommon.SharedClasses
             Expressions = expressions;
             Blacklist = blacklist;
         }
+
+        #region Equals
+        /// <summary>Determines whether the specified object is equal to the current object.</summary>
+        /// <param name="other">The object to compare with the current object.</param>
+        /// <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
+        public bool Equals(Filter other)
+        {
+            return Id.Equals(other.Id) &&
+                   Keywords.SequenceEqual(other.Keywords) &&
+                   Expressions.SequenceEqual(other.Expressions) &&
+                   Blacklist.SequenceEqual(other.Blacklist);
+        }
+
+        /// <summary>Determines whether the specified object is equal to the current object.</summary>
+        /// <param name="obj">The object to compare with the current object.</param>
+        /// <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Filter)obj);
+        }
+        #endregion
+
+        #region GetHashCode
+        /// <summary>Serves as the default hash function.</summary>
+        /// <returns>A hash code for the current object.</returns>
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = Id.GetHashCode();
+                hashCode = (hashCode * 397) ^ Keywords.GetHashCode();
+                hashCode = (hashCode * 397) ^ Expressions.GetHashCode();
+                hashCode = (hashCode * 397) ^ Blacklist.GetHashCode();
+                return hashCode;
+            }
+        }
+        #endregion
     }
 }

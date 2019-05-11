@@ -16,11 +16,11 @@ namespace JackTheClipperRequestHandler.Controllers
         //Ok
         [Route("login")]
         [HttpGet]
-        public ActionResult<User> TryAuthenticateUser([FromQuery]string userMail, [FromQuery]string userPassword)
+        public ActionResult<User> TryAuthenticateUser([FromQuery]string userMailOrName, [FromQuery]string userPassword, [FromQuery]Guid principalUnit)
         {
             try
             {
-                var user = GetControllerInstance<IClipperUserAPI>().TryAuthenticateUser(userMail, userPassword);
+                var user = GetControllerInstance<IClipperUserAPI>().TryAuthenticateUser(userMailOrName, userPassword, principalUnit);
                 if (user != null)
                 {
                     return new ActionResult<User>(user);
@@ -101,20 +101,89 @@ namespace JackTheClipperRequestHandler.Controllers
             }
         }
 
-        //Ok, but should be reviewed
+        /// <summary>
+        /// Saves the user settings.
+        /// </summary>
+        /// <param name="settingsId">The settings identifier.</param>
+        /// <param name="notificationCheckInterval">The notification check interval.</param>
+        /// <param name="notificationSetting">The notification setting.</param>
+        /// <param name="articlesPerPage">The articles per page.</param>
         [Route("saveusersettings")]
         [HttpPut]
-        public MethodResult SaveUserSettings([FromQuery]Guid userId, [FromBody]UserSettings toSave)
+        public ActionResult SaveUserSettings([FromQuery]Guid settingsId, [FromQuery]int notificationCheckInterval, 
+                                             [FromQuery]NotificationSetting notificationSetting, [FromQuery]int articlesPerPage)
         {
             try
             {
-                var user = Get<User>(userId);
-                return GetControllerInstance<IClipperUserAPI>().SaveUserSettings(user, toSave);
+                GetControllerInstance<IClipperUserAPI>().SaveUserSettings(settingsId, notificationCheckInterval, notificationSetting, articlesPerPage);
+                return Ok();
             }
             catch (Exception error)
             {
                 Console.WriteLine(error);
-                return new MethodResult(SuccessState.UnknownError, "Bad things happened");
+                return BadRequest();
+            }
+        }
+
+        /// <summary>
+        /// Adds the given feed.
+        /// </summary>
+        /// <param name="settingsId">The settings id.</param>
+        /// <param name="feed">The feed to add.</param>
+        [Route("addfeed")]
+        [HttpPut]
+        public ActionResult AddFeed([FromQuery]Guid settingsId, [FromBody]Feed feed)
+        {
+            try
+            {
+                GetControllerInstance<IClipperUserAPI>().AddFeed(settingsId, feed);
+                return Ok();
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error);
+                return BadRequest();
+            }
+        }
+
+        /// <summary>
+        /// Modifies the feed.
+        /// </summary>
+        /// <param name="settingsId">The settings id.</param>
+        /// <param name="feed">The feed to add.</param>
+        [Route("modifyfeed")]
+        [HttpPut]
+        public ActionResult ModifyFeed([FromQuery] Guid settingsId, [FromBody] Feed feed)
+        {
+            try
+            {
+                GetControllerInstance<IClipperUserAPI>().ModifyFeed(settingsId, feed);
+                return Ok();
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error);
+                return BadRequest();
+            }
+        }
+
+        /// <summary>
+        /// Deletes the feed.
+        /// </summary>
+        /// <param name="feedId">The feed id.</param>
+        [Route("deletefeed")]
+        [HttpDelete]
+        public ActionResult DeleteFeed([FromQuery] Guid feedId)
+        {
+            try
+            {
+                GetControllerInstance<IClipperUserAPI>().DeleteFeed(feedId);
+                return Ok();
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error);
+                return BadRequest();
             }
         }
 
@@ -203,12 +272,12 @@ namespace JackTheClipperRequestHandler.Controllers
         [HttpPut]
         [Route("register")]
         public ActionResult<User> AddUser([FromQuery]string userMail, [FromQuery]string userName,
-            [FromQuery] string password, [FromQuery]string role,[FromQuery]Guid unit)
+            [FromQuery] string password, [FromQuery]string role,[FromQuery]Guid principalUnit)
         {
             try
             {
                 return new ActionResult<User>(GetControllerInstance<IClipperUserAPI>().AddUser(
-                    userMail, userName, password, (Role)Enum.Parse(typeof(Role), role), unit, false, true));
+                    userMail, userName, password, (Role)Enum.Parse(typeof(Role), role), principalUnit, false, true));
             }
             catch (Exception error)
             {

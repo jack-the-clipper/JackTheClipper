@@ -1,11 +1,10 @@
 package org.jacktheclipper.frontend.authentication;
 
-import org.jacktheclipper.frontend.utils.ResponseEntityUtils;
-import org.jacktheclipper.frontend.utils.RestTemplateUtils;
+import org.jacktheclipper.frontend.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -26,11 +25,19 @@ public class BackendAuthenticationProvider implements AuthenticationProvider {
 
     private static final Logger log = LoggerFactory.getLogger(BackendAuthenticationProvider.class);
 
+    private final UserService userService;
+
+    @Autowired
+    public BackendAuthenticationProvider(UserService userService) {
+
+        this.userService = userService;
+    }
+
     /**
      * Tries to authenticate the given token at the backend
      *
      * @param authentication The token representing an authentication. It is one of the supported
-     *                       classes, see #supports
+     *                       classes, see {@link #supports(Class)}
      * @return An authenticated user
      *
      * @throws AuthenticationException if the user could not be authenticated. This happens
@@ -41,7 +48,6 @@ public class BackendAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication)
             throws AuthenticationException {
 
-        //TODO warten auf Anpassung des Backends zwecks neuer Schnittstelle mit UserName + Orga + PW
         String username;
         if (authentication.getPrincipal() instanceof User) {
             username = ((User) authentication.getPrincipal()).geteMail();
@@ -51,15 +57,11 @@ public class BackendAuthenticationProvider implements AuthenticationProvider {
         String password = (String) authentication.getCredentials();
         String organization = ((CustomAuthenticationToken) authentication).getOrganization();
 
-        String loginUri = backendUrl + "/login?userMail=" + username + "&userPassword=" + password;
+
         try {
-            ResponseEntity<User> response =
-                    RestTemplateUtils.getRestTemplate().getForEntity(loginUri, User.class);
-            if (ResponseEntityUtils.successful(response)) {
-                User user = response.getBody();
-                return new CustomAuthenticationToken(user, password, organization,
-                        user.getUserRole().resolveAuthorities());
-            }
+            User user = userService.authenticate(username, organization, password);
+            return new CustomAuthenticationToken(user, password, organization,
+                    user.getUserRole().resolveAuthorities());
         } catch (HttpClientErrorException.BadRequest ex) {
             log.info("Access denied for User [{}]", username);
             //Stacktrace is ignored as HttpStatusCode 400 is an intended signal from the backend
@@ -75,7 +77,7 @@ public class BackendAuthenticationProvider implements AuthenticationProvider {
      * and thus process
      *
      * @param authentication The class to check
-     * @return (@ code True) if the class is supported, false otherwise
+     * @return {@code True} if the class is supported, {@code False} otherwise
      */
     @Override
     public boolean supports(Class<?> authentication) {

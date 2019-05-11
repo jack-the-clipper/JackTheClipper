@@ -19,7 +19,7 @@ namespace JackTheClipperCommon.Localization {
     // -Klasse über ein Tool wie ResGen oder Visual Studio automatisch generiert.
     // Um einen Member hinzuzufügen oder zu entfernen, bearbeiten Sie die .ResX-Datei und führen dann ResGen
     // mit der /str-Option erneut aus, oder Sie erstellen Ihr VS-Projekt neu.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ClipperTexts {
@@ -61,11 +61,86 @@ namespace JackTheClipperCommon.Localization {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Es gibt Neuigkeiten bei Jack The Clipper... ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Es gibt Neuigkeiten bei &quot;Jack the Clipper&quot;... ähnelt.
         /// </summary>
         public static string DefaultMailSubject {
             get {
                 return ResourceManager.GetString("DefaultMailSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die ... wurde geändert.
+        ///
+        ///Sollten Sie nicht die Änderung Ihrer E-Mailadresse veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten.
+        ///
+        ///Mit freundlichen Grüßen,
+        ///
+        ///Jack the Clipper ähnelt.
+        /// </summary>
+        public static string MailChangedMailBody {
+            get {
+                return ResourceManager.GetString("MailChangedMailBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Ihre E-Mailadresse bei &quot;Jack the Clipper&quot;... ähnelt.
+        /// </summary>
+        public static string MailChangedMailSubject {
+            get {
+                return ResourceManager.GetString("MailChangedMailSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die ... wurde geändert.
+        ///
+        ///Sollten Sie nicht die Änderung Ihres Passworts veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten.
+        ///
+        ///Mit freundlichen Grüßen,
+        ///
+        ///Jack the Clipper ähnelt.
+        /// </summary>
+        public static string PasswordChangedMailBody {
+            get {
+                return ResourceManager.GetString("PasswordChangedMailBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Ihr Passwort bei &quot;Jack the Clipper&quot;... ähnelt.
+        /// </summary>
+        public static string PasswordChangedMailSubject {
+            get {
+                return ResourceManager.GetString("PasswordChangedMailSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die ... wurde zurückgesetzt. 
+        ///
+        ///Ihr neues Passwort lautet: {0}.
+        ///Dass Passwort muss beim nächsten Login geändert werden.
+        ///
+        ///Sollten Sie nicht die Änderung Ihres Passworts veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten.
+        ///
+        ///Mit freundlichen Grüßen,
+        ///
+        ///Jack the Clipper ähnelt.
+        /// </summary>
+        public static string PasswordResetMailBody {
+            get {
+                return ResourceManager.GetString("PasswordResetMailBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Ihr Passwort bei &quot;Jack the Clipper&quot;... ähnelt.
+        /// </summary>
+        public static string PasswordResetMailSubject {
+            get {
+                return ResourceManager.GetString("PasswordResetMailSubject", resourceCulture);
             }
         }
     }

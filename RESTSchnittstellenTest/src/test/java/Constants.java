@@ -1,21 +1,20 @@
 import enums.ContentType;
+import enums.NotificationSetting;
 import io.restassured.RestAssured;
 import org.junit.Assert;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 
 public class Constants {
 
     public static UUID sysAdminId;
     public static UUID unitId;
     public static User registeredUser;
+    public static UUID articleId;
 
-    public static Source existingSource = new Source(UUID.fromString("72dd0f07-6dc2-11e9-8c47" +
+    public static Source existingSource = new Source(UUID.fromString("e6b4a44f-682a-11e9-8c47" +
             "-9615dc5f263c"), "http://feeds.feedburner.com/blogspot/rkEL", "Postillon",
             ContentType.Rss, null, null, null);
     public static UserSettings settings;

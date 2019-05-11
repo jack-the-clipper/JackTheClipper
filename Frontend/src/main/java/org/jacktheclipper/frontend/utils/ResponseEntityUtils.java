@@ -3,7 +3,8 @@ package org.jacktheclipper.frontend.utils;
 import org.springframework.http.ResponseEntity;
 
 /**
- * Holds all utility for answers to REST calls
+ * Holds all utility for {@link ResponseEntity}. The class is returned as an answer to REST calls
+ * with {@link org.springframework.web.client.RestTemplate}
  */
 public class ResponseEntityUtils {
 

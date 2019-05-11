@@ -1,4 +1,6 @@
-﻿using JackTheClipperCommon.SharedClasses;
+﻿using System;
+using System.Collections.Generic;
+using JackTheClipperCommon.SharedClasses;
 
 namespace JackTheClipperCommon.Interfaces
 {
@@ -12,5 +14,11 @@ namespace JackTheClipperCommon.Interfaces
         /// </summary>
         /// <returns>MethodResult indicating the status.</returns>
         MethodResult GetStatus();
+
+        /// <summary>
+        /// Gets the principal units.
+        /// </summary>
+        /// <returns>List of principal units.</returns>
+        IReadOnlyList<Tuple<string, Guid>> GetPrincipalUnits();
     }
 }

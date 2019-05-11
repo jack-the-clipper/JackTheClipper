@@ -4,32 +4,85 @@
     <head th:replace="layout :: head">
     </head>
     <body class="h-100">
+        <script>
+            function showChangeEmailModal() {
+                $("#modalForm").attr("action", "[[@{/{orga}/feed/changemailaddress(orga=${#authentication.getPrincipal().getOrganization()})}]]");
+                $("#modalLabel").text("E-Mail Adresse ändern")
+                $("#toChangeLabel").text("neue E-Mail Adresse");
+                $("#toChange").attr("placeholder", "E-Mail Adresse").attr("name", "email").attr("type", "text").val("");
+                $("#passwordLabel").text("Passwort");
+                $("#password").val("").attr("name", "password");
+                $("#modal").modal("show");
+            }
+
+            function showChangePasswordModal() {
+                $("#modalForm").attr("action", "[[@{/{orga}/feed/changepassword(orga=${#authentication.getPrincipal().getOrganization()})}]]");
+                $("#modalLabel").text("Passwort ändern");
+                $("#toChangeLabel").text("neues Passwort");
+                $("#toChange").attr("placeholder", "Passwort").attr("name", "newPassword").attr("type", "password").val("");
+                $("#passwordLabel").text(" altes Passwort");
+                $("#password").val("").attr("name", "oldPassword");
+                $("#modal").modal("show");
+            }
+        </script>
         <div class="d-flex flex-column h-100">
             <div th:replace="layout :: navbar (name='Profileinstellungen')"></div>
+            <div th:replace="layout :: alertInfo"></div>
+            <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <form id="modalForm" method="post">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalLabel"></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="toChange" id="toChangeLabel"></label>
+                                        <input type="text" class="form-control" id="toChange" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password" id="passwordLabel"></label>
+                                        <input type="password" class="form-control" id="password" placeholder="Passwort" required>
+                                    </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                                <button type="submit" class="btn btn-primary">Bestätigen</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
             <div class="container mt-5 flex-fill">
-                <form name="f"
-                      th:action="@{/{orga}/feed/profile(orga=${#authentication.getPrincipal().getOrganization()})}"
+                <form name="profile"
+                      th:action="@{/{orga}/feed/profile(orga=${#authentication.getPrincipal().getOrganization()},settingsId=${settings.getId()})}"
                       method="post" th:object="${settings}">
 
                     <div class="form-group">
-                        <!-- TODO dataslider looks quite nice, it requires additional js tho.
-                        TODO See https://seiyria.com/bootstrap-slider/ for examples -->
-                        <label for="ex1"> Dauer bis zur Benachrichtigung in Minuten</label>
-                        <input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="10"
-                               data-slider-max="120"
-                               data-slider-step="1" th:data-slider-value="${settings.getNotificationCheckInterval()}"
+                        <label for="interval"> Dauer bis zur Benachrichtigung in Minuten</label>
+                        <input id="interval" class="form-control"
                                th:field="*{notificationCheckInterval}" required="required"/>
                     </div>
                     <div class="form-group">
                         <label for="notSetting"> Benachrichtigungseinstellung</label>
-                        <select th:field="*{notificationSetting}" id="notSetting" required="required">
+                        <select th:field="*{notificationSetting}" id="notSetting" required="required" class="custom-select">
                             <option th:each="item : ${notificationSettings}" th:value="${item.name()}"
                                     th:text="${item.name()}"></option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary">Speichern</button>
+                    <div class="form-group">
+                        <label for="articlesPerPage"> Artikel pro Seite</label>
+                        <input id="articlesPerPage" class="form-control"
+                               th:field="*{articlesPerPage}" required="required"/>
+                    </div>
 
+                    <button type="submit" class="btn btn-primary">Speichern</button>
                 </form>
+                <button type="button" class="btn btn-primary mt-3" onclick="showChangeEmailModal()">E-Mail Adresse ändern</button>
+                <button type="button" class="btn btn-primary mt-3" onclick="showChangePasswordModal()">Passwort ändern</button>
             </div>
             <footer th:replace="layout :: footer"></footer>
         </div>

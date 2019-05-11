@@ -17,7 +17,7 @@ namespace JackTheClipperBusinessTest
 
             var userController = Factory.GetControllerInstance<IClipperUserAPI>();
 
-            var user = userController.TryAuthenticateUser("i17029@hb.dhbw-stuttgart.de", "Passwort");
+            var user = userController.TryAuthenticateUser("i17029@hb.dhbw-stuttgart.de", "Passwort", Guid.Empty);
 
             Assert.IsNotNull(user);
 

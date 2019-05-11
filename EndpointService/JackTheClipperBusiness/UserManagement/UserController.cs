@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using JackTheClipperBusiness.CrawlerManagement;
 using JackTheClipperCommon.Enums;
 using JackTheClipperCommon.Extensions;
 using JackTheClipperCommon.Interfaces;
+using JackTheClipperCommon.Localization;
 using JackTheClipperCommon.SharedClasses;
 using JackTheClipperData;
 using User = JackTheClipperCommon.SharedClasses.User;
@@ -23,10 +23,11 @@ namespace JackTheClipperBusiness.UserManagement
         /// </summary>
         /// <param name="userMailOrName">The user email or name.</param>
         /// <param name="userPassword">The password of the user.</param>
+        /// <param name="principalUnit">The principal unit.</param>
         /// <returns>The <see cref="User"/>; if authenticated successfully</returns>
-        public User TryAuthenticateUser(string userMailOrName, string userPassword)
+        public User TryAuthenticateUser(string userMailOrName, string userPassword, Guid principalUnit)
         {
-            return Factory.GetControllerInstance<IClipperDatabase>().GetUserByCredentials(userMailOrName, userPassword, true);
+            return Factory.GetControllerInstance<IClipperDatabase>().GetUserByCredentials(userMailOrName, userPassword, principalUnit, true);
         }
 
         /// <summary>
@@ -73,18 +74,6 @@ namespace JackTheClipperBusiness.UserManagement
         {
             return user.Settings;
         }
-
-        /// <summary>
-        /// Saves the user settings.
-        /// </summary>
-        /// <param name="user">The user who requests the save.</param>
-        /// <param name="toSave">The settings to save.</param>
-        /// <returns>MethodResult indicating success.</returns>
-        public MethodResult SaveUserSettings(User user, UserSettings toSave)
-        {
-            Factory.GetControllerInstance<IClipperDatabase>().SaveUserSettings(user, toSave);
-            return new MethodResult();
-        }
         
         /// <summary>
         /// Attempts to reset the password.
@@ -99,8 +88,8 @@ namespace JackTheClipperBusiness.UserManagement
             if (result.IsSucceeded())
             {
                 var user = Factory.GetControllerInstance<IClipperDatabase>()
-                                  .GetUserByCredentials(userMail, newPassword, false);
-                QuerySendMailAsync(user, "Your password has been reset.", $"Your new password is: {newPassword}");
+                                  .GetUserByCredentials(userMail, newPassword, Guid.Empty, false);
+                QuerySendMailAsync(user, ClipperTexts.PasswordResetMailSubject, string.Format(ClipperTexts.PasswordResetMailBody, newPassword));
             }
 
             return result;
@@ -117,7 +106,7 @@ namespace JackTheClipperBusiness.UserManagement
             var result = DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>().ChangePassword(user, newPassword);
             if (result.IsSucceeded())
             {
-                QuerySendMailAsync(user, "Your password has been changed.", $"Your new password is: {newPassword}");
+                QuerySendMailAsync(user, ClipperTexts.PasswordChangedMailSubject, ClipperTexts.PasswordChangedMailBody);
             }
 
             return result;
@@ -134,7 +123,7 @@ namespace JackTheClipperBusiness.UserManagement
             var result = DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>().ChangeMailAddress(user, newUserMail);
             if (result.IsSucceeded())
             {
-                QuerySendMailAsync(user, "Your mail has been changed.", $"Your new mail address is: {newUserMail}");
+                QuerySendMailAsync(user, ClipperTexts.MailChangedMailSubject, ClipperTexts.MailChangedMailBody);
             }
             
             return result;
@@ -157,15 +146,58 @@ namespace JackTheClipperBusiness.UserManagement
         /// <param name="userName">The new users username.</param>
         /// <param name="password">The new users password.</param>
         /// <param name="role">The new users role.</param>
-        /// <param name="unit">The new users unit.</param>
+        /// <param name="principalUnit">The new users principal unit.</param>
         /// <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
         /// <param name="valid">A value whether the user is valid or not.</param>
         /// <returns>The new users <see cref="User"/>object</returns>
-        public User AddUser(string userMail, string userName, string password, Role role, Guid unit, bool mustChangePassword, bool valid)
+        public User AddUser(string userMail, string userName, string password, Role role, Guid principalUnit, bool mustChangePassword, bool valid)
         {
-            return Factory.GetControllerInstance<IClipperDatabase>().AddUser(userMail, userName, password, role, unit, mustChangePassword, valid);
+            return Factory.GetControllerInstance<IClipperDatabase>().AddUser(userMail, userName, password, role, principalUnit, mustChangePassword, valid);
         }
 
+
+        /// <summary>
+        /// Saves the user settings.
+        /// </summary>
+        /// <param name="settingsId">The settings identifier.</param>
+        /// <param name="notificationCheckInterval">The notification check interval.</param>
+        /// <param name="notificationSetting">The notification setting.</param>
+        /// <param name="articlesPerPage">The articles per page.</param>
+        public void SaveUserSettings(Guid settingsId, int notificationCheckInterval, NotificationSetting notificationSetting,
+                                     int articlesPerPage)
+        {
+            Factory.GetControllerInstance<IClipperDatabase>().SaveUserSettings(settingsId, notificationCheckInterval, notificationSetting, articlesPerPage);
+        }
+
+
+        /// <summary>
+        /// Adds the given feed.
+        /// </summary>
+        /// <param name="settingsId">The settings id.</param>
+        /// <param name="feed">The feed to add.</param>
+        public void AddFeed(Guid settingsId, Feed feed)
+        {
+            Factory.GetControllerInstance<IClipperDatabase>().AddFeed(settingsId, feed);
+        }
+
+        /// <summary>
+        /// Modifies the feed.
+        /// </summary>
+        /// <param name="settingsId">The settings id.</param>
+        /// <param name="feed">The feed to add.</param>
+        public void ModifyFeed(Guid settingsId, Feed feed)
+        {
+            Factory.GetControllerInstance<IClipperDatabase>().ModifyFeed(settingsId, feed);
+        }
+
+        /// <summary>
+        /// Deletes the feed.
+        /// </summary>
+        /// <param name="feedId">The feed id.</param>
+        public void DeleteFeed(Guid feedId)
+        {
+            Factory.GetControllerInstance<IClipperDatabase>().DeleteFeed(feedId);
+        }
 
         /// <summary>
         /// Adds the given source.
@@ -173,7 +205,6 @@ namespace JackTheClipperBusiness.UserManagement
         /// <param name="user">The user who requests the addition.</param>
         /// <param name="toAdd">The source to add.</param>
         /// <returns>MethodResult indicating success</returns>
-
         public MethodResult AddSource(User user, Source toAdd)
         {
             Factory.GetControllerInstance<IClipperDatabase>().AddSource(toAdd);

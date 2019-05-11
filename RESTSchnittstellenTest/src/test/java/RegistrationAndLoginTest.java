@@ -1,3 +1,4 @@
+import enums.NotificationSetting;
 import enums.SuccessState;
 import enums.UserRole;
 import io.restassured.response.Response;
@@ -5,6 +6,8 @@ import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+
+import java.util.ArrayList;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.*;
@@ -74,6 +77,8 @@ public class RegistrationAndLoginTest {
 
         toRegister.setUserId(actual.getUserId());
         Constants.registeredUser = toRegister;
+        Constants.settings = new UserSettings(Constants.registeredUser.getUserId(), new ArrayList<Feed>(),
+                NotificationSetting.None, 60, 20);
     }
 
     @Test

@@ -15,7 +15,7 @@ namespace JackTheClipperData.MariaDb
     /// Adapter for MariaDb/MySql which implements the <see cref="IClipperDatabase"/> interface
     /// </summary>
     /// <seealso cref="JackTheClipperData.IClipperDatabase" />
-    public class MariaDbAdapter : IClipperDatabase
+    internal class MariaDbAdapter : IClipperDatabase
     {
         //// General things: NEVER DO ANYTHING ELSE THAN READ DATE FROM THE DATABASE. ALL MODIFICATIONS MUST BE DONE BY
         //// STORED PROCEDURES
@@ -52,25 +52,33 @@ namespace JackTheClipperData.MariaDb
         #endregion
 
         #region GetUserByCredentials
+
         /// <summary>
         /// Gets the user by credentials.
         /// </summary>
-        /// <param name="mail">The mail.</param>
+        /// <param name="mailOrName">The mail.</param>
         /// <param name="password">The password.</param>
+        /// <param name="principalUnit">The principal unit.</param>
         /// <param name="updateLoginTimeStamp">A value indicating whether the login timestamp should be updated or not.</param>
         /// <returns>The user (if found)</returns>
-        public User GetUserByCredentials(string mail, string password, bool updateLoginTimeStamp)
+        public User GetUserByCredentials(string mailOrName, string password, Guid principalUnit, bool updateLoginTimeStamp)
         {
             var result = GetUsersAsync(MariaDbStatements.SelectUserByCredentials,
-                                  new MySqlParameter("hash", password.GetSHA256()),
-                                  new MySqlParameter("mail", mail)).Result;
-            var user = result.First();
-            if (updateLoginTimeStamp && user != null && user.IsValid)
+                                       new MySqlParameter("hash", password.GetSHA256()),
+                                       new MySqlParameter("mail", mailOrName),
+                                       new MySqlParameter("unit", principalUnit.ToString())).Result;
+            if (result != null && result.Any())
             {
-                UpdateLoginTimestampAsync(user.Id).GetAwaiter().GetResult();
+                var user = result.First();
+                if (updateLoginTimeStamp && user != null && user.IsValid)
+                {
+                    UpdateLoginTimestampAsync(user.Id).GetAwaiter().GetResult();
+                }
+
+                return user;
             }
 
-            return user;
+            return null;
         }
         #endregion
 
@@ -145,13 +153,13 @@ namespace JackTheClipperData.MariaDb
         /// <param name="userName">Name of the user.</param>
         /// <param name="password">The password.</param>
         /// <param name="role">The role.</param>
-        /// <param name="unit">The unit.</param>
+        /// <param name="principalUnit">The principal unit.</param>
         /// <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
         /// <param name="valid">A value whether the user is valid or not.</param>
         /// <returns>The user object of the new user.</returns>
-        public User AddUser(string userMail, string userName, string password, Role role, Guid unit, bool mustChangePassword, bool valid)
+        public User AddUser(string userMail, string userName, string password, Role role, Guid principalUnit, bool mustChangePassword, bool valid)
         {
-            return AddUserAsync(userMail, userName, password, role, unit, mustChangePassword, valid).Result;
+            return AddUserAsync(userMail, userName, password, role, principalUnit, mustChangePassword, valid).Result;
         }
         #endregion
 
@@ -179,45 +187,81 @@ namespace JackTheClipperData.MariaDb
         {
             return DeleteSourceAsync(source).Result;
         }
-         #endregion
+        #endregion
 
-        #region SaveUserSettings (will be splitted up)
+        #region SaveUserSettings
         /// <summary>
         /// Saves the user settings.
         /// </summary>
-        /// <param name="user">The user.</param>
-        /// <param name="toSave">The settings to save.</param>
-        /// <returns>The saved user settings object.</returns>
-        [Obsolete]
-        public UserSettings SaveUserSettings(User user, UserSettings toSave)
+        /// <param name="settingsId">The settings identifier.</param>
+        /// <param name="notificationCheckInterval">The notification check interval.</param>
+        /// <param name="notificationSetting">The notification setting.</param>
+        /// <param name="articlesPerPage">The articles per page.</param>
+        public void SaveUserSettings(Guid settingsId, int notificationCheckInterval, NotificationSetting notificationSetting,
+                                     int articlesPerPage)
         {
-            return SaveUserSettings(toSave, user.Settings.Id).Result;
+            SaveUserSettingsAsync(settingsId, notificationCheckInterval, notificationSetting, articlesPerPage).GetAwaiter().GetResult();
         }
         #endregion
-        
+
+        #region AddFeed
+        /// <summary>
+        /// Adds the given feed.
+        /// </summary>
+        /// <param name="settingsId">The settings id.</param>
+        /// <param name="feed">The feed to add.</param>
+        public void AddFeed(Guid settingsId, Feed feed)
+        {
+            AddFeedAsync(settingsId, feed).GetAwaiter().GetResult();
+        }
+        #endregion
+
+        #region ModifyFeed
+        /// <summary>
+        /// Modifies the feed.
+        /// </summary>
+        /// <param name="settingsId">The settings id.</param>
+        /// <param name="feed">The feed to add.</param>
+        public void ModifyFeed(Guid settingsId, Feed feed)
+        {
+            ModifyFeedAsync(settingsId, feed).GetAwaiter().GetResult();
+        }
+        #endregion
+
+        #region DeleteFeed
+        /// <summary>
+        /// Deletes the feed.
+        /// </summary>
+        /// <param name="feedId">The feed id.</param>
+        public void DeleteFeed(Guid feedId)
+        {
+            DeleteFeedAsync(feedId).GetAwaiter().GetResult();
+        }
+        #endregion
+
         #region ResetPassword
         /// <summary>
-        /// Reset the user password.
+        /// Resets the users password.
         /// </summary>
         /// <param name="userMail">The users mail address.</param>
         /// <param name="newPassword">The new password to set.</param>
-        /// <returns>The new random generated password</returns>
+        /// <returns>MethodResult, indicating success.</returns>
         public MethodResult ResetPassword(string userMail, string newPassword)
         {
-            return ResetPasswordAsync(userMail, newPassword).Result;
+            return ChangePasswordAsync(userMail, newPassword, true).Result;
         }
         #endregion
 
         #region ChangePassword
         /// <summary>
-        /// Change the user password.
+        /// Changes the users password.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="newPassword">The new password to set.</param>
-        /// <returns>The new password which was set by the user.</returns>
+        /// <returns>MethodResult, indicating success.</returns>
         public MethodResult ChangePassword(User user, string newPassword)
         {
-           return ResetPassword(user.MailAddress, newPassword);
+           return ChangePasswordAsync(user.MailAddress, newPassword, false).GetAwaiter().GetResult();
         }
         #endregion
 
@@ -266,6 +310,17 @@ namespace JackTheClipperData.MariaDb
                 superSetFeedCache = new Tuple<DateTime, Filter>(DateTime.UtcNow.AddSeconds(10), result);
                 return result;
             }
+        }
+        #endregion
+
+        #region GetPrincipalUnits
+        /// <summary>
+        /// Gets the principal units.
+        /// </summary>
+        /// <returns>List of principal units.</returns>
+        public IReadOnlyList<Tuple<string, Guid>> GetPrincipalUnits()
+        {
+            return GetPrincipalUnitsAsync().Result;
         }
         #endregion
 
@@ -359,7 +414,7 @@ namespace JackTheClipperData.MariaDb
             var result = new List<Source>();
             try
             {
-                using (new PerfTracer(nameof(GetSourcesAsync)))
+                //using (new PerfTracer(nameof(GetSourcesAsync)))
                 {
                     using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
                     {
@@ -422,10 +477,13 @@ namespace JackTheClipperData.MariaDb
                                 var role = reader.GetInt64(3).ConvertToRole();
                                 var settingsId = Guid.Parse(reader.GetString(4));
                                 var mustChangePassword = reader.GetBoolean(5);
-                                var valid = true || reader.GetBoolean(6); //TODO: enable later
+                                var valid = reader.GetBoolean(6);
                                 var lastLogin = reader.IsDBNull(7) ? DateTime.MinValue : reader.GetDateTime(7);
+                                var principalUnitId = Guid.Parse(reader.GetString(8));
+                                var principalUnitName = reader.GetString(9);
                                 var userSettings = await GetUserSettingsAsync(settingsId);
-                                result.Add(new User(id, mail, role, name, userSettings, mustChangePassword, lastLogin, valid));
+                                result.Add(new User(id, mail, role, name, userSettings, mustChangePassword, lastLogin, 
+                                                    valid, principalUnitName, principalUnitId));
                             }
                         }
                     }
@@ -495,8 +553,9 @@ namespace JackTheClipperData.MariaDb
                                 var name = reader.GetString(1);
                                 var parentId = Guid.Parse(reader.GetString(2));
                                 var settingsId = Guid.Parse(reader.GetString(3));
+                                var mail = reader.IsDBNull(4) ? null : reader.GetString(4);
                                 var settings = await GetOrganizationalUnitSettingsAsync(settingsId);
-                                result.Add(id, new OrganizationalUnit(id, name, parentId == SystemUnit, settings));
+                                result.Add(id, new OrganizationalUnit(id, name, parentId == SystemUnit, settings, mail));
                             }
                         }
                     }
@@ -519,11 +578,11 @@ namespace JackTheClipperData.MariaDb
         /// <param name="userName">Name of the user.</param>
         /// <param name="password">The password.</param>
         /// <param name="role">The role.</param>
-        /// <param name="unit">The unit.</param>
+        /// <param name="principalUnit">The principalUnit.</param>
         /// <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
         /// <param name="valid">A value whether the user is valid or not.</param>
         /// <returns>The user object of the new user.</returns>
-        private static async Task<User> AddUserAsync(string userMail, string userName, string password, Role role, Guid unit, bool mustChangePassword, bool valid)
+        private static async Task<User> AddUserAsync(string userMail, string userName, string password, Role role, Guid principalUnit, bool mustChangePassword, bool valid)
         {
             try
             {
@@ -537,7 +596,7 @@ namespace JackTheClipperData.MariaDb
                         cmd.Parameters.AddWithValue("mail", userMail);
                         cmd.Parameters.AddWithValue("pwHash", password.GetSHA256());
                         cmd.Parameters.AddWithValue("role", role.ToDatabaseRole());
-                        cmd.Parameters.AddWithValue("unit", unit.ToString());
+                        cmd.Parameters.AddWithValue("principalUnit", principalUnit.ToString());
                         cmd.Parameters.AddWithValue("mustChangePassword", mustChangePassword);
                         cmd.Parameters.AddWithValue("valid", valid);
                         cmd.Parameters.Add("newUserId".ToStoredProcedureOutParam(MySqlDbType.VarChar));
@@ -626,15 +685,17 @@ namespace JackTheClipperData.MariaDb
         }
         #endregion
 
-        #region SaveUserSettings (Will be splitted up)
+        #region SaveUserSettings        
         /// <summary>
-        /// Saves the given user settings.
+        /// Saves the user settings asynchronously.
         /// </summary>
-        /// <param name="toSave">The settings to save.</param>
-        /// <param name="settingsId">The id of the settings (relict)</param>
-        /// <returns>The saved user settings.</returns>
-        [Obsolete]
-        private static async Task<UserSettings> SaveUserSettings(UserSettings toSave, Guid settingsId)
+        /// <param name="settingsId">The settings identifier.</param>
+        /// <param name="notificationCheckInterval">The notification check interval.</param>
+        /// <param name="notificationSetting">The notification setting.</param>
+        /// <param name="articlesPerPage">The articles per page.</param>
+        /// <returns></returns>
+        private static async Task SaveUserSettingsAsync(Guid settingsId, int notificationCheckInterval,
+                                                        NotificationSetting notificationSetting, int articlesPerPage)
         {
             try
             {
@@ -645,68 +706,104 @@ namespace JackTheClipperData.MariaDb
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.Add(new MySqlParameter("id", MySqlDbType.VarChar) {Value = settingsId.ToString()});
-                        cmd.Parameters.Add(new MySqlParameter("_interval", MySqlDbType.Int32) {Value = toSave.NotificationCheckIntervalInMinutes});
-                        cmd.Parameters.Add(new MySqlParameter("notification", MySqlDbType.Bit) {Value = toSave.NotificationSettings.ToDatabaseNotification()});
-                        cmd.Parameters.Add(new MySqlParameter("articlesPerPage", MySqlDbType.Int32) { Value = toSave.ArticlesPerPage == 0 ? (object)DBNull.Value : toSave.ArticlesPerPage });
+                        cmd.Parameters.Add(new MySqlParameter("_interval", MySqlDbType.Int32) {Value = notificationCheckInterval});
+                        cmd.Parameters.Add(new MySqlParameter("notification", MySqlDbType.Bit) {Value = notificationSetting.ToDatabaseNotification()});
+                        cmd.Parameters.Add(new MySqlParameter("articlesPerPage", MySqlDbType.Int32) {Value = articlesPerPage == 0 ? (object) DBNull.Value : articlesPerPage});
                         await cmd.ExecuteNonQueryAsync();
                     }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+        #endregion
 
-                    var feeds = toSave.Feeds;
-                    foreach (var feed in feeds)
+        #region AddFeedAsync        
+        /// <summary>
+        /// Adds the feed asynchronously.
+        /// </summary>
+        /// <param name="settingsId">The settings identifier.</param>
+        /// <param name="feed">The feed.</param>
+        private static async Task AddFeedAsync(Guid settingsId, Feed feed)
+        {
+            try
+            {
+                var filterId = await CreateOrUpdateFilter(feed.Filter);
+                var feedId = await CreateOrUpdateFeed(Guid.Empty, feed.Name, filterId);
+                var taskArray = new Task[feed.Sources.Count];
+                var i = -1;
+                foreach (var source in feed.Sources)
+                {
+                    taskArray[++i] = LinkSourceToFeed(feedId, source.Id);
+                }
+
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (var cmd = new MySqlCommand(MariaDbSP.SP_LINK_SETTINGS_FEED.ToString(), conn))
                     {
-                        Guid feedId;
-                        Guid filterId;
-                        using (var cmd = new MySqlCommand())
-                        {
-                            cmd.Connection = conn;
-                            cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.CommandText = "SP_UPDATE_FILTER";
-                            cmd.Parameters.Add(new MySqlParameter("id", MySqlDbType.VarChar)
-                            {
-                                Direction = ParameterDirection.InputOutput,
-                                Value = feed.Filter.Id == Guid.Empty ? (object) DBNull.Value : feed.Filter.Id.ToString()
-                            });
-                            cmd.Parameters.Add(new MySqlParameter("keywords", MySqlDbType.Text) {Value = feed.Filter.Keywords.ToDatabaseList()});
-                            cmd.Parameters.Add(new MySqlParameter("expressions", MySqlDbType.Text){Value = feed.Filter.Expressions.ToDatabaseList()});
-                            cmd.Parameters.Add(new MySqlParameter("blacklist", MySqlDbType.Text){Value = feed.Filter.Blacklist.ToDatabaseList()});
-                            await cmd.ExecuteNonQueryAsync();
-                            filterId = Guid.Parse(cmd.Parameters["id"].Value.ToString());
-                        }
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add(new MySqlParameter("feedId", MySqlDbType.VarChar) {Value = feedId.ToString()});
+                        cmd.Parameters.Add(new MySqlParameter("settingsId", MySqlDbType.VarChar) {Value = settingsId.ToString()});
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
 
-                        using (var cmd = new MySqlCommand())
-                        {
-                            cmd.Connection = conn;
-                            cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.CommandText = "SP_UPDATE_FEED";
-                            cmd.Parameters.Add(new MySqlParameter("id", MySqlDbType.VarChar){Direction = ParameterDirection.InputOutput, Value = feed.Id == Guid.Empty ? (object) DBNull.Value : feed.Id.ToString() });
-                            cmd.Parameters.Add(new MySqlParameter("name", MySqlDbType.Text) {Value = feed.Name});
-                            cmd.Parameters.Add(new MySqlParameter("filterId", MySqlDbType.VarChar){Value = filterId.ToString()});
-                            await cmd.ExecuteNonQueryAsync();
-                            feedId = Guid.Parse(cmd.Parameters["id"].Value.ToString());
-                        }
+                Task.WaitAll(taskArray);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+        #endregion
 
-                        foreach (var source in feed.Sources)
-                        {
-                            using (var cmd = new MySqlCommand())
-                            {
-                                cmd.Connection = conn;
-                                cmd.CommandType = CommandType.StoredProcedure;
-                                cmd.CommandText = "SP_LINK_SOURCE_FEED";
-                                cmd.Parameters.Add(new MySqlParameter("feedId", MySqlDbType.VarChar){Value = feedId.ToString()});
-                                cmd.Parameters.Add(new MySqlParameter("sourceId", MySqlDbType.VarChar){Value = source.Id.ToString()});
-                                await cmd.ExecuteNonQueryAsync();
-                            }
-                        }
+        #region ModifyFeedAsync        
+        /// <summary>
+        /// Modifies the feed asynchronously.
+        /// </summary>
+        /// <param name="settingsId">The settings identifier.</param>
+        /// <param name="feed">The feed.</param>
+        private static async Task ModifyFeedAsync(Guid settingsId, Feed feed)
+        {
+            var allTasks = new List<Task>();
+            try
+            {
+                var settings = await GetUserSettingsAsync(settingsId);
+                var actualFeed = settings.Feeds.FirstOrDefault(x => x.Id == feed.Id);
+                if (actualFeed == null)
+                {
+                    throw new InvalidOperationException();
+                }
 
-                        using (var cmd = new MySqlCommand())
-                        {
-                            cmd.Connection = conn;
-                            cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.CommandText = "SP_LINK_SETTINGS_FEED";
-                            cmd.Parameters.Add(new MySqlParameter("feedId", MySqlDbType.VarChar){Value = feedId.ToString()});
-                            cmd.Parameters.Add(new MySqlParameter("settingsId", MySqlDbType.VarChar){Value = settingsId.ToString()});
-                            await cmd.ExecuteNonQueryAsync();
-                        }
+                if (!actualFeed.Filter.Equals(feed.Filter))
+                {
+                    allTasks.Add(CreateOrUpdateFilter(feed.Filter));
+                }
+
+                if (actualFeed.Name != feed.Name)
+                {
+                    allTasks.Add(CreateOrUpdateFeed(feed.Id, feed.Name, feed.Filter.Id));
+                }
+
+                var existingSources = actualFeed.Sources.Select(x => x.Id).ToHashSet();
+                var newSources = feed.Sources.Select(x => x.Id).ToHashSet();
+                if (!existingSources.SetEquals(newSources))
+                {
+                    var added = newSources.ToHashSet();
+                    added.ExceptWith(existingSources);
+                    foreach (var sourceId in added)
+                    {
+                        allTasks.Add(LinkSourceToFeed(feed.Id, sourceId));
+                    }
+
+                    var removed = existingSources;
+                    removed.ExceptWith(newSources);
+                    foreach (var sourceId in removed)
+                    {
+                        allTasks.Add(UnlinkSourceFromFeed(feed.Id, sourceId));
                     }
                 }
             }
@@ -715,36 +812,190 @@ namespace JackTheClipperData.MariaDb
                 Console.WriteLine(e);
             }
 
-            return await GetUserSettingsAsync(settingsId);
+            Task.WaitAll(allTasks.ToArray());
         }
         #endregion
 
-        #region ResetPassword
+        #region DeleteFeedAsync        
         /// <summary>
-        /// Reset the user password.
+        /// Deletes the feed asynchronously.
+        /// </summary>
+        /// <param name="feedId">The feed identifier.</param>
+        private static async Task DeleteFeedAsync(Guid feedId)
+        {
+            try
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (var cmd = new MySqlCommand(MariaDbSP.SP_DELETE_FEED.ToString(), conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add(new MySqlParameter("feedId", MySqlDbType.VarChar) { Value = feedId.ToString() });
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+        #endregion
+
+        #region LinkSourceToFeed        
+        /// <summary>
+        /// Links a source to a feed.
+        /// </summary>
+        /// <param name="feedId">The feed identifier.</param>
+        /// <param name="sourceId">The source identifier.</param>
+        private static async Task LinkSourceToFeed(Guid feedId, Guid sourceId)
+        {
+            try
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (var cmd = new MySqlCommand(MariaDbSP.SP_LINK_SOURCE_FEED.ToString(), conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add(new MySqlParameter("feedId", MySqlDbType.VarChar) { Value = feedId.ToString() });
+                        cmd.Parameters.Add(new MySqlParameter("sourceId", MySqlDbType.VarChar) { Value = sourceId.ToString() });
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+        #endregion
+
+        #region UnlinkSourceFromFeed
+        /// <summary>
+        /// Unlinks a source from a feed.
+        /// </summary>
+        /// <param name="feedId">The feed identifier.</param>
+        /// <param name="sourceId">The source identifier.</param>
+        private static async Task UnlinkSourceFromFeed(Guid feedId, Guid sourceId)
+        {
+            try
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (var cmd = new MySqlCommand(MariaDbSP.SP_REMOVE_SOURCE_FEED.ToString(), conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add(new MySqlParameter("feedId", MySqlDbType.VarChar) { Value = feedId.ToString() });
+                        cmd.Parameters.Add(new MySqlParameter("sourceId", MySqlDbType.VarChar) { Value = sourceId.ToString() });
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+        #endregion
+
+        #region CreateOrUpdateFeed        
+        /// <summary>
+        /// Creates the or updates a feed.
+        /// </summary>
+        /// <param name="feedId">The feed identifier.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="filterId">The filter identifier.</param>
+        private static async Task<Guid> CreateOrUpdateFeed(Guid feedId, string name, Guid filterId)
+        {
+            try
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (var cmd = new MySqlCommand(MariaDbSP.SP_UPDATE_FEED.ToString(), conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add(new MySqlParameter("id", MySqlDbType.VarChar) { Direction = ParameterDirection.InputOutput, Value = feedId == Guid.Empty ? (object)DBNull.Value : feedId.ToString() });
+                        cmd.Parameters.Add(new MySqlParameter("name", MySqlDbType.Text) { Value = name });
+                        cmd.Parameters.Add(new MySqlParameter("filterId", MySqlDbType.VarChar) { Value = filterId.ToString() });
+                        await cmd.ExecuteNonQueryAsync();
+                        return Guid.Parse(cmd.Parameters["id"].Value.ToString());
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+        #endregion
+
+        #region CreateOrUpdateFilter        
+        /// <summary>
+        /// Creates the or updates the filter.
+        /// </summary>
+        /// <param name="filter">The filter.</param>
+        private static async Task<Guid> CreateOrUpdateFilter(Filter filter)
+        {
+            try
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (var cmd = new MySqlCommand(MariaDbSP.SP_UPDATE_FILTER.ToString(), conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add(new MySqlParameter("id", MySqlDbType.VarChar)
+                        {
+                            Direction = ParameterDirection.InputOutput,
+                            Value = filter.Id == Guid.Empty ? (object)DBNull.Value : filter.Id.ToString()
+                        });
+                        cmd.Parameters.Add(new MySqlParameter("keywords", MySqlDbType.Text) { Value = filter.Keywords.ToDatabaseList() });
+                        cmd.Parameters.Add(new MySqlParameter("expressions", MySqlDbType.Text) { Value = filter.Expressions.ToDatabaseList() });
+                        cmd.Parameters.Add(new MySqlParameter("blacklist", MySqlDbType.Text) { Value = filter.Blacklist.ToDatabaseList() });
+                        await cmd.ExecuteNonQueryAsync();
+                        return Guid.Parse(cmd.Parameters["id"].Value.ToString());
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+        #endregion
+
+        #region ChangePassword
+        /// <summary>
+        /// Changes the users password.
         /// </summary>
         /// <param name="userMail">The users mail address.</param>
         /// <param name="password">The new password to set.</param>
-        /// <returns>The new random generated password</returns>
-        private static async Task<MethodResult> ResetPasswordAsync(string userMail, string password)
+        /// <param name="mustChangePassword"></param>
+        /// <returns>MethodResult, indicating success.</returns>
+        private static async Task<MethodResult> ChangePasswordAsync(string userMail, string password, bool mustChangePassword)
         {
             using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
             {
                 await conn.OpenAsync();
-                using (var cmd = new MySqlCommand(MariaDbSP.SP_RESET_USERPW.ToString(), conn))
+                using (var cmd = new MySqlCommand(MariaDbSP.SP_CHANGE_USERPW.ToString(), conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("mail", userMail);
                     cmd.Parameters.AddWithValue("pwHash", password.GetSHA256());
+                    cmd.Parameters.AddWithValue("mustChangePassword", mustChangePassword);
                     cmd.Parameters.Add("success".ToStoredProcedureOutParam(MySqlDbType.Bool));
                     await cmd.ExecuteNonQueryAsync();
-
-                    var newPassword = bool.Parse(cmd.Parameters["success"].Value.ToString());
-                    if (newPassword)
-                    {
-                        return new MethodResult(SuccessState.Successful, "Password got reset.");
-                    }
-                    return new MethodResult(SuccessState.UnknownError, "Ooops. Something went wrong!");
+                    return bool.Parse(cmd.Parameters["success"].Value.ToString())
+                        ? new MethodResult()
+                        : new MethodResult(SuccessState.UnknownError, "Ooops. Something went wrong!");
                 }
             }
         }
@@ -811,6 +1062,40 @@ namespace JackTheClipperData.MariaDb
                     return new Filter(Guid.Empty, superset, null, null);
                 }
             }
+        }
+        #endregion
+
+        #region GetPrincipalUnits
+        /// <summary>
+        /// Gets the principal units.
+        /// </summary>
+        /// <returns>List of principal units.</returns>
+        public async Task<IReadOnlyList<Tuple<string, Guid>>> GetPrincipalUnitsAsync()
+        {
+            var result = new List<Tuple<string, Guid>>();
+            try
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (var cmd = new MySqlCommand(MariaDbStatements.SelectPrincipalUnits, conn))
+                    {
+                        using (var reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (reader.HasRows && await reader.ReadAsync())
+                            {
+                                result.Add(new Tuple<string, Guid>(reader.GetString(0), Guid.Parse(reader.GetString(1))));
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return result;
         }
         #endregion
     }

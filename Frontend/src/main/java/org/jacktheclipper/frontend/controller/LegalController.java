@@ -17,6 +17,7 @@ public class LegalController {
 
     /**
      * Shows the impressum to the user
+     *
      * @param model
      * @param organization The name of the organization the user presumably belongs to
      * @return The page containing the impressum
@@ -30,6 +31,7 @@ public class LegalController {
 
     /**
      * Shows the privacy policy of Jack The Clipper to the user
+     *
      * @param model
      * @param organization The name of the organization the user presumably belongs to
      * @return The page containing the privacy policy

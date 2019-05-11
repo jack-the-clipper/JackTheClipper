@@ -16,8 +16,9 @@ namespace JackTheClipperCommon.Interfaces
         /// </summary>
         /// <param name="userMailOrName">The user email or name.</param>
         /// <param name="userPassword">The password of the user.</param>
+        /// <param name="principalUnit">The principal unit.</param>
         /// <returns>The <see cref="User"/>; if authenticated successfully</returns>
-        User TryAuthenticateUser(string userMailOrName, string userPassword);
+        User TryAuthenticateUser(string userMailOrName, string userPassword, Guid principalUnit);
 
         /// <summary>
         /// Gets the feed definitions of the given user.
@@ -49,14 +50,6 @@ namespace JackTheClipperCommon.Interfaces
         /// <param name="user">The user.</param>
         /// <returns>The settings of the given user.</returns>
         UserSettings GetUserSettings(User user);
-
-        /// <summary>
-        /// Saves the user settings.
-        /// </summary>
-        /// <param name="user">The user who requests the save.</param>
-        /// <param name="toSave">The settings to save.</param>
-        /// <returns>MethodResult indicating success.</returns>
-        MethodResult SaveUserSettings(User user, UserSettings toSave);
 
         /// <summary>
         /// Attempts to reset the password.
@@ -95,11 +88,39 @@ namespace JackTheClipperCommon.Interfaces
         /// <param name="username">The new users username.</param>
         /// <param name="password">The new users password.</param>
         /// <param name="role">The new users role.</param>
-        /// <param name="unit">The new users unit.</param>
+        /// <param name="principalUnit">The new users principal unit.</param>
         /// <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
         /// <param name="valid">A value whether the user is valid or not.</param>
         /// <returns>The new users <see cref="User"/>object</returns>
-        User AddUser(string userMail, string username, string password, Role role, Guid unit, bool mustChangePassword, bool valid);
+        User AddUser(string userMail, string username, string password, Role role, Guid principalUnit, bool mustChangePassword, bool valid);
 
+        /// <summary>
+        /// Saves the user settings.
+        /// </summary>
+        /// <param name="settingsId">The settings identifier.</param>
+        /// <param name="notificationCheckInterval">The notification check interval.</param>
+        /// <param name="notificationSetting">The notification setting.</param>
+        /// <param name="articlesPerPage">The articles per page.</param>
+        void SaveUserSettings(Guid settingsId, int notificationCheckInterval, NotificationSetting notificationSetting, int articlesPerPage);
+
+        /// <summary>
+        /// Adds the given feed.
+        /// </summary>
+        /// <param name="settingsId">The settings id.</param>
+        /// <param name="feed">The feed to add.</param>
+        void AddFeed(Guid settingsId, Feed feed);
+
+        /// <summary>
+        /// Modifies the feed.
+        /// </summary>
+        /// <param name="settingsId">The settings id.</param>
+        /// <param name="feed">The feed to add.</param>
+        void ModifyFeed(Guid settingsId, Feed feed);
+
+        /// <summary>
+        /// Deletes the feed.
+        /// </summary>
+        /// <param name="feedId">The feed id.</param>
+        void DeleteFeed(Guid feedId);
     }
 }

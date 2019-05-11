@@ -7,6 +7,7 @@ using JackTheClipperCommon.BusinessObjects;
 using JackTheClipperCommon.Interfaces;
 using JackTheClipperCommon.SharedClasses;
 using JackTheClipperData;
+using JackTheClipperData.MariaDb;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace JackTheClipperDataTest
@@ -57,18 +58,6 @@ namespace JackTheClipperDataTest
             {
                 Assert.Fail();
             }
-        }
-
-        [TestMethod]
-        public void GetCompleteFeed()
-        {
-            var user = Factory.GetControllerInstance<IClipperUserAPI>().TryAuthenticateUser("i17029@hb.dhbw-stuttgart.de", "Passwort");
-            var elasticController = DatabaseAdapterFactory.GetControllerInstance<IIndexerService>();
-            var feed = elasticController.GetCompleteFeedAsync(user, DateTime.Today.Subtract(TimeSpan.FromDays(3))).Result;
-
-            var specific = feed.FirstOrDefault(e => e.ShortText.Contains("abgefssmt"));
-
-            Assert.IsNotNull(specific);
         }
     }
 }

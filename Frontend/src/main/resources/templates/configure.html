@@ -10,14 +10,15 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalLabel">Quelle hinzufügen</h5>
+                        <h5 class="modal-title" id="modalLabel">Feed hinzufügen</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <form th:object="${emptyFeed}"
-                              th:action="@{/{orga}/feed/update(addFeed=${true},orga=${#authentication.getPrincipal().getOrganization()})}" method="post"
+                              th:action="@{/{orga}/feed/addFeed(orga=${#authentication.getPrincipal().getOrganization()}
+                              ,settingsId=${settingsId})}" method="post"
                               id="modalForm">
                             <div class="form-group">
                                 <label for="inputName">Name</label>
@@ -51,6 +52,7 @@
         </div>
         <div class="d-flex flex-column h-100">
             <div th:replace="layout :: navbar (name='Feeds bearbeiten')"></div>
+            <div th:replace="layout :: alertInfo"></div>
             <div class="container-fluid flex-grow-1">
                 <div class="row h-100">
                     <div class="col-sm-3 col-lg-2 px-1 bg-light">
@@ -80,7 +82,7 @@
                                         <div class="card-body">
                                             <h1>Feed bearbeiten</h1>
                                             <form th:object="${feed}"
-                                                  th:action="@{/{orga}/feed/update(orga=${#authentication.getPrincipal().getOrganization()})}"
+                                                  th:action="@{/{orga}/feed/update(orga=${#authentication.getPrincipal().getOrganization()},settingsId=${settingsId})}"
                                                   method="post">
                                                 <input type="hidden" th:field="*{id}">
                                                 <input type="hidden" th:field="*{filter.id}">
@@ -104,7 +106,9 @@
                                                         </option>
                                                     </select>
                                                 </div>
-                                                <button class="btn btn-primary mt-4">Änderungen übernehmen</button>
+                                                <button th:disabled="${feed.getId() == null}"
+                                                        class="btn btn-primary mt-4">Änderungen
+                                                    übernehmen</button>
                                             </form>
                                         </div>
                                     </div>

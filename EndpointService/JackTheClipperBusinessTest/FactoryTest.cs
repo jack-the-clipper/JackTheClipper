@@ -1,9 +1,12 @@
 using System;
+using System.IO;
 using JackTheClipperBusiness;
 using JackTheClipperBusiness.CrawlerManagement;
 using JackTheClipperBusiness.Notification;
+using JackTheClipperCommon.Configuration;
 using JackTheClipperCommon.Interfaces;
 using JackTheClipperData;
+using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace JackTheClipperBusinessTest
@@ -11,6 +14,14 @@ namespace JackTheClipperBusinessTest
     [TestClass]
     public class FactoryTest
     {
+        [AssemblyInitialize]
+        public static void AssemblyInit(TestContext context)
+        {
+            var config = new ConfigurationBuilder()
+                .AddJsonFile(new FileInfo(@"..\..\..\..\JackTheClipperRequestHandler\appsettings.json").FullName, optional: false)
+                .Build();
+            AppConfiguration.RegisterConfig(config);
+        }
         [TestMethod]
         public void GetControllerTest()
         {

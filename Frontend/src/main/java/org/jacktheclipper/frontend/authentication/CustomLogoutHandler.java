@@ -11,6 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Handles the logout events of the Jack the Clipper application. A normal
+ * {@link SimpleUrlLogoutSuccessHandler} does not suffice as we need to simulate a kind of
+ * contextPath for organization specific URLs
+ */
 public class CustomLogoutHandler extends SimpleUrlLogoutSuccessHandler
         implements LogoutSuccessHandler {
     /**
@@ -29,8 +34,6 @@ public class CustomLogoutHandler extends SimpleUrlLogoutSuccessHandler
             throws IOException, ServletException {
 
         String organization = AuthenticationUtils.getOrganization(authentication);
-        //TODO can be removed as soon as backend passes organization in a user object
-        organization = organization == null ? "default" : organization;
         String hostPart = request.getRequestURL().toString().replace(request.getRequestURI(), "");
         String contextPath = StringUtils.isEmpty(request.getContextPath()) ? "" :
                 request.getContextPath();

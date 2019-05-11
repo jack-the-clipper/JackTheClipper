@@ -8,14 +8,20 @@ import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
+
 /**
- * Holds utility for the used RestTemplate class. The RestTemplate is used to make all REST-calls
+ * Holds utility for the used {@link RestTemplate} class. The RestTemplate is used to make all
+ * REST-calls
  * to te C# backend.
  */
 public class RestTemplateUtils {
 
-    //Use this boolean to choose whether to log the content of every request/ response sent/
-    // received by a RestTemplate in this application.
+    /**
+     * This boolean decides whether a {@link LoggingRequestInterceptor} is added to every
+     * {@link RestTemplate} in the application. If it is {@code true} the interceptor will be
+     * added, otherwise not.
+     */
     private static boolean debug = true;
 
 
@@ -39,7 +45,7 @@ public class RestTemplateUtils {
     }
 
     /**
-     * Prepares a HttpEntity for the given object. It will be send as application/json
+     * Prepares a {@link HttpEntity}for the given object. It will be send as application/json
      *
      * @param object The object to be sent with the HttpRequest
      * @param <T>    The type of the object being sent with this request
@@ -49,6 +55,7 @@ public class RestTemplateUtils {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         return new HttpEntity<T>(object, headers);
     }
 

@@ -64,7 +64,7 @@ namespace JackTheClipperData
             {
                 try
                 {
-                    using (new PerfTracer(nameof(IndexRssFeedItemThreadSafeAsync)))
+                    //using (new PerfTracer(nameof(IndexRssFeedItemThreadSafeAsync)))
                     {
                         var client = new ElasticClient(settings);
                         var speedKey = new ShortArticleKey(article.IndexingSourceId, key.Updated, key.Link);
@@ -105,7 +105,7 @@ namespace JackTheClipperData
         {
             try
             {
-                using (new PerfTracer(nameof(IndexArticleThreadSafeAsync)))
+                //using (new PerfTracer(nameof(IndexArticleThreadSafeAsync)))
                 {
 #if ST
                     lock (lockObj)

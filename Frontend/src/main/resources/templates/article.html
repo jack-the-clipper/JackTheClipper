@@ -1,14 +1,29 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
-<head th:replace="layout :: head">
-</head>
-<body>
-<div th:replace="layout :: navbar (name='Feedübersicht')"></div>
-<div class="container mt-5">
-    <h1 th:text="${article.getTitle()}"></h1>
-    <p th:text="${article.getLongText()}"></p>
-    <a th:href="${article.getLink()}">Zur Quelle</a>
-</div>
-</body>
+    <head th:replace="layout :: head">
+    </head>
+    <body>
+        <div th:replace="layout :: navbar (name='Feedübersicht')"></div>
+        <div class="container mt-5">
+            <h1 th:text="${article.getTitle()}"></h1>
+            <p th:text="${article.getLongText()}"></p>
+            <a th:href="${article.getLink()}" rel="noopener" target="_blank">Zur Quelle</a>
+            <a class="page-link"
+               th:if="${#session.getAttribute(T(org.jacktheclipper.frontend.utils.Constants).LAST_VIEWED_FEED_ID) == null}"
+               th:href="@{/{orga}/feed(orga=${#authentication.getPrincipal().getOrganization()},
+                                             page=${#session.getAttribute(T(org.jacktheclipper.frontend.utils.Constants).LAST_VIEWED_FEED_PAGE)}
+                                             ,showArchived=${#session.getAttribute(T(org.jacktheclipper.frontend.utils.Constants).LAST_VIEWED_FEED_SHOWARCHIVED)})}">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zurück</button>
+            </a>
+            <a class="page-link"
+               th:unless="${#session.getAttribute(T(org.jacktheclipper.frontend.utils.Constants).LAST_VIEWED_FEED_ID) == null}"
+               th:href="@{/{orga}/feed(orga=${#authentication.getPrincipal().getOrganization()},
+       feedId=${#session.getAttribute(T(org.jacktheclipper.frontend.utils.Constants).LAST_VIEWED_FEED_ID)},
+                                             page=${#session.getAttribute(T(org.jacktheclipper.frontend.utils.Constants).LAST_VIEWED_FEED_PAGE)}
+                                             ,showArchived=${#session.getAttribute(T(org.jacktheclipper.frontend.utils.Constants).LAST_VIEWED_FEED_SHOWARCHIVED)})}">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zurück</button>
+            </a>
+        </div>
+    </body>
 </html>

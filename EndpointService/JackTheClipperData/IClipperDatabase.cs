@@ -27,11 +27,12 @@ namespace JackTheClipperData
         /// <summary>
         /// Gets the user by credentials.
         /// </summary>
-        /// <param name="mail">The mail.</param>
+        /// <param name="mailOrName">The mail or name.</param>
         /// <param name="password">The password.</param>
+        /// <param name="principalUnit">The principal unit.</param>
         /// <param name="updateLoginTimeStamp">A value indicating whether the login timestamp should be updated or not.</param>
         /// <returns>The user (if found)</returns>
-        User GetUserByCredentials(string mail, string password, bool updateLoginTimeStamp);
+        User GetUserByCredentials(string mailOrName, string password, Guid principalUnit, bool updateLoginTimeStamp);
 
         /// <summary>
         /// Gets all sources.
@@ -66,11 +67,11 @@ namespace JackTheClipperData
         /// <param name="userName">Name of the user.</param>
         /// <param name="password">The password.</param>
         /// <param name="role">The role.</param>
-        /// <param name="unit">The unit.</param>
+        /// <param name="principalUnit">The principal unit.</param>
         /// <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
         /// <param name="valid">A value whether the user is valid or not.</param>
         /// <returns>The user object of the new user.</returns>
-        User AddUser(string userMail, string userName, string password, Role role, Guid unit, bool mustChangePassword, bool valid);
+        User AddUser(string userMail, string userName, string password, Role role, Guid principalUnit, bool mustChangePassword, bool valid);
 
         /// <summary>
         /// Adds a source.
@@ -86,15 +87,6 @@ namespace JackTheClipperData
         /// <param name="source">The source.</param>
         /// <returns>succesfull bool</returns>
         bool DeleteSource(Guid source);
-
-        /// <summary>
-        /// Saves the user settings.
-        /// </summary>
-        /// <param name="user">The user.</param>
-        /// <param name="toSave">The settings to save.</param>
-        /// <returns>The saved user settings object.</returns>
-        [Obsolete]
-        UserSettings SaveUserSettings(User user, UserSettings toSave);
 
         /// <summary>
         /// Resets the users password.
@@ -127,5 +119,39 @@ namespace JackTheClipperData
         /// <returns>The superset feed filter.</returns>
         Filter GetSuperSetFeed();
 
+        /// <summary>
+        /// Gets the principal units.
+        /// </summary>
+        /// <returns>List of principal units.</returns>
+        IReadOnlyList<Tuple<string, Guid>> GetPrincipalUnits();
+
+        /// <summary>
+        /// Saves the user settings.
+        /// </summary>
+        /// <param name="settingsId">The settings identifier.</param>
+        /// <param name="notificationCheckInterval">The notification check interval.</param>
+        /// <param name="notificationSetting">The notification setting.</param>
+        /// <param name="articlesPerPage">The articles per page.</param>
+        void SaveUserSettings(Guid settingsId, int notificationCheckInterval, NotificationSetting notificationSetting, int articlesPerPage);
+
+        /// <summary>
+        /// Adds the given feed.
+        /// </summary>
+        /// <param name="settingsId">The settings id.</param>
+        /// <param name="feed">The feed to add.</param>
+        void AddFeed(Guid settingsId, Feed feed);
+
+        /// <summary>
+        /// Modifies the feed.
+        /// </summary>
+        /// <param name="settingsId">The settings id.</param>
+        /// <param name="feed">The feed to add.</param>
+        void ModifyFeed(Guid settingsId, Feed feed);
+
+        /// <summary>
+        /// Deletes the feed.
+        /// </summary>
+        /// <param name="feedId">The feed id.</param>
+        void DeleteFeed(Guid feedId);
     }
 }

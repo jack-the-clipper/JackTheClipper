@@ -21,7 +21,8 @@ public class Filter {
 
     }
 
-    public Filter(UUID id, List<String> keywords, List<String> expressions,List<String> blackList) {
+    public Filter(UUID id, List<String> keywords, List<String> expressions,
+                  List<String> blackList) {
 
         this.id = id;
         this.keywords = keywords;

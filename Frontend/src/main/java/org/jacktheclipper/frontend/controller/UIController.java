@@ -19,12 +19,10 @@ public class UIController {
      * deprecated. It is not removed yet since leaving the application root unmapped seems like a
      * bad idea
      *
-     * @param model
-     * @return
+     * @return the index of the application
      */
     @GetMapping("/*/")
-    public String home(Model model) {
-
+    public String home() {
 
         return "index";
     }

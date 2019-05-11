@@ -1,6 +1,5 @@
 package org.jacktheclipper.frontend.authentication;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jacktheclipper.frontend.enums.UserRole;
 
@@ -9,8 +8,8 @@ import java.util.UUID;
 
 /**
  * This class represents a user for this application. A user can be uniquely identified by his
- * UUID, by his eMail or by his name in his organization. A name does not need to be unique in
- * the entire application.
+ * {@link UUID}, by his eMail or by his username within the organization he belongs to. A name does
+ * not need to be unique in the entire application.
  */
 public class User implements Principal {
     private UUID userId;
@@ -18,8 +17,7 @@ public class User implements Principal {
     private String name;
     private String eMail;
     private String password;
-    private String organization = "PLEASE_CHANGE"; //TODO remove default value when backend
-    // passes this parameter
+    private String organization;
     private boolean mustChangePassword = false;
 
 
@@ -29,7 +27,7 @@ public class User implements Principal {
     }
 
     public User(UUID userId, UserRole userRole, String name, String eMail, String password,
-                String organization,boolean mustChangePassword) {
+                String organization, boolean mustChangePassword) {
 
         this.userId = userId;
         this.userRole = userRole;
@@ -120,14 +118,12 @@ public class User implements Principal {
         this.password = password;
     }
 
-    //TODO change when passed
-    @JsonIgnore
     public String getOrganization() {
 
         return organization;
     }
 
-    @JsonIgnore
+    @JsonProperty("UserPrincipalUnit")
     public void setOrganization(String organization) {
 
         this.organization = organization;

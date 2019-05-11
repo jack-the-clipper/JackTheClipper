@@ -56,13 +56,27 @@ namespace JackTheClipperCommon.SharedClasses
         public string MailAddress { get; private set; }
 
         /// <summary>
+        /// Gets the name of the principal unit.
+        /// </summary>
+        [DataMember(Name = "UserPrincipalUnit")]
+        public string PrincipalUnitName { get; private set; }
+
+        /// <summary>
+        /// Gets the principal unit identifier.
+        /// </summary>
+        [IgnoreDataMember]
+        public Guid PrincipalUnitId { get; private set;  }
+
+        /// <summary>
         /// Gets the last login time.
         /// </summary>
+        [IgnoreDataMember]
         public DateTime LastLoginTime { get; private set; }
 
         /// <summary>
         ///Gets a value indicating whether the user is valid or not.
         /// </summary>
+        [IgnoreDataMember]
         public bool IsValid { get; private set; }
 
         /// <summary>
@@ -78,10 +92,15 @@ namespace JackTheClipperCommon.SharedClasses
         /// <param name="mailAddress">The mail address.</param>
         /// <param name="role">The role.</param>
         /// <param name="name">The name.</param>
+        /// <param name="settings">The users settings.</param>
         /// <param name="mustChangePassword">Specifies if user has to reset his password</param>
+        /// <param name="lastLoginTime">The last login time.</param>
+        /// <param name="isValid">A value indicating whether the user is valid and therefore may login.</param>
+        /// <param name="principalUnitName">The name of the principal unit.</param>
+        /// <param name="principalUnitId">The id of the principal unit.</param>
         /// <exception cref="ArgumentNullException">mailAddress is null</exception>
         public User(Guid id, string mailAddress, Role role, string name, UserSettings settings, bool mustChangePassword,
-                    DateTime lastLoginTime, bool isValid)
+                    DateTime lastLoginTime, bool isValid, string principalUnitName, Guid principalUnitId)
         {
             if (string.IsNullOrEmpty(mailAddress))
             {
@@ -96,6 +115,8 @@ namespace JackTheClipperCommon.SharedClasses
             MustChangePassword = mustChangePassword;
             LastLoginTime = lastLoginTime;
             IsValid = isValid;
+            PrincipalUnitName = principalUnitName;
+            PrincipalUnitId = principalUnitId;
         }
 
         /// <summary>

@@ -12,32 +12,21 @@ import java.util.UUID;
 public class AuthenticationUtilsTest {
 
     private User user = new User(UUID.fromString("10000000-0000-0000-0000-000000000000"),
-            UserRole.User, "test", "test@example.com", "test", "Example",false);
+            UserRole.User, "test", "test@example.com", "test", "Example", false);
     private Authentication invalidAuthentication = new UsernamePasswordAuthenticationToken("otto"
             , "georg");
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void getUuidNull() {
 
-        try {
-            AuthenticationUtils.getUserId(null);
-            Assert.fail("AuthenticationUtils#getUserId worked on null parameter when it " + 
-                    "should not");
-        } catch (NullPointerException ex) {
-            Assert.assertTrue(true);
-        }
+        AuthenticationUtils.getUserId(null);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void getUuidInvalidArgument() {
 
 
-        try {
-            AuthenticationUtils.getUserId(invalidAuthentication);
-            Assert.fail("AuthenticationUtils#getUserid worked on invalid parameter type [" + invalidAuthentication.getPrincipal().getClass() + "]");
-        } catch (IllegalArgumentException ex) {
-            Assert.assertTrue(true);
-        }
+        AuthenticationUtils.getUserId(invalidAuthentication);
     }
 
     @Test
@@ -48,35 +37,67 @@ public class AuthenticationUtilsTest {
         Assert.assertEquals(UUID.fromString("10000000-0000-0000-0000-000000000000"), id);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void getOrganizationNull() {
 
-        try {
-            AuthenticationUtils.getOrganization(null);
-            Assert.fail("AuthenticationUtils#getOrganization worked on null parameter when it " + "should not");
-        } catch (NullPointerException ex) {
-            Assert.assertTrue(true);
-        }
+        AuthenticationUtils.getOrganization(null);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void getOrganizationInvalidArgument() {
 
-        try {
-            AuthenticationUtils.getOrganization(invalidAuthentication);
-            Assert.fail();
-        } catch (IllegalArgumentException ex) {
-            Assert.assertTrue(true);
-        }
+        AuthenticationUtils.getOrganization(invalidAuthentication);
     }
 
-    @Test
+    @Test()
     public void getOrganization() {
 
         String orga =
                 AuthenticationUtils.getOrganization(new UsernamePasswordAuthenticationToken(user,
                         user.getPassword()));
-        Assert.assertEquals("Organization [" + orga + "] differed from expected [Example]", 
+        Assert.assertEquals("Organization [" + orga + "] differed from expected [Example]",
                 "Example", orga);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void getEmailNull() {
+
+        AuthenticationUtils.getEmail(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getEmailInvalidArgument() {
+
+        AuthenticationUtils.getEmail(invalidAuthentication);
+    }
+
+    @Test
+    public void getEmail() {
+
+        String mail = AuthenticationUtils.getEmail(new UsernamePasswordAuthenticationToken(user,
+                user.getPassword()));
+        Assert.assertEquals("Email[" + mail + "] differed from expected [test@example.com]",
+                "test@example.com", mail);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void isMustChangePasswordNull() {
+
+        AuthenticationUtils.isMustChangePassword(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void isMustChangePasswordInvalidArgument() {
+
+        AuthenticationUtils.isMustChangePassword(invalidAuthentication);
+    }
+
+    @Test
+    public void isMustChangePassword() {
+
+        boolean mustChangePassword =
+                AuthenticationUtils.isMustChangePassword(new UsernamePasswordAuthenticationToken(user, user.getPassword()));
+        Assert.assertFalse("mustChangePassword should have been false but was not",
+                mustChangePassword);
     }
 }

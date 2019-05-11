@@ -27,7 +27,7 @@ namespace JackTheClipperDataTest
             try
             {
                 // ReSharper disable once UnusedVariable
-                var tmp = DatabaseAdapterFactory.GetControllerInstance<IIndexerService>();
+                var tmp = DatabaseAdapterFactory.GetControllerInstance<IClipperUserAPI>();
             }
             catch (Exception e)
             {

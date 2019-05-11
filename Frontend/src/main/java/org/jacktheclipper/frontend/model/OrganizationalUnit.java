@@ -14,17 +14,19 @@ public class OrganizationalUnit {
     private UUID id;
     private String name;
     private UUID parentId;
+    private String adminMail;
 
     /* Used by Jackson for JSON deserialization*/
     public OrganizationalUnit() {
 
     }
 
-    public OrganizationalUnit(UUID id, String name, UUID parentId) {
+    public OrganizationalUnit(UUID id, String name, UUID parentId, String adminMail) {
 
         this.id = id;
         this.name = name;
         this.parentId = parentId;
+        this.adminMail = adminMail;
     }
 
     public UUID getId() {
@@ -58,5 +60,16 @@ public class OrganizationalUnit {
     public void setParentId(UUID parentId) {
 
         this.parentId = parentId;
+    }
+
+    public String getAdminMail() {
+
+        return adminMail;
+    }
+
+    @JsonProperty("AdminMailAddress")
+    public void setAdminMail(String adminMail) {
+
+        this.adminMail = adminMail;
     }
 }

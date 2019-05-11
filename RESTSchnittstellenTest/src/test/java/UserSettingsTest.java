@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -128,14 +129,44 @@ public class UserSettingsTest {
 
     @Test
     public void gChangeSource() throws JsonProcessingException {
+        Response response = given().relaxedHTTPSValidation().when().get("/clipper" +
+                "/availablesources?userId=" + Constants.sysAdminId.toString());
+        assertEquals(200, response.getStatusCode());
+        Source[] actual = response.as(Source[].class);
+
+        var t = Arrays.stream(actual).filter(e -> e.getName().equalsIgnoreCase("RestTest")).findFirst();
+        var x = t.get();
         Source changed = source;
         changed.setName("ChangeTest");
+        changed.setId(x.getId());
 
-        ObjectMapper om = new ObjectMapper();
-        String tmp = om.writeValueAsString(source);
+       // ObjectMapper om = new ObjectMapper();
+        //String tmp = om.writeValueAsString(source);
 
-        Response response = given().contentType(io.restassured.http.ContentType.JSON).body(tmp).relaxedHTTPSValidation().when().put("/clipper" +
-                "/changesource?userId=" + Constants.sysAdminId.toString() + "?sourceId=" + source.getId().toString());
+        response = given().contentType(io.restassured.http.ContentType.JSON).body(source).relaxedHTTPSValidation().when().put("/clipper" +
+                "/changesource?userId=" + Constants.sysAdminId.toString() + "&tochange=" + x.getId().toString());
+
+        assertEquals(200, response.getStatusCode());
+
+        MethodResult actual1 = response.as(MethodResult.class);
+        MethodResult expected = new MethodResult(SuccessState.Successful, null);
+        assertEquals(expected.getState(), actual1.getState());
+        assertEquals(expected.getMessage(), actual1.getMessage());
+    }
+
+    @Test
+    public void hDeleteSource()
+    {
+        Response response = given().relaxedHTTPSValidation().when().get("/clipper" +
+                "/availablesources?userId=" + Constants.sysAdminId.toString());
+        assertEquals(200, response.getStatusCode());
+        Source[] actual1 = response.as(Source[].class);
+
+        var t = Arrays.stream(actual1).filter(e -> e.getName().equalsIgnoreCase("ChangeTest")).findFirst();
+        var x = t.get();
+
+        response = given().relaxedHTTPSValidation().when().delete("/clipper" +
+                "/deletesource?userId=" + Constants.sysAdminId.toString() + "&sourceId="+ x.getId().toString());
 
         assertEquals(200, response.getStatusCode());
 
@@ -146,19 +177,65 @@ public class UserSettingsTest {
     }
 
     @Test
-    public void hDeleteSource() {
-        Response response = given().relaxedHTTPSValidation().when().delete("/clipper" +
-                "/delete?userId=" + Constants.sysAdminId.toString() + "sourceId?="+ source.getId().toString());
+    public void iResetPassword() {
+        Response response = given().relaxedHTTPSValidation().when().put("/clipper" +
+                "/reset?userMail=" + Constants.registeredUser.geteMail());
+
+        assertEquals(200, response.getStatusCode());
+    }
+    @Test
+    public void jChangePassword() {
+        Response response = given().relaxedHTTPSValidation().when().put("/clipper" +
+                "/changepassword?userId=" + Constants.registeredUser.getUserId() + "&newPassword=hallo123");
 
         assertEquals(200, response.getStatusCode());
 
-        MethodResult actual = response.as(MethodResult.class);
-        MethodResult expected = new MethodResult(SuccessState.Successful, null);
-        assertEquals(expected.getState(), actual.getState());
-        assertEquals(expected.getMessage(), actual.getMessage());
+        given().relaxedHTTPSValidation().when().put("/clipper" +
+                "/changepassword?userId=" + Constants.registeredUser.getUserId() + "&newPassword=" + Constants.registeredUser.getPassword());
+    }
+    @Test
+    public void kChangeMailAddress() {
+        Response response = given().relaxedHTTPSValidation().when().put("/clipper" +
+                "/changemailaddress?userId=" + Constants.registeredUser.getUserId() + "&newUserMail=jackxiss@example.com");
+
+        assertEquals(200, response.getStatusCode());
+
+        given().relaxedHTTPSValidation().when().put("/clipper" +
+                "/changemailaddress?userId=" + Constants.registeredUser.getUserId() + "&newUserMail=" + Constants.registeredUser.geteMail());
     }
 
+    @Test
+    public void lGetFeed() {
+        Response response = given().relaxedHTTPSValidation().when().get("/clipper/getusersettings"
+                + "?userId=" + Constants.registeredUser.getUserId());
+        assertEquals(200, response.getStatusCode());
+        UserSettings actual = response.as(UserSettings.class);
+        UUID feedId = actual.getFeeds().get(0).getId();
+        response = given().relaxedHTTPSValidation().when().get("/clipper/getfeed?userId=" + Constants.registeredUser.getUserId().toString()
+                                                                                         + "&feedId=" + feedId.toString()
+                                                                                         + "&page=0"
+                                                                                         + "&showArchived=true");
+        assertEquals(200, response.statusCode());
+        assertNotNull(response.as(Article[].class));
+        Constants.articleId = response.as(Article[].class)[0].getId();
+    }
 
+    @Test
+    public void mGetArticle() {
+        Response response = given().relaxedHTTPSValidation().when().get("/clipper/getArticle?userId=" +
+                Constants.registeredUser.getUserId().toString() + "&articleId=" + Constants.articleId);
+        assertEquals(200, response.statusCode());
+        assertNotNull(response.as(Article.class));
+    }
+
+    @Test
+    public void mGetOrganizationalUnitSettings() {
+        Response response = given().relaxedHTTPSValidation().when().get("/clipper/getorganizationalunitsettings" +
+                "?userId=" + Constants.registeredUser.getUserId().toString() +
+                "&unitId=" + Constants.unitId.toString());
+        assertEquals(200, response.statusCode());
+        assertNotNull(response.as(OrganizationalUnitSettings.class));
+    }
 
     private void compareSources(Source expected, Source actual) {
 

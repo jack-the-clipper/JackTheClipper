@@ -1,0 +1,10 @@
+org.jacktheclipper.frontend
+org.jacktheclipper.frontend.authentication
+org.jacktheclipper.frontend.configuration
+org.jacktheclipper.frontend.controller
+org.jacktheclipper.frontend.enums
+org.jacktheclipper.frontend.exception
+org.jacktheclipper.frontend.interceptors
+org.jacktheclipper.frontend.model
+org.jacktheclipper.frontend.service
+org.jacktheclipper.frontend.utils

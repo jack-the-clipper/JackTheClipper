@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JackTheClipperRequestHandler</name>
+    </assembly>
+    <members>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperAdminController.DeleteSource(System.Guid,System.Guid)">
+            <summary>
+            Deletes the source.
+            </summary>
+            <param name="userId">The user identifier.</param>
+            <param name="sourceId">The source identifier.</param>
+            <returns>200 if succesfull, BadRequest if not</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperAdminController.ChangeSource(System.Guid,System.Guid,JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Endpoint to Change the Source
+            </summary>
+            <param name="userId">The user identifier.</param>
+            <param name="tochange">The source to change.</param>
+            <param name="newsource">New Source</param>
+            <returns>200 if succesfull, BadRequest if not</returns>
+        </member>
+        <member name="T:JackTheClipperRequestHandler.Controllers.ClipperServiceController">
+            <summary>
+            Controller for basic services.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperServiceController.GetStatus">
+            <summary>
+            Gets the status of the app.
+            </summary>
+            <returns>MethodResult with status.</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperServiceController.GetPrincipalUnits">
+            <summary>
+            Gets the principal units.
+            </summary>
+            <returns>List of principal units.</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperUserController.SaveUserSettings(System.Guid,System.Int32,JackTheClipperCommon.Enums.NotificationSetting,System.Int32)">
+            <summary>
+            Saves the user settings.
+            </summary>
+            <param name="settingsId">The settings identifier.</param>
+            <param name="notificationCheckInterval">The notification check interval.</param>
+            <param name="notificationSetting">The notification setting.</param>
+            <param name="articlesPerPage">The articles per page.</param>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperUserController.AddFeed(System.Guid,JackTheClipperCommon.SharedClasses.Feed)">
+            <summary>
+            Adds the given feed.
+            </summary>
+            <param name="settingsId">The settings id.</param>
+            <param name="feed">The feed to add.</param>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperUserController.ModifyFeed(System.Guid,JackTheClipperCommon.SharedClasses.Feed)">
+            <summary>
+            Modifies the feed.
+            </summary>
+            <param name="settingsId">The settings id.</param>
+            <param name="feed">The feed to add.</param>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperUserController.DeleteFeed(System.Guid)">
+            <summary>
+            Deletes the feed.
+            </summary>
+            <param name="feedId">The feed id.</param>
+        </member>
+    </members>
+</doc>

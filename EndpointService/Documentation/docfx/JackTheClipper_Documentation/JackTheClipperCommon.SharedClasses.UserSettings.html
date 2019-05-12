@@ -1,0 +1,356 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class UserSettings
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class UserSettings
+   ">
+    <meta name="generator" content="docfx 2.42.2.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="JackTheClipperCommon.SharedClasses.UserSettings">
+  
+  
+  <h1 id="JackTheClipperCommon_SharedClasses_UserSettings" data-uid="JackTheClipperCommon.SharedClasses.UserSettings" class="text-break">Class UserSettings
+  </h1>
+  <div class="markdown level0 summary"><p>UserSettings are connected to a specific User and
+contain its Feed definition, its notificationSettings and the Notificationintervall</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">UserSettings</span></div>
+      <div class="level2"><a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings.html">OrganizationalUnitSettings</a></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="JackTheClipperCommon.SharedClasses.html">JackTheClipperCommon.SharedClasses</a></h6>
+  <h6><strong>Assembly</strong>: JackTheClipperCommon.dll</h6>
+  <h5 id="JackTheClipperCommon_SharedClasses_UserSettings_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class UserSettings : Object</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_UserSettings__ctor_" data-uid="JackTheClipperCommon.SharedClasses.UserSettings.#ctor*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_UserSettings__ctor_System_Guid_System_Collections_Generic_IReadOnlyCollection_JackTheClipperCommon_SharedClasses_Feed__JackTheClipperCommon_Enums_NotificationSetting_System_Int32_System_Int32_" data-uid="JackTheClipperCommon.SharedClasses.UserSettings.#ctor(System.Guid,System.Collections.Generic.IReadOnlyCollection{JackTheClipperCommon.SharedClasses.Feed},JackTheClipperCommon.Enums.NotificationSetting,System.Int32,System.Int32)">UserSettings(Guid, IReadOnlyCollection&lt;Feed&gt;, NotificationSetting, Int32, Int32)</h4>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="JackTheClipperCommon.SharedClasses.UserSettings.html">UserSettings</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UserSettings(Guid id, IReadOnlyCollection&lt;Feed&gt; feeds, NotificationSetting notificationSettings, int notificationCheckIntervalInMinutes, int articlesPerPage)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>The id.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IReadOnlyCollection</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.Feed.html">Feed</a>&gt;</td>
+        <td><span class="parametername">feeds</span></td>
+        <td><p>The feeds.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.Enums.NotificationSetting.html">NotificationSetting</a></td>
+        <td><span class="parametername">notificationSettings</span></td>
+        <td><p>The notification settings.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">notificationCheckIntervalInMinutes</span></td>
+        <td><p>The notification check interval in minutes.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">articlesPerPage</span></td>
+        <td><p>The number of articles per page.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.ArgumentNullException</span></td>
+        <td><p>feeds are null</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_UserSettings_ArticlesPerPage_" data-uid="JackTheClipperCommon.SharedClasses.UserSettings.ArticlesPerPage*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_UserSettings_ArticlesPerPage" data-uid="JackTheClipperCommon.SharedClasses.UserSettings.ArticlesPerPage">ArticlesPerPage</h4>
+  <div class="markdown level1 summary"><p>Gets the number of articles per page.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int ArticlesPerPage { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_UserSettings_Feeds_" data-uid="JackTheClipperCommon.SharedClasses.UserSettings.Feeds*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_UserSettings_Feeds" data-uid="JackTheClipperCommon.SharedClasses.UserSettings.Feeds">Feeds</h4>
+  <div class="markdown level1 summary"><p>Gets the feeds.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyCollection&lt;Feed&gt; Feeds { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IReadOnlyCollection</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.Feed.html">Feed</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_UserSettings_Id_" data-uid="JackTheClipperCommon.SharedClasses.UserSettings.Id*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_UserSettings_Id" data-uid="JackTheClipperCommon.SharedClasses.UserSettings.Id">Id</h4>
+  <div class="markdown level1 summary"><p>Gets the id of the settings</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid Id { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_UserSettings_NotificationCheckIntervalInMinutes_" data-uid="JackTheClipperCommon.SharedClasses.UserSettings.NotificationCheckIntervalInMinutes*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_UserSettings_NotificationCheckIntervalInMinutes" data-uid="JackTheClipperCommon.SharedClasses.UserSettings.NotificationCheckIntervalInMinutes">NotificationCheckIntervalInMinutes</h4>
+  <div class="markdown level1 summary"><p>Gets the notification check interval in minutes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int NotificationCheckIntervalInMinutes { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_UserSettings_NotificationSettings_" data-uid="JackTheClipperCommon.SharedClasses.UserSettings.NotificationSettings*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_UserSettings_NotificationSettings" data-uid="JackTheClipperCommon.SharedClasses.UserSettings.NotificationSettings">NotificationSettings</h4>
+  <div class="markdown level1 summary"><p>Gets the notification settings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotificationSetting NotificationSettings { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.Enums.NotificationSetting.html">NotificationSetting</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_UserSettings_NotificationSettingsAsString_" data-uid="JackTheClipperCommon.SharedClasses.UserSettings.NotificationSettingsAsString*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_UserSettings_NotificationSettingsAsString" data-uid="JackTheClipperCommon.SharedClasses.UserSettings.NotificationSettingsAsString">NotificationSettingsAsString</h4>
+  <div class="markdown level1 summary"><p>Gets the notification settings as string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string NotificationSettingsAsString { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

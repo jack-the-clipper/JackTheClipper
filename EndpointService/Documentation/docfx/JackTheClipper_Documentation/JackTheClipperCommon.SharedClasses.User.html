@@ -1,0 +1,563 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class User
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class User
+   ">
+    <meta name="generator" content="docfx 2.42.2.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="JackTheClipperCommon.SharedClasses.User">
+  
+  
+  <h1 id="JackTheClipperCommon_SharedClasses_User" data-uid="JackTheClipperCommon.SharedClasses.User" class="text-break">Class User
+  </h1>
+  <div class="markdown level0 summary"><p>Contains the definition of a User.
+It has a unique Id, a UserName, a Password and a Role.
+It also has a reference to its UserSettings</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">User</span></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="JackTheClipperCommon.SharedClasses.html">JackTheClipperCommon.SharedClasses</a></h6>
+  <h6><strong>Assembly</strong>: JackTheClipperCommon.dll</h6>
+  <h5 id="JackTheClipperCommon_SharedClasses_User_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class User : Object</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_User__ctor_" data-uid="JackTheClipperCommon.SharedClasses.User.#ctor*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_User__ctor_System_Guid_System_String_JackTheClipperCommon_Enums_Role_System_String_JackTheClipperCommon_SharedClasses_UserSettings_System_Boolean_System_DateTime_System_Boolean_System_String_System_Guid_" data-uid="JackTheClipperCommon.SharedClasses.User.#ctor(System.Guid,System.String,JackTheClipperCommon.Enums.Role,System.String,JackTheClipperCommon.SharedClasses.UserSettings,System.Boolean,System.DateTime,System.Boolean,System.String,System.Guid)">User(Guid, String, Role, String, UserSettings, Boolean, DateTime, Boolean, String, Guid)</h4>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public User(Guid id, string mailAddress, Role role, string name, UserSettings settings, bool mustChangePassword, DateTime lastLoginTime, bool isValid, string principalUnitName, Guid principalUnitId)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>The identifier.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">mailAddress</span></td>
+        <td><p>The mail address.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.Enums.Role.html">Role</a></td>
+        <td><span class="parametername">role</span></td>
+        <td><p>The role.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.UserSettings.html">UserSettings</a></td>
+        <td><span class="parametername">settings</span></td>
+        <td><p>The users settings.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">mustChangePassword</span></td>
+        <td><p>Specifies if user has to reset his password</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.DateTime</span></td>
+        <td><span class="parametername">lastLoginTime</span></td>
+        <td><p>The last login time.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isValid</span></td>
+        <td><p>A value indicating whether the user is valid and therefore may login.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">principalUnitName</span></td>
+        <td><p>The name of the principal unit.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">principalUnitId</span></td>
+        <td><p>The id of the principal unit.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.ArgumentNullException</span></td>
+        <td><p>mailAddress is null</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_User_Id_" data-uid="JackTheClipperCommon.SharedClasses.User.Id*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_User_Id" data-uid="JackTheClipperCommon.SharedClasses.User.Id">Id</h4>
+  <div class="markdown level1 summary"><p>Gets the identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid Id { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_User_IsValid_" data-uid="JackTheClipperCommon.SharedClasses.User.IsValid*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_User_IsValid" data-uid="JackTheClipperCommon.SharedClasses.User.IsValid">IsValid</h4>
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the user is valid or not.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsValid { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_User_LastLoginTime_" data-uid="JackTheClipperCommon.SharedClasses.User.LastLoginTime*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_User_LastLoginTime" data-uid="JackTheClipperCommon.SharedClasses.User.LastLoginTime">LastLoginTime</h4>
+  <div class="markdown level1 summary"><p>Gets the last login time.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTime LastLoginTime { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.DateTime</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_User_MailAddress_" data-uid="JackTheClipperCommon.SharedClasses.User.MailAddress*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_User_MailAddress" data-uid="JackTheClipperCommon.SharedClasses.User.MailAddress">MailAddress</h4>
+  <div class="markdown level1 summary"><p>Gets the mail address.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string MailAddress { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_User_MustChangePassword_" data-uid="JackTheClipperCommon.SharedClasses.User.MustChangePassword*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_User_MustChangePassword" data-uid="JackTheClipperCommon.SharedClasses.User.MustChangePassword">MustChangePassword</h4>
+  <div class="markdown level1 summary"><p>If True User needs to change his PW on login.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool MustChangePassword { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_User_PrincipalUnitId_" data-uid="JackTheClipperCommon.SharedClasses.User.PrincipalUnitId*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_User_PrincipalUnitId" data-uid="JackTheClipperCommon.SharedClasses.User.PrincipalUnitId">PrincipalUnitId</h4>
+  <div class="markdown level1 summary"><p>Gets the principal unit identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid PrincipalUnitId { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_User_PrincipalUnitName_" data-uid="JackTheClipperCommon.SharedClasses.User.PrincipalUnitName*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_User_PrincipalUnitName" data-uid="JackTheClipperCommon.SharedClasses.User.PrincipalUnitName">PrincipalUnitName</h4>
+  <div class="markdown level1 summary"><p>Gets the name of the principal unit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string PrincipalUnitName { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_User_Role_" data-uid="JackTheClipperCommon.SharedClasses.User.Role*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_User_Role" data-uid="JackTheClipperCommon.SharedClasses.User.Role">Role</h4>
+  <div class="markdown level1 summary"><p>Gets the role(s).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Role Role { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.Enums.Role.html">Role</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_User_RoleAsString_" data-uid="JackTheClipperCommon.SharedClasses.User.RoleAsString*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_User_RoleAsString" data-uid="JackTheClipperCommon.SharedClasses.User.RoleAsString">RoleAsString</h4>
+  <div class="markdown level1 summary"><p>Gets the role as string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string RoleAsString { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_User_Settings_" data-uid="JackTheClipperCommon.SharedClasses.User.Settings*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_User_Settings" data-uid="JackTheClipperCommon.SharedClasses.User.Settings">Settings</h4>
+  <div class="markdown level1 summary"><p>Gets or sets the settings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UserSettings Settings { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.UserSettings.html">UserSettings</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_User_UserName_" data-uid="JackTheClipperCommon.SharedClasses.User.UserName*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_User_UserName" data-uid="JackTheClipperCommon.SharedClasses.User.UserName">UserName</h4>
+  <div class="markdown level1 summary"><p>Gets the name of the user.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string UserName { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_User_GetFeed_" data-uid="JackTheClipperCommon.SharedClasses.User.GetFeed*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_User_GetFeed_System_Guid_" data-uid="JackTheClipperCommon.SharedClasses.User.GetFeed(System.Guid)">GetFeed(Guid)</h4>
+  <div class="markdown level1 summary"><p>Gets the feed by id.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Feed GetFeed(Guid id)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>The identifier.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.Feed.html">Feed</a></td>
+        <td><p>The feed.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,943 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Interface IClipperDatabase
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Interface IClipperDatabase
+   ">
+    <meta name="generator" content="docfx 2.42.2.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="JackTheClipperData.IClipperDatabase">
+  
+  
+  <h1 id="JackTheClipperData_IClipperDatabase" data-uid="JackTheClipperData.IClipperDatabase" class="text-break">Interface IClipperDatabase
+  </h1>
+  <div class="markdown level0 summary"><p>Interface for the clipper database.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="JackTheClipperData.html">JackTheClipperData</a></h6>
+  <h6><strong>Assembly</strong>: JackTheClipperData.dll</h6>
+  <h5 id="JackTheClipperData_IClipperDatabase_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IClipperDatabase</code></pre>
+  </div>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_AddFeed_" data-uid="JackTheClipperData.IClipperDatabase.AddFeed*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_AddFeed_System_Guid_JackTheClipperCommon_SharedClasses_Feed_" data-uid="JackTheClipperData.IClipperDatabase.AddFeed(System.Guid,JackTheClipperCommon.SharedClasses.Feed)">AddFeed(Guid, Feed)</h4>
+  <div class="markdown level1 summary"><p>Adds the given feed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void AddFeed(Guid settingsId, Feed feed)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">settingsId</span></td>
+        <td><p>The settings id.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.Feed.html">Feed</a></td>
+        <td><span class="parametername">feed</span></td>
+        <td><p>The feed to add.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_AddSource_" data-uid="JackTheClipperData.IClipperDatabase.AddSource*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_AddSource_JackTheClipperCommon_SharedClasses_Source_" data-uid="JackTheClipperData.IClipperDatabase.AddSource(JackTheClipperCommon.SharedClasses.Source)">AddSource(Source)</h4>
+  <div class="markdown level1 summary"><p>Adds a source.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Source AddSource(Source source)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.Source.html">Source</a></td>
+        <td><span class="parametername">source</span></td>
+        <td><p>The source.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.Source.html">Source</a></td>
+        <td><p>The object of the new source.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_AddUser_" data-uid="JackTheClipperData.IClipperDatabase.AddUser*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_AddUser_System_String_System_String_System_String_JackTheClipperCommon_Enums_Role_System_Guid_System_Boolean_System_Boolean_" data-uid="JackTheClipperData.IClipperDatabase.AddUser(System.String,System.String,System.String,JackTheClipperCommon.Enums.Role,System.Guid,System.Boolean,System.Boolean)">AddUser(String, String, String, Role, Guid, Boolean, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Adds a user.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">User AddUser(string userMail, string userName, string password, Role role, Guid principalUnit, bool mustChangePassword, bool valid)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">userMail</span></td>
+        <td><p>The user mail.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">userName</span></td>
+        <td><p>Name of the user.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">password</span></td>
+        <td><p>The password.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.Enums.Role.html">Role</a></td>
+        <td><span class="parametername">role</span></td>
+        <td><p>The role.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">principalUnit</span></td>
+        <td><p>The principal unit.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">mustChangePassword</span></td>
+        <td><p>A value indicating whether the user must change the pw.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">valid</span></td>
+        <td><p>A value whether the user is valid or not.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
+        <td><p>The user object of the new user.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_ChangeMailAddress_" data-uid="JackTheClipperData.IClipperDatabase.ChangeMailAddress*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_ChangeMailAddress_JackTheClipperCommon_SharedClasses_User_System_String_" data-uid="JackTheClipperData.IClipperDatabase.ChangeMailAddress(JackTheClipperCommon.SharedClasses.User,System.String)">ChangeMailAddress(User, String)</h4>
+  <div class="markdown level1 summary"><p>Changes the users mail address.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">MethodResult ChangeMailAddress(User user, string newUserMail)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
+        <td><span class="parametername">user</span></td>
+        <td><p>The user.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">newUserMail</span></td>
+        <td><p>The users new mail address.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
+        <td><p>MethodResult indicating success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_ChangePassword_" data-uid="JackTheClipperData.IClipperDatabase.ChangePassword*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_ChangePassword_JackTheClipperCommon_SharedClasses_User_System_String_" data-uid="JackTheClipperData.IClipperDatabase.ChangePassword(JackTheClipperCommon.SharedClasses.User,System.String)">ChangePassword(User, String)</h4>
+  <div class="markdown level1 summary"><p>Changes the users password.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">MethodResult ChangePassword(User user, string newPassword)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
+        <td><span class="parametername">user</span></td>
+        <td><p>The users mail address.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">newPassword</span></td>
+        <td><p>The new password to set.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
+        <td><p>MethodResult indicating success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_DeleteFeed_" data-uid="JackTheClipperData.IClipperDatabase.DeleteFeed*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_DeleteFeed_System_Guid_" data-uid="JackTheClipperData.IClipperDatabase.DeleteFeed(System.Guid)">DeleteFeed(Guid)</h4>
+  <div class="markdown level1 summary"><p>Deletes the feed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void DeleteFeed(Guid feedId)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">feedId</span></td>
+        <td><p>The feed id.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_DeleteSource_" data-uid="JackTheClipperData.IClipperDatabase.DeleteSource*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_DeleteSource_System_Guid_" data-uid="JackTheClipperData.IClipperDatabase.DeleteSource(System.Guid)">DeleteSource(Guid)</h4>
+  <div class="markdown level1 summary"><p>Deletes the source.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool DeleteSource(Guid source)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">source</span></td>
+        <td><p>The source.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>succesfull bool</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_GetAllUsers_" data-uid="JackTheClipperData.IClipperDatabase.GetAllUsers*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetAllUsers" data-uid="JackTheClipperData.IClipperDatabase.GetAllUsers">GetAllUsers()</h4>
+  <div class="markdown level1 summary"><p>Gets all users.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IReadOnlyCollection&lt;User&gt; GetAllUsers()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IReadOnlyCollection</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a>&gt;</td>
+        <td><p>List of all users.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_GetAvailableSources_" data-uid="JackTheClipperData.IClipperDatabase.GetAvailableSources*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetAvailableSources_JackTheClipperCommon_SharedClasses_User_" data-uid="JackTheClipperData.IClipperDatabase.GetAvailableSources(JackTheClipperCommon.SharedClasses.User)">GetAvailableSources(User)</h4>
+  <div class="markdown level1 summary"><p>Gets the available sources.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IReadOnlyList&lt;Source&gt; GetAvailableSources(User user)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
+        <td><span class="parametername">user</span></td>
+        <td><p>The user.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.Source.html">Source</a>&gt;</td>
+        <td><p>List of available sources.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_GetOrganizationalUnitById_" data-uid="JackTheClipperData.IClipperDatabase.GetOrganizationalUnitById*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetOrganizationalUnitById_System_Guid_" data-uid="JackTheClipperData.IClipperDatabase.GetOrganizationalUnitById(System.Guid)">GetOrganizationalUnitById(Guid)</h4>
+  <div class="markdown level1 summary"><p>Gets the organizational unit by identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">OrganizationalUnit GetOrganizationalUnitById(Guid id)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>The identifier.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a></td>
+        <td><p>The unit (if found)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_GetOrganizationalUnits_" data-uid="JackTheClipperData.IClipperDatabase.GetOrganizationalUnits*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetOrganizationalUnits_JackTheClipperCommon_SharedClasses_User_" data-uid="JackTheClipperData.IClipperDatabase.GetOrganizationalUnits(JackTheClipperCommon.SharedClasses.User)">GetOrganizationalUnits(User)</h4>
+  <div class="markdown level1 summary"><p>Gets the available organizational units.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IReadOnlyList&lt;OrganizationalUnit&gt; GetOrganizationalUnits(User user)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
+        <td><span class="parametername">user</span></td>
+        <td><p>The user.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a>&gt;</td>
+        <td><p>List of available units.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_GetPrincipalUnits_" data-uid="JackTheClipperData.IClipperDatabase.GetPrincipalUnits*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetPrincipalUnits" data-uid="JackTheClipperData.IClipperDatabase.GetPrincipalUnits">GetPrincipalUnits()</h4>
+  <div class="markdown level1 summary"><p>Gets the principal units.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IReadOnlyList&lt;Tuple&lt;string, Guid&gt;&gt; GetPrincipalUnits()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<span class="xref">System.Tuple</span>&lt;<span class="xref">System.String</span>, <span class="xref">System.Guid</span>&gt;&gt;</td>
+        <td><p>List of principal units.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_GetSources_" data-uid="JackTheClipperData.IClipperDatabase.GetSources*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetSources" data-uid="JackTheClipperData.IClipperDatabase.GetSources">GetSources()</h4>
+  <div class="markdown level1 summary"><p>Gets all sources.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IReadOnlyCollection&lt;Source&gt; GetSources()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IReadOnlyCollection</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.Source.html">Source</a>&gt;</td>
+        <td><p>List of all sources.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_GetSuperSetFeed_" data-uid="JackTheClipperData.IClipperDatabase.GetSuperSetFeed*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetSuperSetFeed" data-uid="JackTheClipperData.IClipperDatabase.GetSuperSetFeed">GetSuperSetFeed()</h4>
+  <div class="markdown level1 summary"><p>Gets the superset feed filter.
+This is a feed filter which contains all relevant keywords form any feed within the system.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Filter GetSuperSetFeed()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.Filter.html">Filter</a></td>
+        <td><p>The superset feed filter.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_GetUserByCredentials_" data-uid="JackTheClipperData.IClipperDatabase.GetUserByCredentials*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetUserByCredentials_System_String_System_String_System_Guid_System_Boolean_" data-uid="JackTheClipperData.IClipperDatabase.GetUserByCredentials(System.String,System.String,System.Guid,System.Boolean)">GetUserByCredentials(String, String, Guid, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Gets the user by credentials.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">User GetUserByCredentials(string mailOrName, string password, Guid principalUnit, bool updateLoginTimeStamp)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">mailOrName</span></td>
+        <td><p>The mail or name.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">password</span></td>
+        <td><p>The password.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">principalUnit</span></td>
+        <td><p>The principal unit.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">updateLoginTimeStamp</span></td>
+        <td><p>A value indicating whether the login timestamp should be updated or not.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
+        <td><p>The user (if found)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_GetUserById_" data-uid="JackTheClipperData.IClipperDatabase.GetUserById*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetUserById_System_Guid_" data-uid="JackTheClipperData.IClipperDatabase.GetUserById(System.Guid)">GetUserById(Guid)</h4>
+  <div class="markdown level1 summary"><p>Gets the user by identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">User GetUserById(Guid id)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>The identifier.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
+        <td><p>The user (if found)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_ModifyFeed_" data-uid="JackTheClipperData.IClipperDatabase.ModifyFeed*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_ModifyFeed_System_Guid_JackTheClipperCommon_SharedClasses_Feed_" data-uid="JackTheClipperData.IClipperDatabase.ModifyFeed(System.Guid,JackTheClipperCommon.SharedClasses.Feed)">ModifyFeed(Guid, Feed)</h4>
+  <div class="markdown level1 summary"><p>Modifies the feed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void ModifyFeed(Guid settingsId, Feed feed)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">settingsId</span></td>
+        <td><p>The settings id.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.Feed.html">Feed</a></td>
+        <td><span class="parametername">feed</span></td>
+        <td><p>The feed to add.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_ResetPassword_" data-uid="JackTheClipperData.IClipperDatabase.ResetPassword*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_ResetPassword_System_String_System_String_" data-uid="JackTheClipperData.IClipperDatabase.ResetPassword(System.String,System.String)">ResetPassword(String, String)</h4>
+  <div class="markdown level1 summary"><p>Resets the users password.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">MethodResult ResetPassword(string userMail, string newPassword)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">userMail</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">newPassword</span></td>
+        <td><p>The new password to set.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
+        <td><p>MethodResult indicating success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_SaveUserSettings_" data-uid="JackTheClipperData.IClipperDatabase.SaveUserSettings*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_SaveUserSettings_System_Guid_System_Int32_JackTheClipperCommon_Enums_NotificationSetting_System_Int32_" data-uid="JackTheClipperData.IClipperDatabase.SaveUserSettings(System.Guid,System.Int32,JackTheClipperCommon.Enums.NotificationSetting,System.Int32)">SaveUserSettings(Guid, Int32, NotificationSetting, Int32)</h4>
+  <div class="markdown level1 summary"><p>Saves the user settings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SaveUserSettings(Guid settingsId, int notificationCheckInterval, NotificationSetting notificationSetting, int articlesPerPage)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">settingsId</span></td>
+        <td><p>The settings identifier.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">notificationCheckInterval</span></td>
+        <td><p>The notification check interval.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.Enums.NotificationSetting.html">NotificationSetting</a></td>
+        <td><span class="parametername">notificationSetting</span></td>
+        <td><p>The notification setting.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">articlesPerPage</span></td>
+        <td><p>The articles per page.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

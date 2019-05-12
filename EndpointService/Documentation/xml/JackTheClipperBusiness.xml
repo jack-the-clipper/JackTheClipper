@@ -1,0 +1,607 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JackTheClipperBusiness</name>
+    </assembly>
+    <members>
+        <member name="T:JackTheClipperBusiness.CrawlerManagement.Crawler">
+            <summary>
+            The class which represents a crawler.
+            This class observes a given source, performs basic caching and notifies the Observer in case a new article was found.
+            </summary>
+        </member>
+        <member name="F:JackTheClipperBusiness.CrawlerManagement.Crawler.scheduler">
+            <summary>
+            The scheduler.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperBusiness.CrawlerManagement.Crawler.Observer">
+            <summary>
+            The Observer of the current instance.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperBusiness.CrawlerManagement.Crawler.Source">
+            <summary>
+            The source which should ne observed.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperBusiness.CrawlerManagement.Crawler.Interval">
+            <summary>
+            Gets the observation interval
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.Crawler.#ctor(JackTheClipperBusiness.CrawlerManagement.ICrawlerObserver,JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperBusiness.CrawlerManagement.Crawler"/> class.
+            </summary>
+            <param name="observer">The Observer of the instance to create.</param>
+            <param name="source">The source to observe.</param>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.Crawler.PerformObservation(System.Object)">
+            <summary>
+            Performs the observation. Callback event of <see cref="F:JackTheClipperBusiness.CrawlerManagement.Crawler.scheduler"/>
+            </summary>
+            <param name="timerState">timer state object (never used).</param>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.Crawler.RequestRescheduling">
+            <summary>
+            Requests rescheduling.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.Crawler.HandleImages(System.String,System.String,JackTheClipperCommon.BusinessObjects.RssKey)">
+            <summary>
+            Performs image handling.
+            </summary>
+            <param name="content">The content.</param>
+            <param name="title">The title.</param>
+            <param name="rssKey">The RSS key.</param>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.Crawler.HandleImages(HtmlAgilityPack.HtmlDocument,System.String,JackTheClipperCommon.BusinessObjects.RssKey)">
+            <summary>
+            Performs image handling.
+            </summary>
+            <param name="doc">The document.</param>
+            <param name="title">The title.</param>
+            <param name="rssKey">The RSS key.</param>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.Crawler.Start">
+            <summary>
+            Starts the crawler (if not already running). 
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.Crawler.Stop">
+            <summary>
+            Stops the crawler.  
+            </summary>
+        </member>
+        <member name="T:JackTheClipperBusiness.CrawlerManagement.CrawlerController">
+            <summary>
+            Controls active crawlers and manages the interaction with the indexer.
+            </summary>
+        </member>
+        <member name="F:JackTheClipperBusiness.CrawlerManagement.CrawlerController.Controller">
+            <summary>
+            The only instance of the controller;
+            </summary>
+        </member>
+        <member name="F:JackTheClipperBusiness.CrawlerManagement.CrawlerController.activeCrawlers">
+            <summary>
+            List of currently active crawlers.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.CrawlerController.#ctor">
+            <summary>
+            Prevents a default instance of the <see cref="T:JackTheClipperBusiness.CrawlerManagement.CrawlerController"/> class from being created.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.CrawlerController.GetCrawlerController">
+            <summary>
+            Gets an instance of a <see cref="T:JackTheClipperBusiness.CrawlerManagement.CrawlerController"/>.
+            </summary>
+            <returns>Instance of <see cref="T:JackTheClipperBusiness.CrawlerManagement.CrawlerController"/></returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.CrawlerController.Restart">
+            <summary>
+            Restarts the controller instance.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.CrawlerController.ClearAllIndexes">
+            <summary>
+            Clears all indexes (use with care, this is a permanent operation).
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.CrawlerController.NotifyNewRssFeedFoundThreadSave(System.ServiceModel.Syndication.SyndicationItem,JackTheClipperCommon.BusinessObjects.RssKey,JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Notifies the Observer that a (probably) new Rss feed item has been detected by a crawler.
+            Note: Must be thread safe
+            </summary>
+            <param name="item">The item to index</param>
+            <param name="rssKey">The belonging rss key.</param>
+            <param name="source">The source.</param>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.CrawlerController.NotifyNewWebPageContentFoundThreadSafe(System.String,System.String,System.String,System.DateTime,JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Notifies the Observer that (probably) new web page content has been detected by a crawler.
+            Note: Must be thread safe
+            </summary>
+            <param name="title">The title.</param>
+            <param name="content">The content</param>
+            <param name="link">The link.</param>
+            <param name="published">The published date.</param>
+            <param name="source">The source.</param>
+            <returns>Method result, indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.CrawlerController.NotifyNewImageContentFoundThreadSafe(System.String,System.String,System.String,System.String,System.DateTime,JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Notifies the Observer that (probably) new web page content has been detected by a crawler.
+            Note: Must be thread safe
+            </summary>
+            <param name="title">The title.</param>
+            <param name="description">The image description</param>
+            <param name="link">The link.</param>
+            <param name="imageLink">The link of the image.</param>
+            <param name="published">The published date.</param>
+            <param name="source">The source.</param>
+            <returns>Method result, indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.CrawlerController.Start">
+            <summary>
+            Starts the observation. Creates all necessary crawlers.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.CrawlerController.Stop">
+            <summary>
+            Stops all active crawlers.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.CrawlerController.DoesNotViolateBlackList(JackTheClipperCommon.SharedClasses.Source,System.String)">
+            <summary>
+            Checks whether the input doesnt violates the black list.
+            </summary>
+            <param name="source">The source.</param>
+            <param name="value">The value.</param>
+            <returns>True if no violation occured.</returns>
+        </member>
+        <member name="T:JackTheClipperBusiness.CrawlerManagement.CrawlerExtensions">
+            <summary>
+            Extensions for crawling process.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.CrawlerExtensions.GetTextFromHtml(System.String)">
+            <summary>
+            Extracts the Text of a HTML string into a normal string
+            </summary>
+            <param name="source">The string to convert.</param>
+            <returns>Plain text.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.CrawlerExtensions.GetTextFromHtml(HtmlAgilityPack.HtmlDocument)">
+            <summary>
+            Extracts the Text of a HTML string into a normal string
+            </summary>
+            <param name="source">The source to convert.</param>
+            <returns>Plain text.s</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.CrawlerExtensions.GetAllImages(System.String)">
+            <summary>
+            Gets all images.
+            </summary>
+            <param name="source">The source.</param>
+            <returns>List of image data.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.CrawlerExtensions.GetAllImages(HtmlAgilityPack.HtmlDocument)">
+            <summary>
+            Gets all images.
+            </summary>
+            <param name="doc">The document.</param>
+            <returns>List of image data.</returns>
+        </member>
+        <member name="T:JackTheClipperBusiness.CrawlerManagement.ICrawlerController">
+            <summary>
+            Interface for any crawler controller.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.ICrawlerController.Restart">
+            <summary>
+            Restarts the controller instance.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.ICrawlerController.ClearAllIndexes">
+            <summary>
+            Clears all indexes (use with care, this is a permanent operation).
+            </summary>
+        </member>
+        <member name="T:JackTheClipperBusiness.CrawlerManagement.ICrawlerObserver">
+            <summary>
+            Interface for the CrawlerController
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.ICrawlerObserver.NotifyNewRssFeedFoundThreadSave(System.ServiceModel.Syndication.SyndicationItem,JackTheClipperCommon.BusinessObjects.RssKey,JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Notifies the Observer that a (probably) new Rss feed item has been detected by a crawler.
+            Note: Must be thread safe
+            </summary>
+            <param name="item">The item to index</param>
+            <param name="rssKey">The belonging rss key.</param>
+            <param name="source">The source.</param>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.ICrawlerObserver.NotifyNewWebPageContentFoundThreadSafe(System.String,System.String,System.String,System.DateTime,JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Notifies the Observer that (probably) new web page content has been detected by a crawler.
+            Note: Must be thread safe
+            </summary>
+            <param name="title">The title.</param>
+            <param name="content">The content</param>
+            <param name="link">The link.</param>
+            <param name="published">The published date.</param>
+            <param name="source">The source.</param>
+            <returns>Method result, indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.ICrawlerObserver.NotifyNewImageContentFoundThreadSafe(System.String,System.String,System.String,System.String,System.DateTime,JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Notifies the Observer that (probably) new web page content has been detected by a crawler.
+            Note: Must be thread safe
+            </summary>
+            <param name="title">The title.</param>
+            <param name="description">The image description</param>
+            <param name="link">The link.</param>
+            <param name="imageLink">The link of the image.</param>
+            <param name="published">The published date.</param>
+            <param name="source">The source.</param>
+            <returns>Method result, indicating success.</returns>
+        </member>
+        <member name="T:JackTheClipperBusiness.CrawlerManagement.RssCrawler">
+            <summary>
+            A crawler which observes an RSS-source.
+            </summary>
+        </member>
+        <member name="F:JackTheClipperBusiness.CrawlerManagement.RssCrawler.CacheThreshold">
+            <summary>
+            Number of cached last rss feeds.
+            </summary>
+        </member>
+        <member name="F:JackTheClipperBusiness.CrawlerManagement.RssCrawler.lastIndexed">
+            <summary>
+            Cache, containing the last indexed keys
+            </summary>
+        </member>
+        <member name="F:JackTheClipperBusiness.CrawlerManagement.RssCrawler.websiteCrawler">
+            <summary>
+            <see cref="T:JackTheClipperBusiness.CrawlerManagement.WebsiteCrawler"/>, used to perform the regex and/or XPath handling
+            </summary>
+        </member>
+        <member name="P:JackTheClipperBusiness.CrawlerManagement.RssCrawler.Interval">
+            <summary>
+            Gets the observation interval
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.RssCrawler.#ctor(JackTheClipperBusiness.CrawlerManagement.ICrawlerObserver,JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperBusiness.CrawlerManagement.RssCrawler"/> class.
+            </summary>
+            <param name="observer">The Observer of the instance to create.</param>
+            <param name="source">The source to observe.</param>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.RssCrawler.PerformObservation(System.Object)">
+            <summary>
+            Performs the observation. Callback event of <see cref="F:JackTheClipperBusiness.CrawlerManagement.Crawler.scheduler"/>
+            </summary>
+            <param name="timerState">timer state object (never used).</param>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.RssCrawler.GetKey(System.ServiceModel.Syndication.SyndicationItem)">
+            <summary>
+            Gets the <see cref="T:JackTheClipperCommon.BusinessObjects.RssKey"/> for the given <see cref="T:System.ServiceModel.Syndication.SyndicationItem"/>
+            </summary>
+            <param name="item">The item.</param>
+            <returns>The key of the item.</returns>
+        </member>
+        <member name="T:JackTheClipperBusiness.CrawlerManagement.WebsiteCrawler">
+            <summary>
+            A crawler which observes a website.
+            </summary>
+        </member>
+        <member name="F:JackTheClipperBusiness.CrawlerManagement.WebsiteCrawler.regex">
+            <summary>
+            The regex to be applied.
+            </summary>
+        </member>
+        <member name="F:JackTheClipperBusiness.CrawlerManagement.WebsiteCrawler.lastFetchedContent">
+            <summary>
+            The last fetched content (caching mechanisam/duplicate check)
+            </summary>
+        </member>
+        <member name="P:JackTheClipperBusiness.CrawlerManagement.WebsiteCrawler.Interval">
+            <summary>
+            Gets the observation interval
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.WebsiteCrawler.#cctor">
+            <summary>
+            Static constructor of <see cref="T:JackTheClipperBusiness.CrawlerManagement.WebsiteCrawler"/>
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.WebsiteCrawler.#ctor(JackTheClipperBusiness.CrawlerManagement.ICrawlerObserver,JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperBusiness.CrawlerManagement.Crawler"/> class.
+            </summary>
+            <param name="observer">The Observer of the instance to create.</param>
+            <param name="source">The source to observe.</param>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.WebsiteCrawler.PerformObservation(System.Object)">
+            <summary>
+            Performs the observation. Callback event of <see cref="F:JackTheClipperBusiness.CrawlerManagement.Crawler.scheduler"/>
+            </summary>
+            <param name="timerState">timer state object (never used).</param>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.WebsiteCrawler.HandleDocument(HtmlAgilityPack.HtmlDocument,System.String,JackTheClipperCommon.BusinessObjects.RssKey)">
+            <summary>
+            Handles a given document (Xpath and regex)
+            </summary>
+            <param name="doc">The doc to handle.</param>
+            <param name="title">The title (optional).</param>
+            <param name="rssKey">The rss key (optional).</param>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.WebsiteCrawler.HandleRegex(System.String,System.String,System.String,System.DateTime)">
+            <summary>
+            Performs regex handling.
+            </summary>
+            <param name="content">The content which should be observed.</param>
+            <param name="title">The title.</param>
+            <param name="link">The link.</param>
+            <param name="published">the published date.</param>
+        </member>
+        <member name="M:JackTheClipperBusiness.CrawlerManagement.WebsiteCrawler.GetTitle(HtmlAgilityPack.HtmlDocument)">
+            <summary>
+            Gets the title from the given document.
+            </summary>
+            <param name="doc"></param>
+            <returns></returns>
+        </member>
+        <member name="T:JackTheClipperBusiness.Factory">
+            <summary>
+            Factory to get different Types of Objects 
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.Factory.GetControllerInstance``1">
+            <summary>
+            Returns an instance of the requested interface.
+            </summary>
+            <typeparam name="T">The type oof the requested interface.</typeparam>
+            <returns>An instance of the requested interface.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.Factory.GetObjectInstanceById``1(System.Guid)">
+            <summary>
+            Gets the corresponding object by its id.
+            </summary>
+            <typeparam name="T">The type of the requested object.</typeparam>
+            <param name="id">The id of the requested object.</param>
+            <returns>The requested object (if exists).</returns>
+        </member>
+        <member name="T:JackTheClipperBusiness.MailController">
+            <summary>
+            Mails the users with new News if mail notification is wanted.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.MailController.QuerySendMailAsync(JackTheClipperCommon.SharedClasses.User,System.String,System.String,System.IO.MemoryStream,System.String)">
+            <summary>
+            Queries the send of a mail asynchronous.
+            </summary>
+            <param name="user">The user to send the mail to.</param>
+            <param name="subject">The subject.</param>
+            <param name="content">The content.</param>
+            <param name="pdfStream">The PDF stream (optional).</param>
+            <param name="pdfName">Name of the PDF (optional).</param>
+        </member>
+        <member name="T:JackTheClipperBusiness.MailControllerBAD">
+            <summary>
+            Mails the Users with new News if the Mail is wanted.
+            </summary>
+        </member>
+        <member name="T:JackTheClipperBusiness.NotificationControllerBAD">
+            <summary>
+            Check if Notification is wanted/necessary
+            </summary>
+        </member>
+        <member name="T:JackTheClipperBusiness.Notification.INotificationController">
+            <summary>
+            Interface for any notification controller.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.Notification.INotificationController.StartNotificationProcessing">
+            <summary>
+            Starts the notification processing pipeline.
+            </summary>
+        </member>
+        <member name="T:JackTheClipperBusiness.Notification.NotificationControllerWrapper">
+            <summary>
+            Class which implements <see cref="T:JackTheClipperBusiness.Notification.INotificationController"/> and wraps around the real <see cref="T:JackTheClipperBusiness.NotificationControllerBAD"/>.
+            Mainly created to avoid merge conflicts as <see cref="T:JackTheClipperBusiness.NotificationControllerBAD"/> is actively refactored at the moment.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.Notification.NotificationControllerWrapper.StartNotificationProcessing">
+            <summary>
+            Starts the notification processing pipeline of the <see cref="T:JackTheClipperBusiness.NotificationControllerBAD"/>.
+            </summary>
+        </member>
+        <member name="T:JackTheClipperBusiness.OrganizationalUnitManagement.OrganizationalUnitController">
+            <summary>
+            Settings for the OragnizationalUnit
+            </summary>
+        </member>
+        <member name="T:JackTheClipperBusiness.PasswordGenerator">
+            <summary>
+            Generates a new random password.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.PasswordGenerator.GeneratePw">
+            <summary>
+            Generates a random password with 16 characters length.
+            </summary>
+            <returns>Password as string.</returns>
+        </member>
+        <member name="T:JackTheClipperBusiness.PdfGeneratorBAD">
+            <summary>
+            See classname
+            </summary>
+        </member>
+        <member name="T:JackTheClipperBusiness.StatusController">
+            <summary>
+            Status controller, implements <see cref="T:JackTheClipperCommon.Interfaces.IClipperService"/>
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.StatusController.GetStatus">
+            <summary>
+            Gets the status.
+            </summary>
+            <returns>MethodResult indicating the status.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.StatusController.GetPrincipalUnits">
+            <summary>
+            Gets the principal units.
+            </summary>
+            <returns>List of principal units.</returns>
+        </member>
+        <member name="T:JackTheClipperBusiness.UserManagement.UserController">
+            <summary>
+            Contains Methods to get Articles from the ElasticServer, which match the Users preferences
+            Also contains Methods which correspond to the class name
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.TryAuthenticateUser(System.String,System.String,System.Guid)">
+            <summary>
+            Tries to authenticate the user.
+            </summary>
+            <param name="userMailOrName">The user email or name.</param>
+            <param name="userPassword">The password of the user.</param>
+            <param name="principalUnit">The principal unit.</param>
+            <returns>The <see cref="T:JackTheClipperCommon.SharedClasses.User"/>; if authenticated successfully</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.GetFeedDefinitions(JackTheClipperCommon.SharedClasses.User)">
+            <summary>
+            Gets the feed definitions of the given user.
+            </summary>
+            <param name="user">The user.</param>
+            <returns>Collection of feeds for the given user.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.GetFeed(JackTheClipperCommon.SharedClasses.User,JackTheClipperCommon.SharedClasses.Feed,System.Int32,System.Boolean)">
+            <summary>
+            Gets the feed data.
+            </summary>
+            <param name="user">The user.</param>
+            <param name="feed">The feed.</param>
+            <param name="page">The requested page.</param>
+            <param name="showArchived">A value indicating whether the archived articles should be shown or not.</param>
+            <returns>List of <see cref="T:JackTheClipperCommon.SharedClasses.ShortArticle"/>s within the feed.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.GetArticle(System.Guid)">
+            <summary>
+            Gets a specific article.
+            </summary>
+            <param name="articleId">The article id.</param>
+            <returns>The (full) <see cref="T:JackTheClipperCommon.SharedClasses.Article"/>.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.GetUserSettings(JackTheClipperCommon.SharedClasses.User)">
+            <summary>
+            Gets the user settings.
+            </summary>
+            <param name="user">The user.</param>
+            <returns>The settings of the given user.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.ResetPassword(System.String)">
+            <summary>
+            Attempts to reset the password.
+            </summary>
+            <param name="userMail">The users mail address.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.ChangePassword(JackTheClipperCommon.SharedClasses.User,System.String)">
+            <summary>
+            Attempts to change the password.
+            </summary>
+            <param name="user">The users mail address</param>
+            <param name="newPassword">The new user password.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.ChangeMailAddress(JackTheClipperCommon.SharedClasses.User,System.String)">
+            <summary>
+            Changes the users mail address.
+            </summary>
+            <param name="user">The user.</param>
+            <param name="newUserMail">The new mail address.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.GetAvailableSources(JackTheClipperCommon.SharedClasses.User)">
+            <summary>
+            Gets the available sources for a given user.
+            </summary>
+            <param name="user">The user.</param>
+            <returns>List of available sources.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.AddUser(System.String,System.String,System.String,JackTheClipperCommon.Enums.Role,System.Guid,System.Boolean,System.Boolean)">
+            <summary>
+            Adds a user.
+            </summary>
+            <param name="userMail">The new users mail.</param>
+            <param name="userName">The new users username.</param>
+            <param name="password">The new users password.</param>
+            <param name="role">The new users role.</param>
+            <param name="principalUnit">The new users principal unit.</param>
+            <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
+            <param name="valid">A value whether the user is valid or not.</param>
+            <returns>The new users <see cref="T:JackTheClipperCommon.SharedClasses.User"/>object</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.SaveUserSettings(System.Guid,System.Int32,JackTheClipperCommon.Enums.NotificationSetting,System.Int32)">
+            <summary>
+            Saves the user settings.
+            </summary>
+            <param name="settingsId">The settings identifier.</param>
+            <param name="notificationCheckInterval">The notification check interval.</param>
+            <param name="notificationSetting">The notification setting.</param>
+            <param name="articlesPerPage">The articles per page.</param>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.AddFeed(System.Guid,JackTheClipperCommon.SharedClasses.Feed)">
+            <summary>
+            Adds the given feed.
+            </summary>
+            <param name="settingsId">The settings id.</param>
+            <param name="feed">The feed to add.</param>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.ModifyFeed(System.Guid,JackTheClipperCommon.SharedClasses.Feed)">
+            <summary>
+            Modifies the feed.
+            </summary>
+            <param name="settingsId">The settings id.</param>
+            <param name="feed">The feed to add.</param>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.DeleteFeed(System.Guid)">
+            <summary>
+            Deletes the feed.
+            </summary>
+            <param name="feedId">The feed id.</param>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.AddSource(JackTheClipperCommon.SharedClasses.User,JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Adds the given source.
+            </summary>
+            <param name="user">The user who requests the addition.</param>
+            <param name="toAdd">The source to add.</param>
+            <returns>MethodResult indicating success</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.DeleteSource(JackTheClipperCommon.SharedClasses.User,System.Guid)">
+            <summary>
+            Deletes the given source.
+            </summary>
+            <param name="user">The user who requests the deletion.</param>
+            <param name="toDelete">The source to delete.</param>
+            <returns>MethodResult indicating success</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.ChangeSource(JackTheClipperCommon.SharedClasses.User,System.Guid,JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Changes the source.
+            </summary>
+            <param name="user">The user.</param>
+            <param name="toChange">Id of the source, which should be changed</param>
+            <param name="newSource">The new source.</param>
+            <returns>MethodResult</returns>
+        </member>
+    </members>
+</doc>

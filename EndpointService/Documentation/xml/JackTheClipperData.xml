@@ -1,0 +1,936 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JackTheClipperData</name>
+    </assembly>
+    <members>
+        <member name="T:JackTheClipperData.DatabaseAdapterFactory">
+            <summary>
+            The factory for any database adapter
+            </summary>
+        </member>
+        <member name="M:JackTheClipperData.DatabaseAdapterFactory.GetControllerInstance``1">
+            <summary>
+            Gets the controller instance of any database controller.
+            </summary>
+            <typeparam name="T">Type of database controller</typeparam>
+            <returns>Instance which implements T</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">T not supported</exception>
+        </member>
+        <member name="T:JackTheClipperData.DataExtensions">
+            <summary>
+            Contains extension methods of the data package
+            </summary>
+        </member>
+        <member name="M:JackTheClipperData.DataExtensions.GetSHA256(System.String)">
+            <summary>
+            Gets the SHA256-hash of the given string.
+            </summary>
+            <param name="toHash">The string to hash.</param>
+            <returns>The hash of the given string.</returns>
+            <exception cref="T:System.ArgumentNullException">toHash was null</exception>
+        </member>
+        <member name="M:JackTheClipperData.DataExtensions.ConvertToRole(System.Int64)">
+            <summary>
+            Converts the given database value to a <see cref="T:JackTheClipperCommon.Enums.Role"/>.
+            </summary>
+            <param name="toConvert">The database value to convert.</param>
+            <returns>The determined <see cref="T:JackTheClipperCommon.Enums.Role"/>.</returns>
+        </member>
+        <member name="M:JackTheClipperData.DataExtensions.ToDatabaseRole(JackTheClipperCommon.Enums.Role)">
+            <summary>
+            Converts a given <see cref="T:JackTheClipperCommon.Enums.Role"/> to the corresponding database value.
+            </summary>
+            <param name="toConvert">The <see cref="T:JackTheClipperCommon.Enums.Role"/> to convert.</param>
+            <returns>The corresponding database value</returns>
+        </member>
+        <member name="M:JackTheClipperData.DataExtensions.ToDatabaseContentType(JackTheClipperCommon.Enums.ContentType)">
+            <summary>
+            Converts a given <see cref="T:JackTheClipperCommon.Enums.ContentType"/> to the corresponding database value.
+            </summary>
+            <param name="toConvert">The <see cref="T:JackTheClipperCommon.Enums.ContentType"/> to convert.</param>
+            <returns>The corresponding database value</returns>
+        </member>
+        <member name="M:JackTheClipperData.DataExtensions.ConvertToContent(System.Int64)">
+            <summary>
+            Converts the given database value to a <see cref="T:JackTheClipperCommon.Enums.ContentType"/>.
+            </summary>
+            <param name="toConvert">The database value to convert.</param>
+            <returns>The determined <see cref="T:JackTheClipperCommon.Enums.ContentType"/>.</returns>
+        </member>
+        <member name="M:JackTheClipperData.DataExtensions.ToDatabaseNotification(JackTheClipperCommon.Enums.NotificationSetting)">
+            <summary>
+            Converts a given <see cref="T:JackTheClipperCommon.Enums.NotificationSetting"/> to the corresponding database value.
+            </summary>
+            <param name="toConvert">The <see cref="T:JackTheClipperCommon.Enums.NotificationSetting"/> to convert.</param>
+            <returns>The corresponding database value</returns>
+        </member>
+        <member name="M:JackTheClipperData.DataExtensions.ConvertToNotification(System.Int64)">
+            <summary>
+            Converts the given database value to a <see cref="T:JackTheClipperCommon.Enums.NotificationSetting"/>.
+            </summary>
+            <param name="toConvert">The database value to convert.</param>
+            <returns>The determined <see cref="T:JackTheClipperCommon.Enums.NotificationSetting"/>.</returns>
+        </member>
+        <member name="M:JackTheClipperData.DataExtensions.ToDatabaseList(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Converts a given <see cref="T:System.Collections.Generic.IEnumerable`1"/> to the corresponding database value.
+            </summary>
+            <param name="toConvert">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> to convert.</param>
+            <returns>The corresponding database value</returns>
+        </member>
+        <member name="M:JackTheClipperData.DataExtensions.ConvertToStringList(System.String)">
+            <summary>
+            Converts the given database value to an <see cref="T:System.Collections.Generic.IReadOnlyList`1"/>.
+            </summary>
+            <param name="toConvert">The database value to convert.</param>
+            <returns>The determined <see cref="T:System.Collections.Generic.IReadOnlyList`1"/>.</returns>
+        </member>
+        <member name="M:JackTheClipperData.DataExtensions.GetStringFromNullable(System.Data.Common.DbDataReader,System.Int32)">
+            <summary>
+            Gets the string of nullable database field.
+            </summary>
+            <param name="reader">The reader.</param>
+            <param name="ordinal">The ordinal index of the column.</param>
+            <returns>The determined string.</returns>
+        </member>
+        <member name="M:JackTheClipperData.DataExtensions.AppendParameters(MySql.Data.MySqlClient.MySqlCommand,MySql.Data.MySqlClient.MySqlParameter[])">
+            <summary>
+            Appends the parameters.
+            </summary>
+            <param name="command">The command.</param>
+            <param name="parameters">The parameters.</param>
+        </member>
+        <member name="M:JackTheClipperData.DataExtensions.ToStoredProcedureOutParam(System.String,MySql.Data.MySqlClient.MySqlDbType)">
+            <summary>
+            Converts the given parameters to a stored procedure out param.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="type">The type.</param>
+            <returns>The generated out param.</returns>
+        </member>
+        <member name="T:JackTheClipperData.ElasticController">
+            <summary>
+            Class to control every interaction that needs to be done with the ElasticServer.
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.ElasticController.ElasticUri">
+            <summary>
+            The uri of the elastic server.
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.ElasticController.settings">
+            <summary>
+            The connections settings
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.ElasticController.CleanUpJob">
+            <summary>
+            Reference to the running clean up job.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.#cctor">
+            <summary>
+            Static ctor of <see cref="T:JackTheClipperData.ElasticController"/>
+            </summary>
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.IndexRssFeedItemThreadSafeAsync(JackTheClipperCommon.SharedClasses.Article,JackTheClipperCommon.BusinessObjects.RssKey)">
+            <summary>
+            Indexes an RSS article thread safe.
+            </summary>
+            <param name="article">The article.</param>
+            <param name="key">The rss key.</param>
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.IndexArticleThreadSafeAsync(JackTheClipperCommon.SharedClasses.Article)">
+            <summary>
+            Indexes the web site thread safe.
+            </summary>
+            <param name="article">The article.</param>
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.ClearIndex">
+            <summary>
+            Clears all indexes
+            Warning: This is not reversible.
+            Proceed with Caution
+            </summary>
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.GetFeedAsync(JackTheClipperCommon.SharedClasses.User,System.Guid,System.DateTime,System.Int32)">
+            <summary>
+            Gets the requested feed
+            </summary>
+            <param name="user">The User for which the feed is requested.</param>
+            <param name="feedId">The Id to the feed which should be generated.</param>
+            <param name="since">The date from which on articles should be considered.</param>
+            <param name="page">The requested page.</param>
+            <returns>List of articles within the feed</returns>
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.GetCompleteFeedAsync(JackTheClipperCommon.SharedClasses.User,System.DateTime)">
+            <summary>
+            Gets the complete feed (= all relevant articles in any feed) of a given user.
+            </summary>
+            <param name="user">The User for which the complete feed is requested</param>
+            <param name="since">The date from which on articles should be considered.</param>
+            <returns>List of articles within any feed of the user.</returns>
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.GetArticleAsync(System.Guid)">
+            <summary>Gets a specific Article.</summary>
+            <param name="articleId">The Id of the article to search.</param>
+            <returns>The article (if exists)</returns>
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.IsArticleDuplicate(JackTheClipperCommon.SharedClasses.Article,Nest.IElasticClient)">
+            <summary>
+            Checks if the specified Article is a duplicate
+            </summary>
+            <param name="article">Article to check</param>
+            <param name="client">The current client</param>
+            <returns>A value indicating whether the article already exists.</returns>
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.IsArticleDuplicate(JackTheClipperCommon.BusinessObjects.ShortArticleKey,Nest.IElasticClient)">
+            <summary>
+            Checks if the specified Article is a duplicate
+            </summary>
+            <param name="rssSpeedLookupKey">Rss key to check</param>
+            <param name="client">The current client</param>
+            <returns>A value indicating whether the article already exists.</returns>
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.GetSupersetFeedQuery(Nest.QueryContainerDescriptor{JackTheClipperCommon.SharedClasses.Article},JackTheClipperCommon.SharedClasses.Article)">
+            <summary>
+            Gets the superset feed query
+            </summary>
+            <param name="descriptor">Current descriptor</param>
+            <param name="article">The current article which should be checked for relevance.</param>
+            <returns>The superset feed query.</returns>
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.IndexArticle(JackTheClipperCommon.SharedClasses.Article,Nest.IElasticClient)">
+            <summary>
+            Indexes the specified article to ElasticServer
+            </summary>
+            <param name="article">The article.</param>
+            <param name="client">ElasticClient.</param>
+            <returns>The method result.</returns>
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.IndexArticle(JackTheClipperCommon.SharedClasses.Article,JackTheClipperCommon.BusinessObjects.ShortArticleKey,Nest.IElasticClient)">
+            <summary>
+            Indexes the specified article to ElasticServer
+            </summary>
+            <param name="article">The article.</param>
+            <param name="rssLookupKey">The rss lookup key.</param>
+            <param name="client">The ElasticClient.</param>
+            <returns>The method result.</returns>
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.DeleteByIdAsync(Nest.IElasticClient,System.String,System.String)">
+            <summary>
+            Deletes an article by its id.
+            </summary>
+            <param name="client">The client to use.</param>
+            <param name="index">The index to use.</param>
+            <param name="articleId">The article id to delete.</param>
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.GetFeedSelector(System.Collections.Generic.IEnumerable{JackTheClipperCommon.SharedClasses.Feed},System.Int32,System.Int32,System.DateTime)">
+            <summary>
+            Builds and returns the feed selector.
+            </summary>
+            <param name="feeds">The feeds.</param>
+            <param name="from">Starting index for return value (paging).</param>
+            <param name="size">Number of items to return (paging).</param>
+            <param name="since">The time from which on feeds should be queried.</param>
+            <returns>Function, representing the feed selector.</returns>
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.GetFeedQuery(System.Collections.Generic.IEnumerable{JackTheClipperCommon.SharedClasses.Feed})">
+            <summary>
+            Gets the elastic query for the given feeds.
+            </summary>
+            <param name="relevantFeeds">The relevant feeds to determine their query.</param>
+            <returns>The query for the feed.</returns>
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.GetDistinctNoBlackListViolations(System.Collections.Generic.IReadOnlyCollection{JackTheClipperCommon.SharedClasses.Feed},System.Collections.Generic.IEnumerable{JackTheClipperCommon.SharedClasses.Article})">
+            <summary>
+            Distincts the input and checks whether the input doesnt violates any black list.
+            </summary>
+            <param name="feeds">The relevant feeds.</param>
+            <param name="value">The value.</param>
+            <returns>True if no violation occured.</returns>
+        </member>
+        <member name="T:JackTheClipperData.ElasticController.TemporaryIndexCleanUp">
+            <summary>
+            Class which ensures the cleanup of a temporary index operation
+            </summary>
+            <seealso cref="T:System.IDisposable" />
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.TemporaryIndexCleanUp.#ctor(JackTheClipperCommon.SharedClasses.ShortArticle,Nest.IElasticClient)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperData.ElasticController.TemporaryIndexCleanUp"/> class.
+            </summary>
+            <param name="article">The article.</param>
+            <param name="client">The client.</param>
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.TemporaryIndexCleanUp.Dispose">
+            <summary>
+            Undoes the temporary index operation
+            </summary>
+        </member>
+        <member name="T:JackTheClipperData.ElasticController.ElasticDuplicateRemover">
+            <summary>
+            Removes duplicates we cant avoid (Example: Webpage: <p><p>Test</p></p> with Regex //p + asyncness /
+            Other example: Some Rss feeds increment the "Published" time after the article has been changed, but not the text)
+            Based upon https://www.elastic.co/de/blog/how-to-find-and-remove-duplicate-documents-in-elasticsearch
+            </summary>
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.ElasticDuplicateRemover.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperData.ElasticController.ElasticDuplicateRemover"/> class.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.ElasticDuplicateRemover.CleanUp(System.Object)">
+            <summary>
+            Performs the clean up job.
+            </summary>
+            <param name="state">State param, never used.</param>
+        </member>
+        <member name="M:JackTheClipperData.ElasticController.ElasticDuplicateRemover.GetAllDocumentsInIndex(Nest.IElasticClient)">
+            <summary>
+            Gets all documents within elastic.
+            Based upon http://telegraphrepaircompany.com/elasticsearch-nest-scroll-api-c/
+            </summary>
+            <param name="client">The client to use.</param>
+            <returns>Enumerable of all articles within the ElasticSearch server.</returns>
+        </member>
+        <member name="T:JackTheClipperData.IClipperDatabase">
+            <summary>
+            Interface for the clipper database.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.GetUserById(System.Guid)">
+            <summary>
+            Gets the user by identifier.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>The user (if found)</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.GetOrganizationalUnitById(System.Guid)">
+            <summary>
+            Gets the organizational unit by identifier.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>The unit (if found)</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.GetUserByCredentials(System.String,System.String,System.Guid,System.Boolean)">
+            <summary>
+            Gets the user by credentials.
+            </summary>
+            <param name="mailOrName">The mail or name.</param>
+            <param name="password">The password.</param>
+            <param name="principalUnit">The principal unit.</param>
+            <param name="updateLoginTimeStamp">A value indicating whether the login timestamp should be updated or not.</param>
+            <returns>The user (if found)</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.GetSources">
+            <summary>
+            Gets all sources.
+            </summary>
+            <returns>List of all sources.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.GetAllUsers">
+            <summary>
+            Gets all users.
+            </summary>
+            <returns>List of all users.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.GetAvailableSources(JackTheClipperCommon.SharedClasses.User)">
+            <summary>
+            Gets the available sources.
+            </summary>
+            <param name="user">The user.</param>
+            <returns>List of available sources.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.GetOrganizationalUnits(JackTheClipperCommon.SharedClasses.User)">
+            <summary>
+            Gets the available organizational units.
+            </summary>
+            <param name="user">The user.</param>
+            <returns>List of available units.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.AddUser(System.String,System.String,System.String,JackTheClipperCommon.Enums.Role,System.Guid,System.Boolean,System.Boolean)">
+            <summary>
+            Adds a user.
+            </summary>
+            <param name="userMail">The user mail.</param>
+            <param name="userName">Name of the user.</param>
+            <param name="password">The password.</param>
+            <param name="role">The role.</param>
+            <param name="principalUnit">The principal unit.</param>
+            <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
+            <param name="valid">A value whether the user is valid or not.</param>
+            <returns>The user object of the new user.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.AddSource(JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Adds a source.
+            </summary>
+            <param name="source">The source.</param>
+            <returns>The object of the new source.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.DeleteSource(System.Guid)">
+            <summary>
+            Deletes the source.
+            </summary>
+            <param name="source">The source.</param>
+            <returns>succesfull bool</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.ResetPassword(System.String,System.String)">
+            <summary>
+            Resets the users password.
+            </summary>
+            <param name="userMail"></param>
+            <param name="newPassword">The new password to set.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.ChangePassword(JackTheClipperCommon.SharedClasses.User,System.String)">
+            <summary>
+            Changes the users password.
+            </summary>
+            <param name="user">The users mail address.</param>
+            <param name="newPassword">The new password to set.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.ChangeMailAddress(JackTheClipperCommon.SharedClasses.User,System.String)">
+            <summary>
+            Changes the users mail address.
+            </summary>
+            <param name="user">The user.</param>
+            <param name="newUserMail">The users new mail address.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.GetSuperSetFeed">
+            <summary>
+             Gets the superset feed filter.
+             This is a feed filter which contains all relevant keywords form any feed within the system.
+             </summary>
+             <returns>The superset feed filter.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.GetPrincipalUnits">
+            <summary>
+            Gets the principal units.
+            </summary>
+            <returns>List of principal units.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.SaveUserSettings(System.Guid,System.Int32,JackTheClipperCommon.Enums.NotificationSetting,System.Int32)">
+            <summary>
+            Saves the user settings.
+            </summary>
+            <param name="settingsId">The settings identifier.</param>
+            <param name="notificationCheckInterval">The notification check interval.</param>
+            <param name="notificationSetting">The notification setting.</param>
+            <param name="articlesPerPage">The articles per page.</param>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.AddFeed(System.Guid,JackTheClipperCommon.SharedClasses.Feed)">
+            <summary>
+            Adds the given feed.
+            </summary>
+            <param name="settingsId">The settings id.</param>
+            <param name="feed">The feed to add.</param>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.ModifyFeed(System.Guid,JackTheClipperCommon.SharedClasses.Feed)">
+            <summary>
+            Modifies the feed.
+            </summary>
+            <param name="settingsId">The settings id.</param>
+            <param name="feed">The feed to add.</param>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.DeleteFeed(System.Guid)">
+            <summary>
+            Deletes the feed.
+            </summary>
+            <param name="feedId">The feed id.</param>
+        </member>
+        <member name="T:JackTheClipperData.IIndexerService">
+            <summary>
+            Interface for any indexer service 
+            </summary>
+        </member>
+        <member name="M:JackTheClipperData.IIndexerService.ClearIndex">
+            <summary>
+            Clears all indexes
+            Warning: This is not reversible.
+            Proceed with Caution
+            </summary>
+        </member>
+        <member name="M:JackTheClipperData.IIndexerService.IndexRssFeedItemThreadSafeAsync(JackTheClipperCommon.SharedClasses.Article,JackTheClipperCommon.BusinessObjects.RssKey)">
+            <summary>
+            Indexes an RSS article thread safe.
+            </summary>
+            <param name="article">The article.</param>
+            <param name="key">The rss key.</param>
+        </member>
+        <member name="M:JackTheClipperData.IIndexerService.IndexArticleThreadSafeAsync(JackTheClipperCommon.SharedClasses.Article)">
+            <summary>
+            Indexes a web site article thread safe.
+            </summary>
+            <param name="article">The article.</param>
+        </member>
+        <member name="M:JackTheClipperData.IIndexerService.GetFeedAsync(JackTheClipperCommon.SharedClasses.User,System.Guid,System.DateTime,System.Int32)">
+            <summary>
+            Gets the requested feed
+            </summary>
+            <param name="user">The User for which the feed is requested.</param>
+            <param name="feedId">The Id to the feed which should be generated.</param>
+            <param name="since">The date from which on articles should be considered.</param>
+            <param name="page">The requested page.</param>
+            <returns>List of articles within the feed</returns>
+        </member>
+        <member name="M:JackTheClipperData.IIndexerService.GetCompleteFeedAsync(JackTheClipperCommon.SharedClasses.User,System.DateTime)">
+            <summary>
+            Gets the complete feed (= all relevant articles in any feed) of a given user.
+            </summary>
+            <param name="user">The User for which the complete feed is requested</param>
+            <param name="since">The date from which on articles should be considered.</param>
+            <returns>List of articles within any feed of the user.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IIndexerService.GetArticleAsync(System.Guid)">
+            <summary>Gets a specific Article.</summary>
+            <param name="articleId">The Id of the article to search.</param>
+            <returns>The article (if exists)</returns>
+        </member>
+        <member name="T:JackTheClipperData.MariaDb.MariaDbAdapter">
+            <summary>
+            Adapter for MariaDb/MySql which implements the <see cref="T:JackTheClipperData.IClipperDatabase"/> interface
+            </summary>
+            <seealso cref="T:JackTheClipperData.IClipperDatabase" />
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetUserById(System.Guid)">
+            <summary>
+            Gets the user by identifier.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>The user (if found)</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetOrganizationalUnitById(System.Guid)">
+            <summary>
+            Gets the organizational unit by identifier.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>The unit (if found)</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetUserByCredentials(System.String,System.String,System.Guid,System.Boolean)">
+            <summary>
+            Gets the user by credentials.
+            </summary>
+            <param name="mailOrName">The mail.</param>
+            <param name="password">The password.</param>
+            <param name="principalUnit">The principal unit.</param>
+            <param name="updateLoginTimeStamp">A value indicating whether the login timestamp should be updated or not.</param>
+            <returns>The user (if found)</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetSources">
+            <summary>
+            Gets all sources.
+            </summary>
+            <returns>List of all sources.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetAllUsers">
+            <summary>
+            Gets all users.
+            </summary>
+            <returns>List of all users.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetAvailableSources(JackTheClipperCommon.SharedClasses.User)">
+            <summary>
+            Gets the available sources.
+            </summary>
+            <param name="user">The user.</param>
+            <returns>List of available sources.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetOrganizationalUnits(JackTheClipperCommon.SharedClasses.User)">
+            <summary>
+            Gets the available organizational units.
+            </summary>
+            <param name="user">The user.</param>
+            <returns>List of available units.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.AddUser(System.String,System.String,System.String,JackTheClipperCommon.Enums.Role,System.Guid,System.Boolean,System.Boolean)">
+            <summary>
+            Adds a user.
+            </summary>
+            <param name="userMail">The user mail.</param>
+            <param name="userName">Name of the user.</param>
+            <param name="password">The password.</param>
+            <param name="role">The role.</param>
+            <param name="principalUnit">The principal unit.</param>
+            <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
+            <param name="valid">A value whether the user is valid or not.</param>
+            <returns>The user object of the new user.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.AddSource(JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Adds a source.
+            </summary>
+            <param name="source">The source.</param>
+            <returns>The object of the new source.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.DeleteSource(System.Guid)">
+            <summary>
+            Deletes the source.
+            </summary>
+            <param name="source">The source.</param>
+            <returns>
+            True if successful
+            </returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.SaveUserSettings(System.Guid,System.Int32,JackTheClipperCommon.Enums.NotificationSetting,System.Int32)">
+            <summary>
+            Saves the user settings.
+            </summary>
+            <param name="settingsId">The settings identifier.</param>
+            <param name="notificationCheckInterval">The notification check interval.</param>
+            <param name="notificationSetting">The notification setting.</param>
+            <param name="articlesPerPage">The articles per page.</param>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.AddFeed(System.Guid,JackTheClipperCommon.SharedClasses.Feed)">
+            <summary>
+            Adds the given feed.
+            </summary>
+            <param name="settingsId">The settings id.</param>
+            <param name="feed">The feed to add.</param>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.ModifyFeed(System.Guid,JackTheClipperCommon.SharedClasses.Feed)">
+            <summary>
+            Modifies the feed.
+            </summary>
+            <param name="settingsId">The settings id.</param>
+            <param name="feed">The feed to add.</param>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.DeleteFeed(System.Guid)">
+            <summary>
+            Deletes the feed.
+            </summary>
+            <param name="feedId">The feed id.</param>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.ResetPassword(System.String,System.String)">
+            <summary>
+            Resets the users password.
+            </summary>
+            <param name="userMail">The users mail address.</param>
+            <param name="newPassword">The new password to set.</param>
+            <returns>MethodResult, indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.ChangePassword(JackTheClipperCommon.SharedClasses.User,System.String)">
+            <summary>
+            Changes the users password.
+            </summary>
+            <param name="user">The user.</param>
+            <param name="newPassword">The new password to set.</param>
+            <returns>MethodResult, indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.ChangeMailAddress(JackTheClipperCommon.SharedClasses.User,System.String)">
+            <summary>
+            Change the users mail address.
+            </summary>
+            <param name="user">The user.</param>
+            <param name="newUserMail">The new mail address to set.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetSuperSetFeed">
+            <summary>
+            Gets the superset feed filter.
+            This is a feed filter which contains all relevant keywords form any feed within the system.
+            </summary>
+            <returns>The superset feed filter.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetPrincipalUnits">
+            <summary>
+            Gets the principal units.
+            </summary>
+            <returns>List of principal units.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetUserSettingsAsync(System.Guid)">
+            <summary>
+            Gets the <see cref="T:JackTheClipperCommon.SharedClasses.UserSettings"/> by id.
+            </summary>
+            <param name="id">The id of the user settings.</param>
+            <returns>The determined <see cref="T:JackTheClipperCommon.SharedClasses.UserSettings"/>.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetOrganizationalUnitSettingsAsync(System.Guid)">
+            <summary>
+            Gets the <see cref="T:JackTheClipperCommon.SharedClasses.UserSettings"/> by id.
+            </summary>
+            <param name="id">The id of the user settings.</param>
+            <returns>The determined <see cref="T:JackTheClipperCommon.SharedClasses.UserSettings"/>.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetSourcesAsync(System.String,MySql.Data.MySqlClient.MySqlParameter[])">
+            <summary>
+            Gets all sources by executing the given command
+            </summary>
+            <param name="command">The command to execute.</param>
+            <param name="parameters">The query parameters.</param>
+            <returns>List of sources.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetUsersAsync(System.String,MySql.Data.MySqlClient.MySqlParameter[])">
+            <summary>
+            Gets all users by executing the given command
+            </summary>
+            <param name="command">The command to execute.</param>
+            <param name="parameters">The query parameters.</param>
+            <returns>List of returned users.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.UpdateLoginTimestampAsync(System.Guid)">
+            <summary>
+            Updates the login time stamp.
+            </summary>
+            <param name="userId">The user id.</param>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetOrganizationalUnitsAsync(System.String,MySql.Data.MySqlClient.MySqlParameter[])">
+            <summary>
+            Gets all units by executing the given command
+            </summary>
+            <param name="command">The command to execute.</param>
+            <param name="parameters">The query parameters.</param>
+            <returns>List of returned units.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.AddUserAsync(System.String,System.String,System.String,JackTheClipperCommon.Enums.Role,System.Guid,System.Boolean,System.Boolean)">
+            <summary>
+            Adds a user.
+            </summary>
+            <param name="userMail">The user mail.</param>
+            <param name="userName">Name of the user.</param>
+            <param name="password">The password.</param>
+            <param name="role">The role.</param>
+            <param name="principalUnit">The principalUnit.</param>
+            <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
+            <param name="valid">A value whether the user is valid or not.</param>
+            <returns>The user object of the new user.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.AddSourceAsync(JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Adds a source.
+            </summary>
+            <param name="source">The source.</param>
+            <returns>The object of the new source.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.DeleteSourceAsync(System.Guid)">
+            <summary>
+            Deletes the source asynchronous.
+            </summary>
+            <param name="sourceId">The source id.</param>
+            <returns>True if successful false otherwise</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.SaveUserSettingsAsync(System.Guid,System.Int32,JackTheClipperCommon.Enums.NotificationSetting,System.Int32)">
+            <summary>
+            Saves the user settings asynchronously.
+            </summary>
+            <param name="settingsId">The settings identifier.</param>
+            <param name="notificationCheckInterval">The notification check interval.</param>
+            <param name="notificationSetting">The notification setting.</param>
+            <param name="articlesPerPage">The articles per page.</param>
+            <returns></returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.AddFeedAsync(System.Guid,JackTheClipperCommon.SharedClasses.Feed)">
+            <summary>
+            Adds the feed asynchronously.
+            </summary>
+            <param name="settingsId">The settings identifier.</param>
+            <param name="feed">The feed.</param>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.ModifyFeedAsync(System.Guid,JackTheClipperCommon.SharedClasses.Feed)">
+            <summary>
+            Modifies the feed asynchronously.
+            </summary>
+            <param name="settingsId">The settings identifier.</param>
+            <param name="feed">The feed.</param>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.DeleteFeedAsync(System.Guid)">
+            <summary>
+            Deletes the feed asynchronously.
+            </summary>
+            <param name="feedId">The feed identifier.</param>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.LinkSourceToFeed(System.Guid,System.Guid)">
+            <summary>
+            Links a source to a feed.
+            </summary>
+            <param name="feedId">The feed identifier.</param>
+            <param name="sourceId">The source identifier.</param>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.UnlinkSourceFromFeed(System.Guid,System.Guid)">
+            <summary>
+            Unlinks a source from a feed.
+            </summary>
+            <param name="feedId">The feed identifier.</param>
+            <param name="sourceId">The source identifier.</param>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.CreateOrUpdateFeed(System.Guid,System.String,System.Guid)">
+            <summary>
+            Creates the or updates a feed.
+            </summary>
+            <param name="feedId">The feed identifier.</param>
+            <param name="name">The name.</param>
+            <param name="filterId">The filter identifier.</param>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.CreateOrUpdateFilter(JackTheClipperCommon.SharedClasses.Filter)">
+            <summary>
+            Creates the or updates the filter.
+            </summary>
+            <param name="filter">The filter.</param>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.ChangePasswordAsync(System.String,System.String,System.Boolean)">
+            <summary>
+            Changes the users password.
+            </summary>
+            <param name="userMail">The users mail address.</param>
+            <param name="password">The new password to set.</param>
+            <param name="mustChangePassword"></param>
+            <returns>MethodResult, indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.ChangeMailAddressAsync(JackTheClipperCommon.SharedClasses.User,System.String)">
+            <summary>
+            Change the users mail address.
+            </summary>
+            <param name="user">The user.</param>
+            <param name="newUserMail">The new mail address to set.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetSuperSetFeedAsync">
+            <summary>
+            Gets the superset feed.
+            </summary>
+            <returns>The superset feed.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetPrincipalUnitsAsync">
+            <summary>
+            Gets the principal units.
+            </summary>
+            <returns>List of principal units.</returns>
+        </member>
+        <member name="T:JackTheClipperData.MariaDb.MariaDbSP">
+            <summary>
+            Enumeration of stored procedures within maria db.
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_CREATE_USER">
+            <summary>
+            SP_CREATE_USER(name, mail, pwHash, role, principalUnit, OUT newUserId)
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_UPDATE_SOURCE">
+            <summary>
+            SP_UPDATE_SOURCE(INOUT id,	url, name, type, regex, xpath, blacklist)
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_LOG_USERLOGIN">
+            <summary>
+            SP_LOG_USERLOGIN(userId)
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_UPDATE_USERSETTINGS">
+            <summary>
+            SP_UPDATE_USERSETTINGS(id, _interval, notification, articlesPerPage)
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_DEL_SOURCE">
+            <summary>
+            SP_DEL_SOURCE(id)
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_DEL_USER">
+            <summary>
+            SP_DEL_USER(id)
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_UPDATE_FILTER">
+            <summary>
+            SP_UPDATE_FILTER(id, keywords, expressions, blacklist)
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_UPDATE_FEED">
+            <summary>
+            SP_UPDATE_FEED(id, name, filterId)
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_LINK_SOURCE_FEED">
+            <summary>
+            SP_LINK_SOURCE_FEED(feedId, sourceId)
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_LINK_SETTINGS_FEED">
+            <summary>
+            SP_LINK_SETTINGS_FEED(feedId, settingsId)
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_CHANGE_MAILADDRESS">
+            <summary>
+            SP_CHANGE_MAILADDRESS(userId, newMail, out success)
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_CHANGE_USERPW">
+            <summary>
+            SP_CHANGE_USERPW(mail, pwHash, mustChangePassword, out success)
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_CREATE_UNIT">
+            <summary>
+            SP_CREATE_UNIT(name, parent, OUT newUnitId
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_CHANGE_UNIT_NAME">
+            <summary>
+            SP_CHANGE_UNIT_NAME(unitId, name)
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_ADD_USER_UNIT">
+            <summary>
+            SP_ADD_USER_UNIT(IN userId VARCHAR(36), IN unitId VARCHAR(36))
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_REMOVE_USER_UNIT">
+            <summary>
+            SP_REMOVE_USER_UNIT(IN userId VARCHAR(36), IN unitId VARCHAR(36))
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_CREATE_PRINZIPALUNIT">
+            <summary>
+            SP_CREATE_PRINZIPALUNIT(IN name TEXT, IN mail VARCHAR(191), IN adminPwHash TEXT,
+                                    OUT newPrincipalUnitId VARCHAR(36),
+                                    OUT newUserId VARCHAR(36))
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_UPDATE_UNIT">
+            <summary>
+            SP_UPDATE_UNIT(IN unitId VARCHAR(36), IN name TEXT)
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_DELETE_UNIT">
+            <summary>
+            SP_DELETE_UNIT(IN unitId VARCHAR(36))
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_SET_UNIT_BLACKLIST">
+            <summary>
+            SP_SET_UNIT_BLACKLIST(IN settingsId VARCHAR(36), IN blackList TEXT)
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_ADD_UNIT_SOURCE">
+            <summary>
+            SP_ADD_UNIT_SOURCE(IN settingsId VARCHAR(36), IN sourceId VARCHAR(36))
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_REMOVE_UNIT_SOURCE">
+            <summary>
+            SP_REMOVE_UNIT_SOURCE(IN settingsId VARCHAR(36), IN sourceId VARCHAR(36))
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_DELETE_FEED">
+            <summary>
+            SP_DELETE_FEED(IN feedId VARCHAR(36))
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_REMOVE_SOURCE_FEED">
+            <summary>
+            SP_REMOVE_SOURCE_FEED(IN feedId VARCHAR(36), IN sourceId VARCHAR(36))
+            </summary>
+        </member>
+        <member name="T:JackTheClipperData.MariaDb.MariaDbStatements">
+            <summary>
+            The (data retrieving) sql statements for maria db.
+            </summary>
+        </member>
+    </members>
+</doc>

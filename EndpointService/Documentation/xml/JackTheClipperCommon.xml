@@ -1,0 +1,1031 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JackTheClipperCommon</name>
+    </assembly>
+    <members>
+        <member name="T:JackTheClipperCommon.ArticleComparer">
+            <summary>
+            Contains Methods, which compare different types of articles e.g Article and ShortArticle
+            </summary>
+        </member>
+        <member name="F:JackTheClipperCommon.ArticleComparer.FullArticleComparer">
+            <summary>
+            The full article comparer
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.ArticleComparer.Equals(JackTheClipperCommon.SharedClasses.ShortArticle,JackTheClipperCommon.SharedClasses.ShortArticle)">
+            <summary>Determines whether the specified objects are equal.</summary>
+            <param name="x">The first object of type T to compare.</param>
+            <param name="y">The second object of type T to compare.</param>
+            <returns>true if the specified objects are equal; otherwise, false.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.ArticleComparer.GetHashCode(JackTheClipperCommon.SharedClasses.ShortArticle)">
+            <summary>Returns a hash code for the specified object.</summary>
+            <param name="obj">The <see cref="T:System.Object"></see> for which a hash code is to be returned.</param>
+            <returns>A hash code for the specified object.</returns>
+            <exception cref="T:System.ArgumentNullException">The type of <paramref name="obj">obj</paramref> is a reference type and <paramref name="obj">obj</paramref> is null.</exception>
+        </member>
+        <member name="M:JackTheClipperCommon.ArticleComparer.Equals(JackTheClipperCommon.SharedClasses.Article,JackTheClipperCommon.SharedClasses.Article)">
+            <summary>Determines whether the specified objects are equal.</summary>
+            <param name="x">The first object of type T to compare.</param>
+            <param name="y">The second object of type T to compare.</param>
+            <returns>true if the specified objects are equal; otherwise, false.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.ArticleComparer.GetHashCode(JackTheClipperCommon.SharedClasses.Article)">
+            <summary>Returns a hash code for the specified object.</summary>
+            <param name="obj">The <see cref="T:System.Object"></see> for which a hash code is to be returned.</param>
+            <returns>A hash code for the specified object.</returns>
+            <exception cref="T:System.ArgumentNullException">The type of <paramref name="obj">obj</paramref> is a reference type and <paramref name="obj">obj</paramref> is null.</exception>
+        </member>
+        <member name="T:JackTheClipperCommon.BusinessObjects.RssKey">
+            <summary>
+            A key which uniquely identifies an rss feed item within a specific source.
+            </summary>
+            <seealso cref="T:System.IEquatable`1" />
+        </member>
+        <member name="P:JackTheClipperCommon.BusinessObjects.RssKey.Updated">
+            <summary>
+            Gets the updated time.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.BusinessObjects.RssKey.Link">
+            <summary>
+            Gets the link.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.BusinessObjects.RssKey.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperCommon.BusinessObjects.RssKey"/> class.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.BusinessObjects.RssKey.#ctor(System.Int64,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperCommon.BusinessObjects.RssKey"/> class.
+            </summary>
+            <param name="updated">The updated time.</param>
+            <param name="link">The link.</param>
+            <exception cref="T:System.ArgumentNullException">link is null</exception>
+        </member>
+        <member name="M:JackTheClipperCommon.BusinessObjects.RssKey.Equals(JackTheClipperCommon.BusinessObjects.RssKey)">
+            <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+            <param name="other">An object to compare with this object.</param>
+            <returns>true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.BusinessObjects.RssKey.Equals(System.Object)">
+            <summary>Determines whether the specified object is equal to the current object.</summary>
+            <param name="obj">The object to compare with the current object.</param>
+            <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.BusinessObjects.RssKey.GetHashCode">
+            <summary>Serves as the default hash function.</summary>
+            <returns>A hash code for the current object.</returns>
+        </member>
+        <member name="T:JackTheClipperCommon.BusinessObjects.ShortArticleKey">
+            <summary>
+            A key which uniquely identifies an rss feed item within the system.
+            </summary>
+            <seealso cref="T:JackTheClipperCommon.BusinessObjects.RssKey" />
+        </member>
+        <member name="P:JackTheClipperCommon.BusinessObjects.ShortArticleKey.SourceId">
+            <summary>
+            Gets the id of the belonging source.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.BusinessObjects.ShortArticleKey.#ctor">
+            <summary>
+            Prevents a default instance of the <see cref="T:JackTheClipperCommon.BusinessObjects.ShortArticleKey"/> class from being created.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.BusinessObjects.ShortArticleKey.#ctor(System.Guid,System.Int64,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperCommon.BusinessObjects.ShortArticleKey"/> class.
+            </summary>
+            <param name="sourceId">The source identifier.</param>
+            <param name="updated">The updated time.</param>
+            <param name="link">The link.</param>
+        </member>
+        <member name="T:JackTheClipperCommon.Configuration.AppConfiguration">
+            <summary>
+            Private set of the default configuration properties from appsettings.json
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.Configuration.AppConfiguration.RegisterConfig(Microsoft.Extensions.Configuration.IConfigurationRoot)">
+            <summary>
+            Set the default configuration settings for the connection.
+            </summary>
+            <param name="config">The current config.</param>
+        </member>
+        <member name="T:JackTheClipperCommon.Enums.ContentType">
+            <summary>
+            The content type of a source.
+            </summary>
+        </member>
+        <member name="F:JackTheClipperCommon.Enums.ContentType.Undefined">
+            <summary>
+            Unknown content type
+            </summary>
+        </member>
+        <member name="F:JackTheClipperCommon.Enums.ContentType.WebSite">
+            <summary>
+            Source is a web site
+            </summary>
+        </member>
+        <member name="F:JackTheClipperCommon.Enums.ContentType.Rss">
+            <summary>
+            Source is a Rss-Feed
+            </summary>
+        </member>
+        <member name="T:JackTheClipperCommon.Enums.NotificationSetting">
+            <summary>
+            The notification options
+            </summary>
+        </member>
+        <member name="F:JackTheClipperCommon.Enums.NotificationSetting.PdfPerMail">
+            <summary>
+            Receive a pdf per mail
+            </summary>
+        </member>
+        <member name="F:JackTheClipperCommon.Enums.NotificationSetting.LinkPerMail">
+            <summary>
+            Receive a link per mail
+            </summary>
+        </member>
+        <member name="F:JackTheClipperCommon.Enums.NotificationSetting.None">
+            <summary>
+            Get no notifications at all
+            </summary>
+        </member>
+        <member name="T:JackTheClipperCommon.Enums.Role">
+            <summary>
+            The possible roles.
+            </summary>
+        </member>
+        <member name="F:JackTheClipperCommon.Enums.Role.User">
+            <summary>
+            User role.
+            </summary>
+        </member>
+        <member name="F:JackTheClipperCommon.Enums.Role.StaffChief">
+            <summary>
+            Staff chief role
+            </summary>
+        </member>
+        <member name="F:JackTheClipperCommon.Enums.Role.SystemAdministrator">
+            <summary>
+            System admin role.
+            </summary>
+        </member>
+        <member name="T:JackTheClipperCommon.Enums.SuccessState">
+            <summary>
+            The success state.
+            </summary>
+        </member>
+        <member name="F:JackTheClipperCommon.Enums.SuccessState.Successful">
+            <summary>
+            Status: successful
+            </summary>
+        </member>
+        <member name="F:JackTheClipperCommon.Enums.SuccessState.UnknownError">
+            <summary>
+            Status: unknown error
+            </summary>
+        </member>
+        <member name="F:JackTheClipperCommon.Enums.SuccessState.Timeout">
+            <summary>
+            Status: timeout
+            </summary>
+        </member>
+        <member name="T:JackTheClipperCommon.Extensions.GeneralExtensions">
+            <summary>
+            Class for multiple Extension Methods, which have no specified Class, to which they extend
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.Extensions.GeneralExtensions.IsSucceeded(JackTheClipperCommon.SharedClasses.MethodResult)">
+            <summary>
+            Determines whether the <see cref="T:JackTheClipperCommon.SharedClasses.MethodResult"/> is succeeded.
+            </summary>
+            <param name="result">The method result to check.</param>
+            <returns>
+              <c>true</c> if the specified result is succeeded; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Extensions.GeneralExtensions.TryGetOrAddIfNotPresentOrNull``2(System.Collections.Generic.IDictionary{``0,``1},``0)">
+            <summary>
+            Tries the get an item by the given key or adds it if no item is present or null.
+            </summary>
+            <typeparam name="K">Type of key.</typeparam>
+            <typeparam name="T">Tye of value</typeparam>
+            <param name="dict">The dictionary.</param>
+            <param name="key">The key.</param>
+            <returns>The obtained object.</returns>
+            <exception cref="T:System.ArgumentNullException">dict is null.</exception>
+        </member>
+        <member name="T:JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI">
+            <summary>
+            Interface for the Organizational Unit API
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.GetOrganizationalUnits(JackTheClipperCommon.SharedClasses.User)">
+            <summary>
+            Gets the organizational units of the given user.
+            </summary>
+            <param name="user">The user to obtain its organizational units.</param>
+            <returns>List of accessable Organizational units.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.AddOrganizationalUnit(JackTheClipperCommon.SharedClasses.User,JackTheClipperCommon.SharedClasses.OrganizationalUnit,JackTheClipperCommon.SharedClasses.OrganizationalUnit)">
+            <summary>
+            Adds a given organizational unit.
+            </summary>
+            <param name="user">The user who requests the addition.</param>
+            <param name="parent">The parent of the new organizational unit.</param>
+            <param name="toAdd">To unit add.</param>
+            <returns>MethodResult indicating success</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.DeleteOrganizationalUnit(JackTheClipperCommon.SharedClasses.User,JackTheClipperCommon.SharedClasses.OrganizationalUnit)">
+            <summary>
+            Deletes the organizational unit.
+            </summary>
+            <param name="user">The user who requests the deletion.</param>
+            <param name="toDelete">The unit to delete.</param>
+            <returns>MethodResult indicating success</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.GetOrganizationalUnitSettings(JackTheClipperCommon.SharedClasses.User,JackTheClipperCommon.SharedClasses.OrganizationalUnit)">
+            <summary>
+            Gets the organizational unit settings.
+            </summary>
+            <param name="user">The user who requests the settings.</param>
+            <param name="unit">The unit.</param>
+            <returns>The requested settings.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.SaveOrganizationalUnitSettings(JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings)">
+            <summary>
+            Saves the organizational unit settings.
+            </summary>
+            <param name="toSave">The settings to save.</param>
+            <returns>MethodResult indicating success</returns>
+        </member>
+        <member name="T:JackTheClipperCommon.Interfaces.IClipperService">
+            <summary>
+            Interface for basic clipper services
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperService.GetStatus">
+            <summary>
+            Gets the status.
+            </summary>
+            <returns>MethodResult indicating the status.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperService.GetPrincipalUnits">
+            <summary>
+            Gets the principal units.
+            </summary>
+            <returns>List of principal units.</returns>
+        </member>
+        <member name="T:JackTheClipperCommon.Interfaces.IClipperStaffChiefAPI">
+            <summary>
+            Interface of the API for a staff chief.
+            </summary>
+            <seealso cref="T:JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI" />
+        </member>
+        <member name="T:JackTheClipperCommon.Interfaces.IClipperSystemAdministratorAPI">
+            <summary>
+            Interface of the system administrator api
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperSystemAdministratorAPI.AddSource(JackTheClipperCommon.SharedClasses.User,JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Adds the given source.
+            </summary>
+            <param name="user">The user who requests the addition.</param>
+            <param name="toAdd">The source to add.</param>
+            <returns>MethodResult indicating success</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperSystemAdministratorAPI.DeleteSource(JackTheClipperCommon.SharedClasses.User,System.Guid)">
+            <summary>
+            Deletes the given source.
+            </summary>
+            <param name="user">The user who requests the deletion.</param>
+            <param name="toAdd">The source to add.</param>
+            <returns>MethodResult indicating success</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperSystemAdministratorAPI.ChangeSource(JackTheClipperCommon.SharedClasses.User,System.Guid,JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Changes the source.
+            </summary>
+            <param name="user">The user.</param>
+            <param name="toChange">Id of the source, which should be changed</param>
+            <param name="newSource">The new source.</param>
+            <returns>MethodResult indicating success</returns>
+        </member>
+        <member name="T:JackTheClipperCommon.Interfaces.IClipperUserAPI">
+            <summary>
+            Interface for the user API.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.TryAuthenticateUser(System.String,System.String,System.Guid)">
+            <summary>
+            Tries to authenticate the user.
+            </summary>
+            <param name="userMailOrName">The user email or name.</param>
+            <param name="userPassword">The password of the user.</param>
+            <param name="principalUnit">The principal unit.</param>
+            <returns>The <see cref="T:JackTheClipperCommon.SharedClasses.User"/>; if authenticated successfully</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.GetFeedDefinitions(JackTheClipperCommon.SharedClasses.User)">
+            <summary>
+            Gets the feed definitions of the given user.
+            </summary>
+            <param name="user">The user.</param>
+            <returns>Collection of feeds for the given user.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.GetFeed(JackTheClipperCommon.SharedClasses.User,JackTheClipperCommon.SharedClasses.Feed,System.Int32,System.Boolean)">
+            <summary>
+            Gets the feed data.
+            </summary>
+            <param name="user">The user.</param>
+            <param name="feed">The feed.</param>
+            <param name="page">The requested page.</param>
+            <param name="showArchived">A value indicating whether the archived articles should be shown or not.</param>
+            <returns>List of <see cref="T:JackTheClipperCommon.SharedClasses.ShortArticle"/>s within the feed.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.GetArticle(System.Guid)">
+            <summary>
+            Gets a specific article.
+            </summary>
+            <param name="articleId">The article id.</param>
+            <returns>The (full) <see cref="T:JackTheClipperCommon.SharedClasses.Article"/>.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.GetUserSettings(JackTheClipperCommon.SharedClasses.User)">
+            <summary>
+            Gets the user settings.
+            </summary>
+            <param name="user">The user.</param>
+            <returns>The settings of the given user.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.ResetPassword(System.String)">
+            <summary>
+            Attempts to reset the password.
+            </summary>
+            <param name="userMail">The users mail address.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.ChangePassword(JackTheClipperCommon.SharedClasses.User,System.String)">
+            <summary>
+            Attempts to change the password.
+            </summary>
+            <param name="user">The users mail address</param>
+            <param name="newPassword">The new user password.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.ChangeMailAddress(JackTheClipperCommon.SharedClasses.User,System.String)">
+            <summary>
+            Changes the users mail address.
+            </summary>
+            <param name="user">The user.</param>
+            <param name="newUserMail">The new mail address.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.GetAvailableSources(JackTheClipperCommon.SharedClasses.User)">
+            <summary>
+            Gets the available sources for a given user.
+            </summary>
+            <param name="user">The user.</param>
+            <returns>List of available sources.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.AddUser(System.String,System.String,System.String,JackTheClipperCommon.Enums.Role,System.Guid,System.Boolean,System.Boolean)">
+            <summary>
+            Adds a user.
+            </summary>
+            <param name="userMail">The new users mail.</param>
+            <param name="username">The new users username.</param>
+            <param name="password">The new users password.</param>
+            <param name="role">The new users role.</param>
+            <param name="principalUnit">The new users principal unit.</param>
+            <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
+            <param name="valid">A value whether the user is valid or not.</param>
+            <returns>The new users <see cref="T:JackTheClipperCommon.SharedClasses.User"/>object</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.SaveUserSettings(System.Guid,System.Int32,JackTheClipperCommon.Enums.NotificationSetting,System.Int32)">
+            <summary>
+            Saves the user settings.
+            </summary>
+            <param name="settingsId">The settings identifier.</param>
+            <param name="notificationCheckInterval">The notification check interval.</param>
+            <param name="notificationSetting">The notification setting.</param>
+            <param name="articlesPerPage">The articles per page.</param>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.AddFeed(System.Guid,JackTheClipperCommon.SharedClasses.Feed)">
+            <summary>
+            Adds the given feed.
+            </summary>
+            <param name="settingsId">The settings id.</param>
+            <param name="feed">The feed to add.</param>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.ModifyFeed(System.Guid,JackTheClipperCommon.SharedClasses.Feed)">
+            <summary>
+            Modifies the feed.
+            </summary>
+            <param name="settingsId">The settings id.</param>
+            <param name="feed">The feed to add.</param>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.DeleteFeed(System.Guid)">
+            <summary>
+            Deletes the feed.
+            </summary>
+            <param name="feedId">The feed id.</param>
+        </member>
+        <member name="T:JackTheClipperCommon.Localization.ClipperTexts">
+            <summary>
+              Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Localization.ClipperTexts.ResourceManager">
+            <summary>
+              Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Localization.ClipperTexts.Culture">
+            <summary>
+              Überschreibt die CurrentUICulture-Eigenschaft des aktuellen Threads für alle
+              Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Localization.ClipperTexts.DefaultMailSubject">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Es gibt Neuigkeiten bei &quot;Jack the Clipper&quot;... ähnelt.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Localization.ClipperTexts.MailChangedMailBody">
+             <summary>
+               Sucht eine lokalisierte Zeichenfolge, die ... wurde geändert.
+            
+            Sollten Sie nicht die Änderung Ihrer E-Mailadresse veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten.
+            
+            Mit freundlichen Grüßen,
+            
+            Jack the Clipper ähnelt.
+             </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Localization.ClipperTexts.MailChangedMailSubject">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Ihre E-Mailadresse bei &quot;Jack the Clipper&quot;... ähnelt.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Localization.ClipperTexts.PasswordChangedMailBody">
+             <summary>
+               Sucht eine lokalisierte Zeichenfolge, die ... wurde geändert.
+            
+            Sollten Sie nicht die Änderung Ihres Passworts veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten.
+            
+            Mit freundlichen Grüßen,
+            
+            Jack the Clipper ähnelt.
+             </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Localization.ClipperTexts.PasswordChangedMailSubject">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Ihr Passwort bei &quot;Jack the Clipper&quot;... ähnelt.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Localization.ClipperTexts.PasswordResetMailBody">
+             <summary>
+               Sucht eine lokalisierte Zeichenfolge, die ... wurde zurückgesetzt. 
+            
+            Ihr neues Passwort lautet: {0}.
+            Dass Passwort muss beim nächsten Login geändert werden.
+            
+            Sollten Sie nicht die Änderung Ihres Passworts veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten.
+            
+            Mit freundlichen Grüßen,
+            
+            Jack the Clipper ähnelt.
+             </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Localization.ClipperTexts.PasswordResetMailSubject">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Ihr Passwort bei &quot;Jack the Clipper&quot;... ähnelt.
+            </summary>
+        </member>
+        <member name="T:JackTheClipperCommon.PerfTracer">
+            <summary>
+            Performance Tracer with a name for the Debug Output
+            </summary>
+        </member>
+        <member name="F:JackTheClipperCommon.PerfTracer.name">
+            <summary>
+            The name
+            </summary>
+        </member>
+        <member name="F:JackTheClipperCommon.PerfTracer.watch">
+            <summary>
+            The stop watch
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.PerfTracer.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperCommon.PerfTracer"/> class.
+            </summary>
+            <param name="name">The name.</param>
+        </member>
+        <member name="M:JackTheClipperCommon.PerfTracer.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="T:JackTheClipperCommon.SharedClasses.Article">
+            <summary>
+            Data structure for an Article, which contains a Guid for identification, a Title, a summary,
+            a link, the complete Text and 2 DateTimes (published and indexed).
+            Extends from ShortArticle
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.Article.Text">
+            <summary>
+            Gets the text.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.Article.#ctor(System.Guid,System.String,System.String,System.String,System.String,System.DateTime,System.DateTime,System.Guid)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperCommon.SharedClasses.Article"/> class.
+            </summary>
+            <param name="id">The identifier.</param>
+            <param name="title">The title.</param>
+            <param name="link">The link.</param>
+            <param name="imageLink">The image link.</param>
+            <param name="text">The text.</param>
+            <param name="published">The published date.</param>
+            <param name="indexed">The indexed date.</param>
+            <param name="indexingSourceId">The indexing source identifier.</param>
+        </member>
+        <member name="T:JackTheClipperCommon.SharedClasses.Feed">
+            <summary>
+            Contains Feed definitions:
+            e.g the name, which words to search for, from where to search from and what to filter out
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.Feed.Id">
+            <summary>
+            Gets the identifier of the feed.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.Feed.Name">
+            <summary>
+            Gets the name the feed.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.Feed.Sources">
+            <summary>
+            Gets the sources of the feed.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.Feed.Filter">
+            <summary>
+            Gets the filter of the feed.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.Feed.#ctor">
+            <summary>
+            Prevents a default instance of the <see cref="T:JackTheClipperCommon.SharedClasses.Feed"/> class from being created.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.Feed.#ctor(System.Guid,System.Collections.Generic.IReadOnlyCollection{JackTheClipperCommon.SharedClasses.Source},JackTheClipperCommon.SharedClasses.Filter,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperCommon.SharedClasses.Feed"/> class.
+            </summary>
+            <param name="id">The identifier.</param>
+            <param name="feedSources">The feed sources.</param>
+            <param name="feedFilter">The feed filter.</param>
+            <param name="name">The name.</param>
+            <exception cref="T:System.ArgumentNullException">feedSources or feedFilter is null</exception>
+        </member>
+        <member name="T:JackTheClipperCommon.SharedClasses.Filter">
+            <summary>
+            Contains Keywords or Expressions, which should be filtered
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.Filter.Id">
+            <summary>
+            Gets the identifier of the filter.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.Filter.Keywords">
+            <summary>
+            Gets the filter keywords.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.Filter.Expressions">
+            <summary>
+            Gets the filter expressions.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.Filter.Blacklist">
+            <summary>
+            Gets the filter blacklist.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.Filter.#ctor">
+            <summary>
+            Prevents a default instance of the <see cref="T:JackTheClipperCommon.SharedClasses.Filter"/> class from being created.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.Filter.#ctor(System.Guid,System.Collections.Generic.IReadOnlyCollection{System.String},System.Collections.Generic.IReadOnlyCollection{System.String},System.Collections.Generic.IReadOnlyCollection{System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperCommon.SharedClasses.Filter"/> class.
+            </summary>
+            <param name="id">The identifier.</param>
+            <param name="keywords">The keywords.</param>
+            <param name="expressions">The expressions.</param>
+            <param name="blacklist">The blacklist.</param>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.Filter.Equals(JackTheClipperCommon.SharedClasses.Filter)">
+            <summary>Determines whether the specified object is equal to the current object.</summary>
+            <param name="other">The object to compare with the current object.</param>
+            <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.Filter.Equals(System.Object)">
+            <summary>Determines whether the specified object is equal to the current object.</summary>
+            <param name="obj">The object to compare with the current object.</param>
+            <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.Filter.GetHashCode">
+            <summary>Serves as the default hash function.</summary>
+            <returns>A hash code for the current object.</returns>
+        </member>
+        <member name="T:JackTheClipperCommon.SharedClasses.MethodResult">
+            <summary>
+            Used to return if a Method was Successful or not. 
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.MethodResult.Status">
+            <summary>
+            Gets the status.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.MethodResult.StatusAsString">
+            <summary>
+            Gets the status as string.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.MethodResult.UserMessage">
+            <summary>
+            Gets the user message (if any).
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.MethodResult.#ctor(JackTheClipperCommon.Enums.SuccessState,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperCommon.SharedClasses.MethodResult"/> class.
+            </summary>
+            <param name="status">The status.</param>
+            <param name="userMessage">The user message.</param>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.MethodResult.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperCommon.SharedClasses.MethodResult"/> class.
+            </summary>
+        </member>
+        <member name="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit">
+            <summary>
+            Contains the definition of an Organization
+            Contains an Id, a name, Parent Organization
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.OrganizationalUnit.Id">
+            <summary>
+            Gets the identifier.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.OrganizationalUnit.Name">
+            <summary>
+            Gets the name.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.OrganizationalUnit.AdminMailAddress">
+            <summary>
+            Gets the belonging admin's mail address.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.OrganizationalUnit.CustomerRoot">
+            <summary>
+            Gets a value indicating whether this unit is a customer root (="mandant") unit.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.OrganizationalUnit.DefaultSettings">
+            <summary>
+            Gets the default settings of the unit.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.OrganizationalUnit.#ctor(System.Guid,System.String,System.Boolean,JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/> class.
+            </summary>
+            <param name="id">The identifier.</param>
+            <param name="name">The name.</param>
+            <param name="customerRoot">Flag, indicating whether mandant.</param>
+            <param name="parentOrganizationalUnit">The parent organizational unit.</param>
+            <param name="defaultSettings">The default settings.</param>
+        </member>
+        <member name="T:JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings">
+            <inheritdoc />
+            <summary>
+            Contains Settings, which are specific for the Organization
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings.AvailableSources">
+            <summary>
+            Gets the generally available sources.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings.#ctor(System.Guid,System.Collections.Generic.IReadOnlyCollection{JackTheClipperCommon.SharedClasses.Feed},System.Collections.Generic.IReadOnlyCollection{JackTheClipperCommon.SharedClasses.Source},JackTheClipperCommon.Enums.NotificationSetting,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings"/> class.
+            </summary>
+            <param name="feeds">The feeds.</param>
+            <param name="availableSources">The available sources.</param>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings.AddSource(JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Adds a source.
+            </summary>
+            <param name="toAdd">The source to add.</param>
+        </member>
+        <member name="T:JackTheClipperCommon.SharedClasses.ShortArticle">
+            <summary>
+            Summarized Article
+            Contains a Guid, a Title, a summary, link and when it was published and indexed
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.ShortArticle.Id">
+            <summary>
+            Gets the identifier.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.ShortArticle.Title">
+            <summary>
+            Gets the title.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.ShortArticle.ShortText">
+            <summary>
+            Gets the short text.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.ShortArticle.Link">
+            <summary>
+            Gets the link.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.ShortArticle.ImageLink">
+            <summary>
+            Gets the image link.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.ShortArticle.Published">
+            <summary>
+            Gets the published date.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.ShortArticle.Indexed">
+            <summary>
+            Gets the indexed date.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.ShortArticle.IndexingSourceId">
+            <summary>
+            Gets the indexing source identifier.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.ShortArticle.#ctor(System.Guid,System.String,System.String,System.String,System.String,System.DateTime,System.DateTime,System.Guid)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperCommon.SharedClasses.ShortArticle"/> class.
+            </summary>
+            <param name="id">The identifier.</param>
+            <param name="title">The title.</param>
+            <param name="shortText">The short text.</param>
+            <param name="link">The link.</param>
+            <param name="imageLink">The image link.</param>
+            <param name="published">The published date.</param>
+            <param name="indexed">The indexed date.</param>
+            <param name="indexingSourceId">The indexing source identifier.</param>
+        </member>
+        <member name="T:JackTheClipperCommon.SharedClasses.Source">
+            <summary>
+            Contains the definition of a Source with its unique Id, its URI, its Name and its ContentType
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.Source.Id">
+            <summary>
+            Gets the identifier.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.Source.Uri">
+            <summary>
+            Gets the URI.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.Source.Name">
+            <summary>
+            Gets the name.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.Source.Type">
+            <summary>
+            Gets the content type.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.Source.ContentTypeAsString">
+            <summary>
+            Gets the content type as string.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.Source.Regex">
+            <summary>
+            Gets the regex.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.Source.XPath">
+            <summary>
+            Gets the name.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.Source.BlackList">
+            <summary>
+            The black list.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.Source.#ctor">
+            <summary>
+            Prevents a default instance of the <see cref="T:JackTheClipperCommon.SharedClasses.Source"/> class from being created.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.Source.#ctor(System.Guid,System.String,System.String,JackTheClipperCommon.Enums.ContentType,System.String,System.String,System.Collections.Generic.IReadOnlyList{System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperCommon.SharedClasses.Source"/> class.
+            </summary>
+            <param name="id">The identifier.</param>
+            <param name="uri">The URI.</param>
+            <param name="name">The name.</param>
+            <param name="type">The type.</param>
+            <param name="regex">The regex.</param>
+            <param name="xpath">The Xpath.</param>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.Source.#ctor(System.Guid,JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperCommon.SharedClasses.Source"/> class.
+            </summary>
+            <param name="id">The identifier.</param>
+            <param name="source">The source.</param>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.Source.Equals(JackTheClipperCommon.SharedClasses.Source)">
+            <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+            <param name="other">An object to compare with this object.</param>
+            <returns>true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.Source.Equals(System.Object)">
+            <summary>Determines whether the specified object is equal to the current object.</summary>
+            <param name="obj">The object to compare with the current object.</param>
+            <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.Source.GetHashCode">
+            <summary>Serves as the default hash function.</summary>
+            <returns>A hash code for the current object.</returns>
+        </member>
+        <member name="T:JackTheClipperCommon.SharedClasses.User">
+            <summary>
+            Contains the definition of a User.
+            It has a unique Id, a UserName, a Password and a Role.
+            It also has a reference to its UserSettings
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.User.Id">
+            <summary>
+            Gets the identifier.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.User.UserName">
+            <summary>
+            Gets the name of the user.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.User.Role">
+            <summary>
+            Gets the role(s).
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.User.RoleAsString">
+            <summary>
+            Gets the role as string.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.User.MustChangePassword">
+            <summary>
+            If True User needs to change his PW on login.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.User.MailAddress">
+            <summary>
+            Gets the mail address.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.User.PrincipalUnitName">
+            <summary>
+            Gets the name of the principal unit.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.User.PrincipalUnitId">
+            <summary>
+            Gets the principal unit identifier.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.User.LastLoginTime">
+            <summary>
+            Gets the last login time.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.User.IsValid">
+             <summary>
+            Gets a value indicating whether the user is valid or not.
+             </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.User.Settings">
+            <summary>
+            Gets or sets the settings.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.User.#ctor(System.Guid,System.String,JackTheClipperCommon.Enums.Role,System.String,JackTheClipperCommon.SharedClasses.UserSettings,System.Boolean,System.DateTime,System.Boolean,System.String,System.Guid)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperCommon.SharedClasses.User"/> class.
+            </summary>
+            <param name="id">The identifier.</param>
+            <param name="mailAddress">The mail address.</param>
+            <param name="role">The role.</param>
+            <param name="name">The name.</param>
+            <param name="settings">The users settings.</param>
+            <param name="mustChangePassword">Specifies if user has to reset his password</param>
+            <param name="lastLoginTime">The last login time.</param>
+            <param name="isValid">A value indicating whether the user is valid and therefore may login.</param>
+            <param name="principalUnitName">The name of the principal unit.</param>
+            <param name="principalUnitId">The id of the principal unit.</param>
+            <exception cref="T:System.ArgumentNullException">mailAddress is null</exception>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.User.GetFeed(System.Guid)">
+            <summary>
+            Gets the feed by id.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>The feed.</returns>
+        </member>
+        <member name="T:JackTheClipperCommon.SharedClasses.UserSettings">
+            <summary>
+            UserSettings are connected to a specific User and
+            contain its Feed definition, its notificationSettings and the Notificationintervall
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.UserSettings.Id">
+            <summary>
+            Gets the id of the settings
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.UserSettings.Feeds">
+            <summary>
+            Gets the feeds.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.UserSettings.NotificationSettings">
+            <summary>
+            Gets the notification settings.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.UserSettings.NotificationSettingsAsString">
+            <summary>
+            Gets the notification settings as string.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.UserSettings.NotificationCheckIntervalInMinutes">
+            <summary>
+            Gets the notification check interval in minutes.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.UserSettings.ArticlesPerPage">
+            <summary>
+            Gets the number of articles per page.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.UserSettings.#ctor">
+            <summary>
+            Prevents a default instance of the <see cref="T:JackTheClipperCommon.SharedClasses.UserSettings"/> class from being created.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.UserSettings.#ctor(System.Guid,System.Collections.Generic.IReadOnlyCollection{JackTheClipperCommon.SharedClasses.Feed},JackTheClipperCommon.Enums.NotificationSetting,System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperCommon.SharedClasses.UserSettings"/> class.
+            </summary>
+            <param name="id">The id.</param>
+            <param name="feeds">The feeds.</param>
+            <param name="notificationSettings">The notification settings.</param>
+            <param name="notificationCheckIntervalInMinutes">The notification check interval in minutes.</param>
+            <param name="articlesPerPage">The number of articles per page.</param>
+            <exception cref="T:System.ArgumentNullException">feeds are null</exception>
+        </member>
+    </members>
+</doc>

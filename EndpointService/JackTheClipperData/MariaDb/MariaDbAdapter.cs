@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using JackTheClipperCommon;
+using JackTheClipperCommon.BusinessObjects;
 using JackTheClipperCommon.Configuration;
 using JackTheClipperCommon.Enums;
+using JackTheClipperCommon.Extensions;
 using JackTheClipperCommon.SharedClasses;
+using JetBrains.Annotations;
 using MySql.Data.MySqlClient;
 
 namespace JackTheClipperData.MariaDb
@@ -20,9 +24,16 @@ namespace JackTheClipperData.MariaDb
         //// General things: NEVER DO ANYTHING ELSE THAN READ DATE FROM THE DATABASE. ALL MODIFICATIONS MUST BE DONE BY
         //// STORED PROCEDURES
 
+        //// This code is more or less bad, especially cause no race conditions are considered (especially during inheritance)
+        //// - as this is a educational project with a very limited amount of available time no one really expects this
+        //// The database model isn't really good either - it may be 'ok' in terms of theoretical informatics
+        //// but in practice it is a (especially performance) night mare. A matrix table with a discriminative attribute
+        //// would have been much better.
+
         private static readonly Guid SystemUnit = Guid.Parse("00000000-BEEF-BEEF-BEEF-000000000000");
         private static Tuple<DateTime, Filter> superSetFeedCache;
         private static readonly object LockObj = new object();
+        private OrganizationalUnitManager cachedManager;
 
         #region GetUserById
         /// <summary>
@@ -33,8 +44,15 @@ namespace JackTheClipperData.MariaDb
         public User GetUserById(Guid id)
         {
             var result = GetUsersAsync(MariaDbStatements.SelectUserById, new MySqlParameter("id", id)).Result;
-            return result.First();
+            return result.FirstOrDefault();
         }
+
+        public User GetUserByMailAddress(string mailAddress)
+        {
+            var result = GetUsersAsync(MariaDbStatements.SelectUserByMail, new MySqlParameter("mail", mailAddress)).Result;
+            return result.FirstOrDefault();
+        }
+
         #endregion
 
         #region GetOrganizationalUnitById
@@ -45,9 +63,7 @@ namespace JackTheClipperData.MariaDb
         /// <returns>The unit (if found)</returns>
         public OrganizationalUnit GetOrganizationalUnitById(Guid id)
         {
-            var result = GetOrganizationalUnitsAsync(MariaDbStatements.SelectOrganizationalUnitById,
-                                                new MySqlParameter("id", id)).Result;
-            return result[id];
+            return new OrganizationalUnitManager(ref this.cachedManager).GetOrganizationalUnit(id);
         }
         #endregion
 
@@ -87,43 +103,57 @@ namespace JackTheClipperData.MariaDb
         /// Gets all sources.
         /// </summary>
         /// <returns>List of all sources.</returns>
-        public IReadOnlyCollection<Source> GetSources()
+        public IReadOnlyList<Source> GetSources()
         {
             return GetSourcesAsync(MariaDbStatements.SelectAllSources).Result;
         }
         #endregion
 
-        #region GetAllUsers
-        /// <summary>
-        /// Gets all users.
-        /// </summary>
-        /// <returns>List of all users.</returns>
-        public IReadOnlyCollection<User> GetAllUsers()
+        public IReadOnlyCollection<NotifiableUserSettings> GetNotifiableUserSettings()
         {
-            return GetUsersAsync(MariaDbStatements.SelectAllUsers).Result;
+            async Task<NotifiableUserSettings> Function(User user)
+            {
+                var settings = await GetUserSettingsAsync(false, MariaDbStatements.SelectUserSettingsById, new MySqlParameter("id", user.SettingsId));
+                return new NotifiableUserSettings(user.Id, user.UserMailAddress, user.UserName, settings, user.LastLoginTime, user.PrincipalUnitName);
+            }
+
+            var relevant = GetUsersAsync(MariaDbStatements.SelectNotifiableUsers).Result;
+            var tasks = new List<Task<NotifiableUserSettings>>(relevant.Count);
+            foreach (var user in relevant)
+            {
+                if (user.UserMailAddress.Contains('@'))
+                {
+                    tasks.Add(Function(user));
+                }
+            }
+
+            Task.WaitAll(tasks.Cast<Task>().ToArray());
+            return tasks.Where(x => x != null).Select(x => x.Result).ToList();
         }
-        #endregion
 
         #region GetAvailableSources
+
         /// <summary>
         /// Gets the available sources.
         /// </summary>
-        /// <param name="user">The user.</param>
+        /// <param name="userId">The user.</param>
         /// <returns>List of available sources.</returns>
-        public IReadOnlyList<Source> GetAvailableSources(User user)
+        public IReadOnlyList<Source> GetAvailableSources(Guid userId)
         {
-            //TODO: At the moment we cant make sources availaible
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (user.Role == Role.SystemAdministrator || true)
+            var result = new HashSet<Source>();
+            var units = GetOrganizationalUnits(userId);
+            if (units.Any(x => x.Id == SystemUnit))
             {
-                //No right checks
-                return GetSourcesAsync(MariaDbStatements.SelectAllSources).Result;
+                return GetSources();
             }
-            else
+
+            foreach (var organizationalUnit in units)
             {
-                //TODO: only those for which the user is allowed to see
-                throw new NotImplementedException();
+                var settings = GetOrganizationalUnitSettings(organizationalUnit.Id);
+                result.UnionWith(settings.AvailableSources);
             }
+
+            return result.ToList();
         }
         #endregion
 
@@ -131,21 +161,23 @@ namespace JackTheClipperData.MariaDb
         /// <summary>
         /// Gets the available organizational units.
         /// </summary>
-        /// <param name="user">The user.</param>
+        /// <param name="userId">The user id.</param>
         /// <returns>List of available units.</returns>
-        public IReadOnlyList<OrganizationalUnit> GetOrganizationalUnits(User user)
+        public IReadOnlyList<OrganizationalUnit> GetOrganizationalUnits(Guid userId)
         {
-            //TODO: coorrect impl.
-            if (user.Role.Equals(Role.SystemAdministrator) || true)
+            var manager = new OrganizationalUnitManager(ref this.cachedManager);
+            var userUnits = GetUserOrganizationalUnitsAsync(userId).Result;
+            if (userUnits.Contains(SystemUnit))
             {
-                return GetOrganizationalUnitsAsync(MariaDbStatements.SelectAllOrganizationalUnits, new MySqlParameter[0]).Result.Values.ToList();
+                return manager.GetAllOrganizationalUnits().ToList();
             }
 
-            throw new NotImplementedException();
+            return userUnits.Select(uu => manager.GetOrganizationalUnit(uu)).ToList();
         }
         #endregion
 
         #region AddUser
+
         /// <summary>
         /// Adds a user.
         /// </summary>
@@ -154,12 +186,25 @@ namespace JackTheClipperData.MariaDb
         /// <param name="password">The password.</param>
         /// <param name="role">The role.</param>
         /// <param name="principalUnit">The principal unit.</param>
+        /// <param name="initialUnit">The initial unit of the user.</param>
         /// <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
         /// <param name="valid">A value whether the user is valid or not.</param>
         /// <returns>The user object of the new user.</returns>
-        public User AddUser(string userMail, string userName, string password, Role role, Guid principalUnit, bool mustChangePassword, bool valid)
+        public MethodResult<Guid> AddUser(string userMail, string userName, string password, Role role, Guid principalUnit, Guid initialUnit, bool mustChangePassword, bool valid)
         {
-            return AddUserAsync(userMail, userName, password, role, principalUnit, mustChangePassword, valid).Result;
+            return AddUserAsync(userMail, userName, password, role, principalUnit, initialUnit, mustChangePassword, valid).Result;
+        }
+
+        #endregion
+
+        #region DeleteUser
+        /// <summary>
+        /// Deletes the given user.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        public MethodResult DeleteUser(Guid userId)
+        {
+            return DeleteUserAsync(userId).Result;
         }
         #endregion
 
@@ -186,6 +231,19 @@ namespace JackTheClipperData.MariaDb
         public bool DeleteSource(Guid source)
         {
             return DeleteSourceAsync(source).Result;
+        }
+        #endregion
+
+        #region UpdateSource
+        /// <summary>
+        /// Updates the source.
+        /// </summary>
+        /// <param name="updatedSource">The updated source.</param>
+        /// <returns>MethodResult indicating success</returns>
+        public MethodResult UpdateSource(Source updatedSource)
+        {
+            AddSource(updatedSource);
+            return new MethodResult();
         }
         #endregion
 
@@ -311,17 +369,246 @@ namespace JackTheClipperData.MariaDb
                 return result;
             }
         }
+
         #endregion
 
-        #region GetPrincipalUnits
+        #region AddPrincipalUnit
+        /// <summary>
+        /// Adds a principal unit.
+        /// </summary>
+        /// <param name="unitName">Name of the unit.</param>
+        /// <param name="adminMailAddress">The admin mail address.</param>
+        /// <param name="adminPassword">The admin password.</param>
+        /// <returns>Tuple of new values.
+        /// <para>Item1 = Id of new principal unit.</para>
+        /// <para>Item2 = Id of new <see cref="Role.StaffChief"/>-user.</para>
+        /// </returns>
+        public MethodResult<Tuple<Guid, Guid>> AddPrincipalUnit(string unitName, string adminMailAddress, string adminPassword)
+        {
+            return AddPrincipalUnitAsync(unitName, adminMailAddress, adminPassword).Result;
+        }
+        #endregion
+
+        #region AddOrganizationalUnit
+        /// <summary>
+        /// Adds a new unit unit.
+        /// </summary>
+        /// <param name="unitName">Name of the unit.</param>
+        /// <param name="parentUnit">The id of the parent unit.</param>
+        /// <returns>The id of the new unit.</returns>
+        public Guid AddUnit(string unitName, Guid parentUnit)
+        {
+            return AddUnitAsync(unitName, parentUnit).Result;
+        }
+        #endregion
+
+        #region RenameOrganizationalUnit
+        /// <summary>
+        /// Renames an organizational unit.
+        /// </summary>
+        /// <param name="toChange">The id of the unit to change.</param>
+        /// <param name="name">The new name.</param>
+        /// <returns>MethodResult indicating success.</returns>
+        public MethodResult RenameOrganizationalUnit(Guid toChange, string name)
+        {
+            return ModifyUnitAsync(toChange, name).Result;
+        }
+
+        #endregion
+
+        #region RemoveOrganizationalUnit
+        /// <summary>
+        /// Deletes an organizational unit.
+        /// </summary>
+        /// <param name="unitId">The unit identifier.</param>
+        /// <returns>MethodResult indicating success.</returns>
+        public MethodResult DeleteOrganizationalUnit(Guid unitId)
+        {
+            DeleteUnitAsync(unitId).GetAwaiter().GetResult();
+            return new MethodResult();
+        }
+        #endregion
+
+        #region SaveOrganizationalUnitSettings
+        /// <summary>
+        /// Changes the organizational unit settings to the given ones.
+        /// </summary>
+        /// <param name="changed">The changed settings to persist.</param>
+        /// <returns>MethodResult indicating success.</returns>
+        public MethodResult SaveOrganizationalUnitSettings(OrganizationalUnitSettings changed)
+        {
+            using (new PerfTracer(nameof(SaveOrganizationalUnitSettings)))
+            {
+                var results = new List<Task<MethodResult>>();
+
+                void SetSources(Guid settingsId, IReadOnlyCollection<Source> availableSources)
+                {
+                    var currentSources = GetSourcesAsync(MariaDbStatements.SelectUnitSources,
+                                                         new MySqlParameter("unitSettingsId", settingsId.ToString()))
+                        .Result;
+                    var removed = currentSources.Select(x => x.Id).ToHashSet();
+                    removed.ExceptWith(availableSources.Select(x => x.Id));
+                    foreach (var guid in removed)
+                    {
+                        results.Add(EnableOrDisableSourceForUnitAsync(settingsId, guid, true));
+                    }
+
+                    var added = availableSources.Select(x => x.Id).ToHashSet();
+                    added.ExceptWith(currentSources.Select(x => x.Id));
+                    foreach (var guid in added)
+                    {
+                        results.Add(EnableOrDisableSourceForUnitAsync(settingsId, guid, false));
+                    }
+                }
+
+                var manager = new OrganizationalUnitManager(ref this.cachedManager);
+                var allUnits = manager.GetAllOrganizationalUnits();
+                var currentUnit = allUnits.First(x => x.SettingsId == changed.Id);
+                var affectedTree = manager.GetAllOrganizationalUnitsInTree(currentUnit.Id);
+                var principalUnit = manager.GetPrincipalUnit(currentUnit.Id);
+                var relevant = GetUsersAsync(MariaDbStatements.SelectUsersOfPrincipalUnit,
+                                             new MySqlParameter("unit", principalUnit.Id)).Result;
+                foreach (var unit in affectedTree)
+                {
+                    //Inheritance
+                    SetSources(unit.SettingsId, changed.AvailableSources);
+
+                    //No inheritance for settings according to agreement
+                    //results.Add(SaveUserSettingsAsync(unit.SettingsId, changed.NotificationCheckIntervalInMinutes,
+                    //                                  changed.NotificationSettings, changed.ArticlesPerPage));
+                    results.Add(SetOrganizationalUnitBlackListAsync(unit.SettingsId, changed.BlackList));
+                }
+
+                foreach (var user in relevant)
+                {
+                    PerformUserSourceInheritance(user.Id).GetAwaiter().GetResult();
+                }
+
+                Task.WaitAll(results.Cast<Task>().ToArray());
+                var firstFailed = results.FirstOrDefault(x => !x.Result.IsSucceeded());
+                return firstFailed == null ? new MethodResult() : firstFailed.Result;
+            }
+        }
+        #endregion
+
+        /// <summary>
+        /// Gets the children of a principal unit.
+        /// </summary>
+        /// <param name="principalUnitId">The principal unit identifier.</param>
+        /// <returns>List of children of given principal unit.</returns>
+        public IReadOnlyList<Tuple<string, Guid>> GetPrincipalUnitChildren(Guid principalUnitId)
+        {
+            var manager = new OrganizationalUnitManager(ref this.cachedManager);
+            var allInTree = manager.GetAllOrganizationalUnitsInTree(principalUnitId)
+                                   .Select(delegate (OrganizationalUnit x)
+                                    {
+                                        var temp = manager.GetOrganizationalUnit(x.Id);
+                                        return new Tuple<string, Guid>(temp.Name, temp.Id);
+                                    }).ToList();
+
+            return allInTree;
+        }
+
+        public IReadOnlyList<OrganizationalUnit> GetPrincipalUnits()
+        {
+            var manager = new OrganizationalUnitManager(ref this.cachedManager);
+            return manager.GetAllOrganizationalUnits().Where(x => x.IsPrincipalUnit).ToList();
+        }
+
+        public OrganizationalUnitSettings GetOrganizationalUnitSettings(Guid unitId)
+        {
+            return (OrganizationalUnitSettings) GetUserSettingsAsync(true,
+                                                                     MariaDbStatements.SelectUnitSettingsByUnitId,
+                                                                     new MySqlParameter("id", unitId)).Result;
+        }
+
+        public UserSettings GetUserSettingsByUserId(Guid userId)
+        {
+            return GetUserSettingsAsync(false, MariaDbStatements.SelectUserSettingsByUserId, new MySqlParameter("userId", userId)).Result;
+        }
+
+        public IReadOnlyList<BasicUserInformation> GetManageableUsers(Guid userId)
+        {
+            var userUnits = GetOrganizationalUnits(userId);
+            var manageableUnits = new StringBuilder();
+            foreach (var unit in userUnits)
+            {
+                manageableUnits.Append(",")
+                               .Append(GuidToDatabaseUuid(unit.Id));
+                foreach (var child in unit.GetAllChildren())
+                {
+                    manageableUnits.Append(",")
+                                   .Append(GuidToDatabaseUuid(child.Id));
+                }
+            }
+
+            manageableUnits.Remove(0, 1);
+            return GetBasicUserInfo(string.Format(MariaDbStatements.SelectBasicUserInfoForUsersInUnits, manageableUnits)).Result;
+        }
+
+        public ExtendedUser GetUserInfo(Guid requested)
+        {
+            var u = GetUserById(requested);
+            var userUnits = GetOrganizationalUnits(requested);
+            return new ExtendedUser(u.Id, u.MailAddress, u.Role, u.UserName, u.SettingsId, u.MustChangePassword, u.LastLoginTime, u.IsValid, u.PrincipalUnitName, u.PrincipalUnitId, userUnits);
+        }
+
+        public Tuple<Feed, DateTime, int> GetFeedRequestData(Guid userId, Guid feedId)
+        {
+            return GetFeedRequestDataAsync(userId, feedId).Result;
+        }
+
+        public MethodResult ModifyUser(Guid userId, string userName, Role role, bool valid, IEnumerable<Guid> userUnits)
+        {
+            return ModifyUserAsync(userId, userName, role, valid, userUnits).Result;
+        }
+
+        public IEnumerable<string> GetUnitInheritedBlackList(Guid userId)
+        {
+            return GetUnitInheritedBlackListAsync(userId).Result;
+        }
+
+        public IEnumerable<User> GetEligibleStaffChiefs(Guid affectedUnit)
+        {
+            var result = new List<User>();
+            var manager = new OrganizationalUnitManager(ref cachedManager);
+            var principalUnit = manager.GetPrincipalUnit(affectedUnit);
+            var possible = GetUsersAsync(MariaDbStatements.SelectStaffChiefsOfPrincipalUnit, 
+                                         new MySqlParameter("principalunit", principalUnit.Id.ToString())).Result;
+            foreach (var user in possible)
+            {
+                var userUnits = GetUserOrganizationalUnitsAsync(user.Id).Result;
+                foreach (var unit in userUnits)
+                {
+                    if (manager.GetAllOrganizationalUnitsInTree(unit).Any(x => x.Id == affectedUnit))
+                    {
+                        result.Add(user);
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        #region GetPrincipalUnitBasicInformation
         /// <summary>
         /// Gets the principal units.
         /// </summary>
         /// <returns>List of principal units.</returns>
-        public IReadOnlyList<Tuple<string, Guid>> GetPrincipalUnits()
+        public IReadOnlyList<Tuple<string, Guid>> GetPrincipalUnitBasicInformation()
         {
-            return GetPrincipalUnitsAsync().Result;
+            return GetStringGuidTupleList(MariaDbStatements.SelectPrincipalUnits).Result;
         }
+        #endregion
+
+        #region SetUserOrganizationalUnits                
+
+        public MethodResult SetUserOrganizationalUnits(Guid userId, IEnumerable<Guid> units)
+        {
+            return SetUserOrganizationalUnitsAsync(userId, units).Result;
+        }
+
         #endregion
 
         ////Private methods
@@ -330,9 +617,11 @@ namespace JackTheClipperData.MariaDb
         /// <summary>
         /// Gets the <see cref="UserSettings"/> by id.
         /// </summary>
-        /// <param name="id">The id of the user settings.</param>
+        /// <param name="unitSettings">A value indicating whether <see cref="OrganizationalUnitSettings"/> are requested or not.</param>
+        /// <param name="stmt">The statement to execute.</param>
+        /// <param name="parameters">The parameters.</param>
         /// <returns>The determined <see cref="UserSettings"/>.</returns>
-        private static async Task<UserSettings> GetUserSettingsAsync(Guid id)
+        private static async Task<UserSettings> GetUserSettingsAsync(bool unitSettings, string stmt, params MySqlParameter[] parameters)
         {
             try
             {
@@ -341,15 +630,22 @@ namespace JackTheClipperData.MariaDb
                     await conn.OpenAsync();
                     NotificationSetting notification;
                     int interval, articlesPerPage;
-                    using (var cmd = new MySqlCommand(MariaDbStatements.SelectUserSettingsById, conn))
+                    IReadOnlyList<string> unitBlackList = new List<string>();
+                    Guid id;
+                    using (var cmd = new MySqlCommand(stmt, conn))
                     {
-                        cmd.Parameters.AddWithValue("id", id.ToString());
+                        cmd.AppendParameters(parameters);
                         using (var reader = await cmd.ExecuteReaderAsync())
                         {
                             await reader.ReadAsync();
-                            notification = reader.GetInt64(0).ConvertToNotification();
-                            interval = reader.IsDBNull(1) ? 60 : reader.GetInt32(1);
-                            articlesPerPage = reader.IsDBNull(2) ? 20 : reader.GetInt32(2);
+                            id = Guid.Parse(reader.GetString(0));
+                            notification = reader.GetInt64(1).ConvertToNotification();
+                            interval = reader.IsDBNull(2) ? 60 : reader.GetInt32(2);
+                            articlesPerPage = reader.IsDBNull(3) ? 20 : reader.GetInt32(3);
+                            if (unitSettings && !reader.IsDBNull(4))
+                            {
+                                unitBlackList = reader.GetString(4).ConvertToStringList();
+                            }
                         }
                     }
 
@@ -374,7 +670,10 @@ namespace JackTheClipperData.MariaDb
                         }
                     }
 
-                    return new UserSettings(id, feedList, notification, interval, articlesPerPage);
+                    return !unitSettings
+                        ? new UserSettings(id, feedList, notification, interval, articlesPerPage)
+                        : new OrganizationalUnitSettings(id, feedList, await GetSourcesAsync(MariaDbStatements.SelectUnitSources, new MySqlParameter("unitSettingsId", id.ToString())), 
+                                                         notification, interval, unitBlackList);
                 }
             }
             catch (Exception e)
@@ -382,23 +681,6 @@ namespace JackTheClipperData.MariaDb
                 Console.WriteLine(e);
                 return null;
             }
-        }
-        #endregion
-
-        #region GetOrganizationalUnitSettingsAsync
-        /// <summary>
-        /// Gets the <see cref="UserSettings"/> by id.
-        /// </summary>
-        /// <param name="id">The id of the user settings.</param>
-        /// <returns>The determined <see cref="UserSettings"/>.</returns>
-        private static async Task<OrganizationalUnitSettings> GetOrganizationalUnitSettingsAsync(Guid id)
-        {
-            var baseSettings = await GetUserSettingsAsync(id);
-
-            //TODO: Determine available sources
-            return new OrganizationalUnitSettings(id, baseSettings.Feeds, new List<Source>(), 
-                                                  baseSettings.NotificationSettings,
-                                                  baseSettings.NotificationCheckIntervalInMinutes);
         }
         #endregion
 
@@ -481,8 +763,7 @@ namespace JackTheClipperData.MariaDb
                                 var lastLogin = reader.IsDBNull(7) ? DateTime.MinValue : reader.GetDateTime(7);
                                 var principalUnitId = Guid.Parse(reader.GetString(8));
                                 var principalUnitName = reader.GetString(9);
-                                var userSettings = await GetUserSettingsAsync(settingsId);
-                                result.Add(new User(id, mail, role, name, userSettings, mustChangePassword, lastLogin, 
+                                result.Add(new User(id, mail, role, name, settingsId, mustChangePassword, lastLogin,
                                                     valid, principalUnitName, principalUnitId));
                             }
                         }
@@ -527,49 +808,6 @@ namespace JackTheClipperData.MariaDb
         }
         #endregion
 
-        #region GetOrganizationalUnitsAsync
-        /// <summary>
-        /// Gets all units by executing the given command
-        /// </summary>
-        /// <param name="command">The command to execute.</param>
-        /// <param name="parameters">The query parameters.</param>
-        /// <returns>List of returned units.</returns>
-        private static async Task<IReadOnlyDictionary<Guid, OrganizationalUnit>> GetOrganizationalUnitsAsync(string command, params MySqlParameter[] parameters)
-        {
-            var result = new Dictionary<Guid, OrganizationalUnit>();
-            try
-            {
-                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
-                {
-                    await conn.OpenAsync();
-                    using (var cmd = new MySqlCommand(command, conn))
-                    {
-                        cmd.AppendParameters(parameters);
-                        using (var reader = await cmd.ExecuteReaderAsync())
-                        {
-                            while (reader.HasRows && await reader.ReadAsync())
-                            {
-                                var id = Guid.Parse(reader.GetString(0));
-                                var name = reader.GetString(1);
-                                var parentId = Guid.Parse(reader.GetString(2));
-                                var settingsId = Guid.Parse(reader.GetString(3));
-                                var mail = reader.IsDBNull(4) ? null : reader.GetString(4);
-                                var settings = await GetOrganizationalUnitSettingsAsync(settingsId);
-                                result.Add(id, new OrganizationalUnit(id, name, parentId == SystemUnit, settings, mail));
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-
-            return result;
-        }
-        #endregion
-
         #region AddUserAsync
         /// <summary>
         /// Adds a user.
@@ -582,10 +820,18 @@ namespace JackTheClipperData.MariaDb
         /// <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
         /// <param name="valid">A value whether the user is valid or not.</param>
         /// <returns>The user object of the new user.</returns>
-        private static async Task<User> AddUserAsync(string userMail, string userName, string password, Role role, Guid principalUnit, bool mustChangePassword, bool valid)
+        private async Task<MethodResult<Guid>> AddUserAsync(string userMail, string userName, string password, 
+                                                                   Role role, Guid principalUnit, Guid initialUnit, 
+                                                                   bool mustChangePassword, bool valid)
         {
+            using(new PerfTracer(nameof(AddUserAsync)))
             try
             {
+                if (principalUnit == SystemUnit || initialUnit == SystemUnit)
+                {
+                    throw new InvalidOperationException("No new users are possible on 'system' unit.");
+                }
+
                 using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
                 {
                     await conn.OpenAsync();
@@ -597,21 +843,37 @@ namespace JackTheClipperData.MariaDb
                         cmd.Parameters.AddWithValue("pwHash", password.GetSHA256());
                         cmd.Parameters.AddWithValue("role", role.ToDatabaseRole());
                         cmd.Parameters.AddWithValue("principalUnit", principalUnit.ToString());
+                        cmd.Parameters.AddWithValue("userUnit", initialUnit.ToString());
                         cmd.Parameters.AddWithValue("mustChangePassword", mustChangePassword);
                         cmd.Parameters.AddWithValue("valid", valid);
                         cmd.Parameters.Add("newUserId".ToStoredProcedureOutParam(MySqlDbType.VarChar));
                         await cmd.ExecuteNonQueryAsync();
 
                         var newUserId = Guid.Parse(cmd.Parameters["newUserId"].Value.ToString());
-                        var innerResult = await GetUsersAsync(MariaDbStatements.SelectUserById, new MySqlParameter("id", newUserId));
-                        return innerResult.First();
+                        var user = GetUserById(newUserId);
+                        var unitSettings = GetOrganizationalUnitSettings(initialUnit);
+
+                        //Not possible according to agreement
+                        //await SaveUserSettingsAsync(user.SettingsId, unitSettings.NotificationCheckIntervalInMinutes,
+                        //                            unitSettings.NotificationSettings, unitSettings.ArticlesPerPage);
+                        var tasks = new List<Task>();
+                        foreach (var feed in unitSettings.Feeds)
+                        {
+                            var copy = new Feed(Guid.Empty, feed.Sources,
+                                                new Filter(Guid.Empty, feed.Filter.Keywords, feed.Filter.Expressions,
+                                                           feed.Filter.Blacklist), feed.Name);
+                            tasks.Add(AddFeedAsync(user.SettingsId, copy));
+                        }
+
+                        Task.WaitAll(tasks.ToArray());
+                        return new MethodResult<Guid>(newUserId);
                     }
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return null;
+                return new MethodResult<Guid>(SuccessState.UnknownError, e.Message, Guid.Empty);
             }
         }
         #endregion
@@ -655,7 +917,178 @@ namespace JackTheClipperData.MariaDb
         }
         #endregion
 
-        #region DeleteSourceAsync        
+        #region AddPrincipalUnitAsync
+        /// <summary>
+        /// Adds a principal unit.
+        /// </summary>
+        /// <param name="unitName">Name of the unit.</param>
+        /// <param name="adminMailAddress">The admin mail address.</param>
+        /// <param name="adminPassword">The admin password.</param>
+        /// <returns>Tuple of new values.
+        /// <para>Item1 = Id of new principal unit.</para>
+        /// <para>Item2 = Id of new <see cref="Role.StaffChief"/>-user.</para>
+        /// </returns>
+        private async Task<MethodResult<Tuple<Guid, Guid>>> AddPrincipalUnitAsync(string unitName, string adminMailAddress, string adminPassword)
+        {
+            try
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (var cmd = new MySqlCommand(MariaDbSP.SP_CREATE_PRINZIPALUNIT.ToString(), conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add(new MySqlParameter("name", MySqlDbType.Text) { Value = unitName });
+                        cmd.Parameters.Add(new MySqlParameter("mail", MySqlDbType.VarChar) { Value = adminMailAddress });
+                        cmd.Parameters.Add(new MySqlParameter("adminPwHash", MySqlDbType.VarChar) { Value = adminPassword.GetSHA256() });
+                        cmd.Parameters.Add(new MySqlParameter("newPrincipalUnitId", MySqlDbType.VarChar) { Direction = ParameterDirection.Output });
+                        cmd.Parameters.Add(new MySqlParameter("newUserId", MySqlDbType.VarChar) { Direction = ParameterDirection.Output });
+                        await cmd.ExecuteNonQueryAsync();
+
+                        this.cachedManager = null;
+                        var principalUnitId = Guid.Parse(cmd.Parameters["newPrincipalUnitId"].Value.ToString());
+                        var newUserId = Guid.Parse(cmd.Parameters["newUserId"].Value.ToString());
+                        return new MethodResult<Tuple<Guid, Guid>>(new Tuple<Guid, Guid>(principalUnitId, newUserId));
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error);
+                return new MethodResult<Tuple<Guid, Guid>>(SuccessState.UnknownError, error.Message, null);
+            }
+        }
+        #endregion
+
+        #region AddUnitAsync
+        /// <summary>
+        /// Adds a new unit asynchronously.
+        /// </summary>
+        /// <param name="unitName">Name of the unit.</param>
+        /// <param name="parentUnit">The parent of the new unit.</param>
+        private async Task<Guid> AddUnitAsync(string unitName, Guid parentUnit)
+        {
+            try
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (var cmd = new MySqlCommand(MariaDbSP.SP_CREATE_UNIT.ToString(), conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add(new MySqlParameter("name", MySqlDbType.Text) { Value = unitName });
+                        cmd.Parameters.Add(new MySqlParameter("parent", MySqlDbType.VarChar) { Value = parentUnit.ToString() });
+                        cmd.Parameters.Add(new MySqlParameter("newUnitId", MySqlDbType.VarChar) { Direction = ParameterDirection.Output });
+                        await cmd.ExecuteNonQueryAsync();
+                        this.cachedManager = null;
+                        var unitId = Guid.Parse(cmd.Parameters["newUnitId"].Value.ToString());
+                        return unitId;
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error);
+                throw;
+            }
+        }
+        #endregion
+
+        #region ModifyUnitAsync
+        /// <summary>
+        /// Renames an organizational unit.
+        /// </summary>
+        /// <param name="toChange">The id of the unit to change.</param>
+        /// <param name="name">The new name.</param>
+        /// <returns>MethodResult indicating success.</returns>
+        private static async Task<MethodResult> ModifyUnitAsync(Guid toChange, string name)
+        {
+            try
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (var cmd = new MySqlCommand(MariaDbSP.SP_UPDATE_UNIT.ToString(), conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add(new MySqlParameter("name", MySqlDbType.Text) { Value = name });
+                        cmd.Parameters.Add(new MySqlParameter("unitId", MySqlDbType.VarChar) { Value = toChange.ToString() });
+                        await cmd.ExecuteNonQueryAsync();
+                        return new MethodResult();
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error);
+                return new MethodResult(SuccessState.UnknownError, error.Message);
+            }
+        }
+        #endregion
+
+        #region DeleteUnitAsync
+        /// <summary>
+        /// Deletes the given unit asynchronously.
+        /// </summary>
+        /// <param name="unitId">The unit identifier.</param>
+        private async Task DeleteUnitAsync(Guid unitId)
+        {
+            try
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (var cmd = new MySqlCommand(MariaDbSP.SP_DELETE_UNIT.ToString(), conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add(new MySqlParameter("unitId", MySqlDbType.VarChar) { Value = unitId.ToString() });
+                        await cmd.ExecuteNonQueryAsync();
+                        this.cachedManager = null;
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error);
+            }
+        }
+        #endregion
+
+        #region EnableOrDisableSourceForUnitAsync        
+        /// <summary>
+        /// Enables the or disables a source for a unit asynchronously.
+        /// </summary>
+        /// <param name="unitSettingsId">The unit settings identifier.</param>
+        /// <param name="sourceId">The source identifier.</param>
+        /// <param name="disable">A value indicating whether the source should be disabled (=true) or enabled.</param>
+        private static async Task<MethodResult> EnableOrDisableSourceForUnitAsync(Guid unitSettingsId, Guid sourceId, bool disable)
+        {
+            try
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    var stmt = (disable ? MariaDbSP.SP_REMOVE_UNIT_SOURCE : MariaDbSP.SP_ADD_UNIT_SOURCE).ToString();
+                    using (var cmd = new MySqlCommand(stmt, conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add(new MySqlParameter("settingsId", MySqlDbType.VarChar) { Value = unitSettingsId.ToString() });
+                        cmd.Parameters.Add(new MySqlParameter("sourceId", MySqlDbType.VarChar) { Value = sourceId.ToString() });
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error);
+                return new MethodResult(SuccessState.UnknownError, error.Message);
+            }
+
+            return new MethodResult();
+        }
+        #endregion
+
+        #region DeleteSourceAsync
         /// <summary>
         /// Deletes the source asynchronous.
         /// </summary>
@@ -685,7 +1118,37 @@ namespace JackTheClipperData.MariaDb
         }
         #endregion
 
-        #region SaveUserSettings        
+        #region DeleteUserAsync
+        /// <summary>
+        /// Deletes a user asynchronous.
+        /// </summary>
+        /// <param name="userId">The user id.</param>
+        /// <returns>MethodResult indicating success</returns>
+        private static async Task<MethodResult> DeleteUserAsync(Guid userId)
+        {
+            try
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (var cmd = new MySqlCommand(MariaDbSP.SP_DEL_USER.ToString(), conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add(new MySqlParameter("id", MySqlDbType.VarChar) { Value = userId.ToString() });
+                        await cmd.ExecuteNonQueryAsync();
+                        return new MethodResult();
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error);
+                return new MethodResult(SuccessState.UnknownError, error.Message);
+            }
+        }
+        #endregion
+
+        #region SaveUserSettings (Will be splitted up)
         /// <summary>
         /// Saves the user settings asynchronously.
         /// </summary>
@@ -694,7 +1157,7 @@ namespace JackTheClipperData.MariaDb
         /// <param name="notificationSetting">The notification setting.</param>
         /// <param name="articlesPerPage">The articles per page.</param>
         /// <returns></returns>
-        private static async Task SaveUserSettingsAsync(Guid settingsId, int notificationCheckInterval,
+        private static async Task<MethodResult> SaveUserSettingsAsync(Guid settingsId, int notificationCheckInterval,
                                                         NotificationSetting notificationSetting, int articlesPerPage)
         {
             try
@@ -710,57 +1173,124 @@ namespace JackTheClipperData.MariaDb
                         cmd.Parameters.Add(new MySqlParameter("notification", MySqlDbType.Bit) {Value = notificationSetting.ToDatabaseNotification()});
                         cmd.Parameters.Add(new MySqlParameter("articlesPerPage", MySqlDbType.Int32) {Value = articlesPerPage == 0 ? (object) DBNull.Value : articlesPerPage});
                         await cmd.ExecuteNonQueryAsync();
+                        return new MethodResult();
                     }
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                return new MethodResult(SuccessState.UnknownError, e.Message);
             }
         }
         #endregion
 
-        #region AddFeedAsync        
+        #region SetOrganizationalUnitBlackListAsync
+        /// <summary>
+        /// Sets the organizational unit black list asynchronously.
+        /// </summary>
+        /// <param name="settingsId">The settings identifier.</param>
+        /// <param name="blackList">The black list.</param>
+        private static async Task<MethodResult> SetOrganizationalUnitBlackListAsync(Guid settingsId, IEnumerable<string> blackList)
+        {
+            try
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (var cmd = new MySqlCommand(MariaDbSP.SP_SET_UNIT_BLACKLIST.ToString(), conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add(new MySqlParameter("settingsId", MySqlDbType.VarChar) {Value = settingsId.ToString()});
+                        cmd.Parameters.Add(new MySqlParameter("blackList", MySqlDbType.Text) {Value = blackList.ToDatabaseList()});
+                        await cmd.ExecuteNonQueryAsync();
+                        return new MethodResult();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return new MethodResult(SuccessState.UnknownError, e.Message);
+            }
+        }
+        #endregion
+
+        #region AddFeedAsync
+
         /// <summary>
         /// Adds the feed asynchronously.
         /// </summary>
         /// <param name="settingsId">The settings identifier.</param>
         /// <param name="feed">The feed.</param>
-        private static async Task AddFeedAsync(Guid settingsId, Feed feed)
+        private async Task AddFeedAsync(Guid settingsId, Feed feed)
         {
-            try
+            using (new PerfTracer(nameof(AddFeedAsync)))
             {
-                var filterId = await CreateOrUpdateFilter(feed.Filter);
-                var feedId = await CreateOrUpdateFeed(Guid.Empty, feed.Name, filterId);
-                var taskArray = new Task[feed.Sources.Count];
-                var i = -1;
-                foreach (var source in feed.Sources)
+                try
                 {
-                    taskArray[++i] = LinkSourceToFeed(feedId, source.Id);
-                }
-
-                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
-                {
-                    await conn.OpenAsync();
-                    using (var cmd = new MySqlCommand(MariaDbSP.SP_LINK_SETTINGS_FEED.ToString(), conn))
+                    var filterId = await CreateOrUpdateFilter(feed.Filter);
+                    var feedId = await CreateOrUpdateFeed(Guid.Empty, feed.Name, filterId);
+                    if (feed.Sources != null)
                     {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.Add(new MySqlParameter("feedId", MySqlDbType.VarChar) {Value = feedId.ToString()});
-                        cmd.Parameters.Add(new MySqlParameter("settingsId", MySqlDbType.VarChar) {Value = settingsId.ToString()});
-                        await cmd.ExecuteNonQueryAsync();
+                        foreach (var source in feed.Sources)
+                        {
+                           await LinkSourceToFeed(feedId, source.Id);
+                        }
+                    }
+
+                    using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                    {
+                        await conn.OpenAsync();
+                        using (var cmd = new MySqlCommand(MariaDbSP.SP_LINK_SETTINGS_FEED.ToString(), conn))
+                        {
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.Add(new MySqlParameter("feedId", MySqlDbType.VarChar)
+                                                   {Value = feedId.ToString()});
+                            cmd.Parameters.Add(new MySqlParameter("settingsId", MySqlDbType.VarChar)
+                                                   {Value = settingsId.ToString()});
+                            await cmd.ExecuteNonQueryAsync();
+                        }
+                    }
+
+                    var manager = new OrganizationalUnitManager(ref this.cachedManager);
+                    var changedUnit = manager.GetAllOrganizationalUnits()
+                                             .FirstOrDefault(x => x.SettingsId == settingsId);
+                    if (changedUnit != null)
+                    {
+                        //Inherit to users
+                        var affectedTree = manager.GetAllOrganizationalUnitsInTree(changedUnit.Id);
+                        var principalUnit = manager.GetPrincipalUnit(changedUnit.Id);
+                        var relevant = GetUsersAsync(MariaDbStatements.SelectUsersOfPrincipalUnit,
+                                                     new MySqlParameter("unit", principalUnit.Id)).Result;
+                        foreach (var user in relevant)
+                        {
+                            var units = await GetUserOrganizationalUnitsAsync(user.Id);
+                            foreach (var unit in units)
+                            {
+                                var userTree = manager.GetAllOrganizationalUnitsInTree(unit);
+                                if (userTree.Any(x => affectedTree.Contains(x)) &&
+                                    !userTree.Any(x => x.Id == changedUnit.ParentId))
+                                {
+                                    var newFeed = new Feed(Guid.Empty, feed.Sources,
+                                                           new Filter(Guid.Empty, feed.Filter.Keywords,
+                                                                      feed.Filter.Expressions, feed.Filter.Blacklist),
+                                                           feed.Name);
+                                    await AddFeedAsync(user.SettingsId, newFeed);
+                                }
+                            }
+                        }
                     }
                 }
-
-                Task.WaitAll(taskArray);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
             }
         }
         #endregion
 
-        #region ModifyFeedAsync        
+        #region ModifyFeedAsync
         /// <summary>
         /// Modifies the feed asynchronously.
         /// </summary>
@@ -771,7 +1301,7 @@ namespace JackTheClipperData.MariaDb
             var allTasks = new List<Task>();
             try
             {
-                var settings = await GetUserSettingsAsync(settingsId);
+                var settings = await GetUserSettingsAsync(false, MariaDbStatements.SelectUserSettingsById, new MySqlParameter("id", settingsId));
                 var actualFeed = settings.Feeds.FirstOrDefault(x => x.Id == feed.Id);
                 if (actualFeed == null)
                 {
@@ -816,7 +1346,7 @@ namespace JackTheClipperData.MariaDb
         }
         #endregion
 
-        #region DeleteFeedAsync        
+        #region DeleteFeedAsync
         /// <summary>
         /// Deletes the feed asynchronously.
         /// </summary>
@@ -843,7 +1373,7 @@ namespace JackTheClipperData.MariaDb
         }
         #endregion
 
-        #region LinkSourceToFeed        
+        #region LinkSourceToFeed
         /// <summary>
         /// Links a source to a feed.
         /// </summary>
@@ -903,7 +1433,7 @@ namespace JackTheClipperData.MariaDb
         }
         #endregion
 
-        #region CreateOrUpdateFeed        
+        #region CreateOrUpdateFeed
         /// <summary>
         /// Creates the or updates a feed.
         /// </summary>
@@ -936,7 +1466,7 @@ namespace JackTheClipperData.MariaDb
         }
         #endregion
 
-        #region CreateOrUpdateFilter        
+        #region CreateOrUpdateFilter
         /// <summary>
         /// Creates the or updates the filter.
         /// </summary>
@@ -1032,8 +1562,8 @@ namespace JackTheClipperData.MariaDb
             }
         }
         #endregion
-        
-        #region GetSuperSetFeedAsync        
+
+        #region GetSuperSetFeedAsync
         /// <summary>
         /// Gets the superset feed.
         /// </summary>
@@ -1065,12 +1595,14 @@ namespace JackTheClipperData.MariaDb
         }
         #endregion
 
-        #region GetPrincipalUnits
+        #region GetPrincipalUnitBasicInformation        
         /// <summary>
-        /// Gets the principal units.
+        /// Gets a list of <see cref="Tuple{String, Guid}"/>s from the database.
         /// </summary>
-        /// <returns>List of principal units.</returns>
-        public async Task<IReadOnlyList<Tuple<string, Guid>>> GetPrincipalUnitsAsync()
+        /// <param name="command">The command.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>Obtained list of <see cref="Tuple{String, Guid}"/>s.</returns>
+        private static async Task<IReadOnlyList<Tuple<string, Guid>>> GetStringGuidTupleList(string command, params MySqlParameter[] parameters)
         {
             var result = new List<Tuple<string, Guid>>();
             try
@@ -1078,8 +1610,9 @@ namespace JackTheClipperData.MariaDb
                 using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
                 {
                     await conn.OpenAsync();
-                    using (var cmd = new MySqlCommand(MariaDbStatements.SelectPrincipalUnits, conn))
+                    using (var cmd = new MySqlCommand(command, conn))
                     {
+                        cmd.AppendParameters(parameters);
                         using (var reader = await cmd.ExecuteReaderAsync())
                         {
                             while (reader.HasRows && await reader.ReadAsync())
@@ -1098,6 +1631,346 @@ namespace JackTheClipperData.MariaDb
             return result;
         }
         #endregion
-    }
 
+        private static async Task<IReadOnlyList<BasicUserInformation>> GetBasicUserInfo(string command)
+        {
+            var result = new List<BasicUserInformation>();
+            try
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (var cmd = new MySqlCommand(command, conn))
+                    {
+                        using (var reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (reader.HasRows && await reader.ReadAsync())
+                            {
+                                result.Add(new BasicUserInformation(Guid.Parse(reader.GetString(1)), reader.GetString(0), reader.GetBoolean(2)));
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            result.Sort((x, y) => string.Compare(x.UserName, y.UserName, StringComparison.CurrentCulture));
+            return result;
+        }
+
+        #region GetUserOrganizationalUnitsAsync
+        private static async Task<IReadOnlyList<Guid>> GetUserOrganizationalUnitsAsync(Guid userId)
+        {
+            var result = new List<Guid>();
+            try
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (var cmd = new MySqlCommand(MariaDbStatements.SelectUserOrganizationalUnitIds, conn))
+                    {
+                        cmd.Parameters.AddWithValue("userId", userId.ToString());
+                        using (var reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync() && Guid.TryParse(reader.GetString(0), out var id))
+                            {
+                                result.Add(id);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return result;
+        }
+        #endregion
+
+        /// <summary>
+        /// Performs the user source inheritance.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns></returns>
+        private async Task PerformUserSourceInheritance(Guid userId)
+        {
+            var allowedSources = GetAvailableSources(userId);
+            var settings = await GetUserSettingsAsync(false, MariaDbStatements.SelectUserSettingsByUserId,
+                                                new MySqlParameter("userId", userId));
+            foreach (var feed in settings.Feeds)
+            {
+                var noLongerAllowed = feed.Sources.Except(allowedSources).ToList();
+                if (noLongerAllowed.Any())
+                {
+                    var newFeed = new Feed(feed.Id, noLongerAllowed, feed.Filter, feed.Name);
+                    await ModifyFeedAsync(settings.Id, newFeed);
+                }
+            }
+        }
+
+        private static async Task<Tuple<Feed, DateTime, int>> GetFeedRequestDataAsync(Guid userId, Guid feedId)
+        {
+            try
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (var cmd = new MySqlCommand(MariaDbStatements.SelectFeedRequestData, conn))
+                    {
+                        cmd.Parameters.AddWithValue("userId", userId.ToString());
+                        cmd.Parameters.AddWithValue("feedId", feedId.ToString());
+                        using (var reader = await cmd.ExecuteReaderAsync())
+                        {
+                            await reader.ReadAsync();
+                            var name = reader.GetString(0);
+                            var filter = new Filter(Guid.Parse(reader.GetString(1)),
+                                                    reader.GetStringFromNullable(3).ConvertToStringList(),
+                                                    reader.GetStringFromNullable(4).ConvertToStringList(),
+                                                    reader.GetStringFromNullable(2).ConvertToStringList());
+                            var lastLogin = reader.GetDateTime(5);
+                            var articlesPerPage = reader.IsDBNull(6) ? 20 : reader.GetInt32(6);
+                            var sources = await GetSourcesAsync(MariaDbStatements.SelectFeedSources, new MySqlParameter("feedid", feedId.ToString()));
+                            return new Tuple<Feed, DateTime, int>(new Feed(feedId, sources, filter, name), lastLogin, articlesPerPage);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
+        }
+
+        private static async Task<MethodResult> SetUserOrganizationalUnitsAsync(Guid userId, IEnumerable<Guid> units)
+        {
+            try
+            {
+                var current = await GetUserOrganizationalUnitsAsync(userId);
+                var added = units.Except(current);
+                var deleted = current.Except(units);
+                if (added.Any() || deleted.Any())
+                {
+                    using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                    {
+                        await conn.OpenAsync();
+                        var user = userId.ToString();
+                        foreach (var unit in added)
+                        {
+                            using (var cmd = new MySqlCommand(MariaDbSP.SP_ADD_USER_UNIT.ToString(), conn))
+                            {
+                                cmd.CommandType = CommandType.StoredProcedure;
+                                cmd.Parameters.Add(new MySqlParameter("userId", MySqlDbType.VarChar) { Value =  user });
+                                cmd.Parameters.Add(new MySqlParameter("unitId", MySqlDbType.VarChar) { Value = unit.ToString() });
+                                await cmd.ExecuteNonQueryAsync();
+                            }
+                        }
+
+
+                        foreach (var unit in deleted)
+                        {
+                            using (var cmd = new MySqlCommand(MariaDbSP.SP_REMOVE_USER_UNIT.ToString(), conn))
+                            {
+                                cmd.CommandType = CommandType.StoredProcedure;
+                                cmd.Parameters.Add(new MySqlParameter("userId", MySqlDbType.VarChar) { Value = user });
+                                cmd.Parameters.Add(new MySqlParameter("unitId", MySqlDbType.VarChar) { Value = unit.ToString() });
+                                await cmd.ExecuteNonQueryAsync();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error);
+                return new MethodResult(SuccessState.UnknownError, error.Message);
+            }
+
+            return new MethodResult();
+        }
+
+        private async Task<MethodResult> ModifyUserAsync(Guid userId, string userName, Role role, bool valid, IEnumerable<Guid> userUnits)
+        {
+            try
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (var cmd = new MySqlCommand(MariaDbSP.SP_UPDATE_USER_AND_CLEAR_USERUNITS.ToString(), conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("name", userName);
+                        cmd.Parameters.Add(new MySqlParameter("role", MySqlDbType.Bit) { Value = role.ToDatabaseRole() });
+                        cmd.Parameters.AddWithValue("userId", userId.ToString());
+                        cmd.Parameters.AddWithValue("valid", valid);
+                        await cmd.ExecuteNonQueryAsync();
+                        conn.Close();
+                        return await SetUserOrganizationalUnitsAsync(userId, userUnits);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return new MethodResult(SuccessState.UnknownError, e.Message);
+            }
+        }
+
+        public async Task<IEnumerable<string>> GetUnitInheritedBlackListAsync(Guid userId)
+        {
+            var result = new HashSet<string>();
+            try
+            {
+                using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                {
+                    await conn.OpenAsync();
+                    using (var cmd = new MySqlCommand(MariaDbStatements.SelectInheritedBlacklists, conn))
+                    {
+                        cmd.Parameters.AddWithValue("userId", userId.ToString());
+                        using (var reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (reader.HasRows && await reader.ReadAsync())
+                            {
+                                var blackList = reader.GetStringFromNullable(0).ConvertToStringList();
+                                result.UnionWith(blackList);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return result;
+        }
+
+
+        private static string GuidToDatabaseUuid(Guid guid)
+        {
+            return $"UUID_TO_BIN('{guid}')";
+        }
+
+        /// <summary>
+        /// This class is inefficient, and should maybe be replaced by a better implementation (far in the future).
+        /// Also it is not clear if this becomes a performance issue at all.
+        /// </summary>
+        private class OrganizationalUnitManager
+        {
+            [NotNull]
+            private IReadOnlyDictionary<Guid, OrganizationalUnit> allUnits;
+
+            public OrganizationalUnitManager(ref OrganizationalUnitManager cachedManager)
+            {
+                if (cachedManager == null)
+                {
+                    this.allUnits = GetOrganizationalUnitsAsync(MariaDbStatements.SelectAllOrganizationalUnits).Result;
+                    foreach (var pair in allUnits)
+                    {
+                        pair.Value.Children = allUnits.Values
+                                                      .Where(o => o != null && o.ParentId == pair.Value.Id &&
+                                                                  o.ParentId != o.Id)
+                                                      .ToList();
+                    }
+
+                    cachedManager = this;
+                }
+                else
+                {
+                    this.allUnits = cachedManager.allUnits;
+                }
+            }
+
+            public OrganizationalUnit GetOrganizationalUnit(Guid unitId)
+            {
+                return this.allUnits[unitId];
+            }
+
+            [NotNull]
+            public IEnumerable<OrganizationalUnit> GetAllOrganizationalUnits()
+            {
+                return this.allUnits.Values;
+            }
+
+            public IReadOnlyList<OrganizationalUnit> GetAllOrganizationalUnitsInTree(Guid startUnit)
+            {
+                var result = new List<OrganizationalUnit>();
+                OrganizationalUnit unit;
+                if (this.allUnits.TryGetValue(startUnit, out unit) && unit != null)
+                {
+                    result.Add(unit);
+                    result.AddRange(unit.GetAllChildren());
+                }
+
+                return result;
+            }
+
+            public OrganizationalUnit GetPrincipalUnit(Guid startUnit)
+            {
+                OrganizationalUnit unit;
+                if (this.allUnits.TryGetValue(startUnit, out unit) && unit != null)
+                {
+                    if (unit.IsPrincipalUnit || unit.ParentId == unit.Id)
+                    {
+                        return unit;
+                    }
+
+                    return GetPrincipalUnit(unit.ParentId);
+                }
+
+                return unit;
+            }
+
+            #region GetOrganizationalUnitsAsync
+
+            /// <summary>
+            /// Gets all units by executing the given command
+            /// </summary>
+            /// <param name="command">The command to execute.</param>
+            /// <param name="parameters">The query parameters.</param>
+            /// <returns>List of returned units.</returns>
+            private static async Task<IReadOnlyDictionary<Guid, OrganizationalUnit>> GetOrganizationalUnitsAsync(
+                string command, params MySqlParameter[] parameters)
+            {
+                var result = new Dictionary<Guid, OrganizationalUnit>();
+                try
+                {
+                    using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                    {
+                        await conn.OpenAsync();
+                        using (var cmd = new MySqlCommand(command, conn))
+                        {
+                            cmd.AppendParameters(parameters);
+                            using (var reader = await cmd.ExecuteReaderAsync())
+                            {
+                                while (reader.HasRows && await reader.ReadAsync())
+                                {
+                                    var id = Guid.Parse(reader.GetString(0));
+                                    var name = reader.GetString(1);
+                                    var parentId = Guid.Parse(reader.GetString(2));
+                                    var settingsId = Guid.Parse(reader.GetString(3));
+                                    var mail = reader.IsDBNull(4) ? null : reader.GetString(4);
+                                    result.Add(id, new OrganizationalUnit(id, name, parentId == SystemUnit, mail, parentId, settingsId));
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+
+                return result;
+            }
+
+            #endregion
+        }
+    }
 }

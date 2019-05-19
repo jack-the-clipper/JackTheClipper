@@ -218,11 +218,14 @@ namespace JackTheClipperBusiness.CrawlerManagement
         /// <returns>True if no violation occured.</returns>
         private static bool DoesNotViolateBlackList(Source source, string value)
         {
-            var blackList = source.BlackList;
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (blackList != null)
+            if (value != null && source != null)
             {
-                return !blackList.Any(value.Contains);
+                var blackList = source.BlackList;
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                if (blackList != null)
+                {
+                    return !blackList.Any(x => value.IndexOf(x, StringComparison.OrdinalIgnoreCase) > -1);
+                }
             }
 
             return true;

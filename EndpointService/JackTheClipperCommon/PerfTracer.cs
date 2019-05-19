@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using JackTheClipperCommon.Configuration;
 
 namespace JackTheClipperCommon
 {
@@ -24,8 +25,11 @@ namespace JackTheClipperCommon
         /// <param name="name">The name.</param>
         public PerfTracer(string name)
         {
-            this.name = name;
-            this.watch = Stopwatch.StartNew();
+            if (AppConfiguration.PerformanceTraceActive)
+            {
+                this.name = name;
+                this.watch = Stopwatch.StartNew();
+            }
         }
         
         /// <summary>
@@ -33,10 +37,18 @@ namespace JackTheClipperCommon
         /// </summary>
         public void Dispose()
         {
-            watch.Stop();
+            if (AppConfiguration.PerformanceTraceActive)
+            {
+                if (watch != null)
+                {
+                    watch.Stop();
 
-            Console.WriteLine(DateTime.UtcNow.ToLongTimeString() + " " + name + " took " + this.watch.ElapsedMilliseconds);
-            GC.SuppressFinalize(this);
+                    Console.WriteLine(DateTime.UtcNow.ToLongTimeString() + " " + name + " took " +
+                                      this.watch.ElapsedMilliseconds);
+                }
+
+                GC.SuppressFinalize(this);
+            }
         }
     }
 }

@@ -4,22 +4,29 @@
     <head th:replace="layout :: head">
     </head>
     <body class="h-100">
+        <script>
+            function showDeleteFeedModal() {
+                $("#deleteFeedModal").modal("show");
+            }
 
+
+
+        </script>
         <div class="modal fade" id="addFeedModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
              aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalLabel">Feed hinzufügen</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form th:object="${emptyFeed}"
-                              th:action="@{/{orga}/feed/addFeed(orga=${#authentication.getPrincipal().getOrganization()}
+                    <form th:object="${emptyFeed}"
+                          th:action="@{/{orga}/feed/addFeed(orga=${#authentication.getPrincipal().getOrganization()}
                               ,settingsId=${settingsId})}" method="post"
-                              id="modalForm">
+                          id="modalForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalLabel">Feed hinzufügen</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
                             <div class="form-group">
                                 <label for="inputName">Name</label>
                                 <input type="text" class="form-control" id="inputName" placeholder="Name"
@@ -30,6 +37,13 @@
                                 <input type="text" class="form-control" id="inputSearchWords"
                                        placeholder="Suchwörter" th:field="*{filter.keywords}" required="required">
                             </div>
+
+                            <div class="form-group">
+                                <label for="newBlacklist">Blacklist</label>
+                                <input type="text" class="form-control" id="newBlacklist"
+                                       placeholder="Blacklist" th:field="*{filter.blackList}">
+                            </div>
+
                             <div class="form-group">
                                 <label class="" for="sourcesModal">Quellen</label>
                                 <select id="sourcesModal" th:field="*{feedSources}" required="required"
@@ -40,24 +54,43 @@
                                     </option>
                                 </select>
                             </div>
-                        </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                            <button type="submit" class="btn btn-primary" >Feed speichern
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="deleteFeedModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body" id="deleteFeedModalBody"
+                         th:text="'Wollen Sie den Feed '+ ${feed.getName()} + ' wirklich löschen?'">
                     </div>
                     <div class="modal-footer">
+                        <form method="post"
+                                th:action="@{/{orga}/feed/remove(orga=${#authentication.getPrincipal().getOrganization()},feedId=${feed.getId()})}">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
-                        <button type="submit" class="btn btn-primary odom-submit" >Bestätigen
-                        </button>
+                        <button type="submit" class="btn btn-primary" >Bestätigen</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
         <div class="d-flex flex-column h-100">
-            <div th:replace="layout :: navbar (name='Feeds bearbeiten')"></div>
-            <div th:replace="layout :: alertInfo"></div>
+            <div th:replace="layout :: navbar (name='Feedverwaltung')"></div>
+
             <div class="container-fluid flex-grow-1">
                 <div class="row h-100">
                     <div class="col-sm-3 col-lg-2 px-1 bg-light">
                         <div class="py-2 sticky-top flex-grow-1">
                             <div class="nav flex-sm-column">
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#addFeedModal">
+                                    Feed hinzufügen
+                                </button>
                                 <div th:each="feed : ${feeds}">
                                     <b th:if="${name == feed.getName()}">
                                         <a class="nav-link break" th:text="${feed.getName()}"
@@ -68,9 +101,6 @@
                                        th:href="@{/{orga}/feed/edit(feedId=${feed.getId()},orga=${#authentication.getPrincipal().getOrganization()})}">Feed1
                                     </a>
                                 </div>
-                                <button class="btn btn-primary" data-toggle="modal" data-target="#addFeedModal">
-                                    Feed hinzufügen
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -78,8 +108,16 @@
                         <div class="container mt-5">
                             <div class="row justify-content-center">
                                 <div class="col-lg-6">
+                                    <div th:replace="layout :: alertInfo"></div>
                                     <div class="card">
-                                        <div class="card-body">
+                                        <div th:if="${feeds.size() == 0}" class="card-body">
+                                            Momentan existieren noch keine Feeds.
+                                            Sie können die Schaltfläche links verwenden, um einen neuen Feed anzulegen.
+                                        </div>
+                                        <div th:if="${feed.getId() == null && feeds.size() != 0}" class="card-body">
+                                            Dieser Feed existiert nicht.
+                                        </div>
+                                        <div th:if="${feed.getId() != null}" class="card-body">
                                             <h1>Feed bearbeiten</h1>
                                             <form th:object="${feed}"
                                                   th:action="@{/{orga}/feed/update(orga=${#authentication.getPrincipal().getOrganization()},settingsId=${settingsId})}"
@@ -95,6 +133,9 @@
                                                     <input type="text" class="form-control" id="keywords"
                                                            placeholder="Suchwörter" th:field="*{filter.keywords}"
                                                            name="keywords" required="required">
+                                                    <label for="inputBlacklist">Blacklist</label>
+                                                    <input type="text" class="form-control" id="inputBlacklist"
+                                                               placeholder="Blacklist" th:field="*{filter.blackList}">
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="" for="sources">Quellen</label>
@@ -107,8 +148,15 @@
                                                     </select>
                                                 </div>
                                                 <button th:disabled="${feed.getId() == null}"
-                                                        class="btn btn-primary mt-4">Änderungen
-                                                    übernehmen</button>
+                                                        type="submit" class="btn btn-primary mt-4">Speichern</button>
+                                                <button type="button" class="btn btn-danger mt-4"
+                                                        onclick="showDeleteFeedModal()">Feed löschen</button>
+                                                <a
+                                                        th:href="@{/{orga}/feed/edit(orga=${#authentication.getPrincipal().getOrganization()},feedId=${feed.getId()})}">
+                                                    <button type="button" class="btn btn-secondary mt-4">
+                                                    Abbrechen
+                                                    </button>
+                                                </a>
                                             </form>
                                         </div>
                                     </div>
@@ -120,13 +168,5 @@
             </div>
             <footer th:replace="layout :: footer"></footer>
         </div>
-        <script>
-            $(function () {
-                $('body').on('click', '.odom-submit', function (e) {
-                    $('#modalForm').submit();
-                    $('#addFeedModal').modal('hide');
-                });
-            });
-        </script>
     </body>
 </html>

@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using JackTheClipperBusiness.CrawlerManagement;
+using JackTheClipperCommon.Configuration;
 using JackTheClipperCommon.Enums;
 using JackTheClipperCommon.Extensions;
 using JackTheClipperCommon.Interfaces;
 using JackTheClipperCommon.Localization;
 using JackTheClipperCommon.SharedClasses;
 using JackTheClipperData;
-using User = JackTheClipperCommon.SharedClasses.User;
 using static JackTheClipperBusiness.MailController;
 
 namespace JackTheClipperBusiness.UserManagement
@@ -16,7 +18,7 @@ namespace JackTheClipperBusiness.UserManagement
     /// Contains Methods to get Articles from the ElasticServer, which match the Users preferences
     /// Also contains Methods which correspond to the class name
     /// </summary>
-    internal class UserController : IClipperUserAPI, IClipperSystemAdministratorAPI
+    internal class UserController : IClipperUserAPI, IClipperSystemAdministratorAPI, IClipperStaffChiefAPI
     {
         /// <summary>
         /// Tries to authenticate the user.
@@ -37,22 +39,25 @@ namespace JackTheClipperBusiness.UserManagement
         /// <returns>Collection of feeds for the given user.</returns>
         public IReadOnlyCollection<Feed> GetFeedDefinitions(User user)
         {
-            var userSettings = GetUserSettings(user);
+            var userSettings = GetUserSettings(user.Id);
             return userSettings != null ? userSettings.Feeds : new List<Feed>();
         }
 
         /// <summary>
         /// Gets the feed data.
         /// </summary>
-        /// <param name="user">The user.</param>
-        /// <param name="feed">The feed.</param>
+        /// <param name="userId">The user id.</param>
+        /// <param name="feedId">The feed id.</param>
         /// <param name="page">The requested page.</param>
         /// <param name="showArchived">A value indicating whether the archived articles should be shown or not.</param>
         /// <returns>List of <see cref="ShortArticle"/>s within the feed.</returns>
-        public IReadOnlyCollection<ShortArticle> GetFeed(User user, Feed feed, int page, bool showArchived)
+        public IReadOnlyCollection<ShortArticle> GetFeed(Guid userId, Guid feedId, int page, bool showArchived)
         {
-            var since = showArchived ? DateTime.MinValue : user.LastLoginTime;
-            return DatabaseAdapterFactory.GetControllerInstance<IIndexerService>().GetFeedAsync(user, feed.Id, since, page).Result;
+            var adapter = DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>();
+            var data = adapter.GetFeedRequestData(userId, feedId);
+            var since = showArchived ? DateTime.MinValue : data.Item2;
+            var inheritedUnit = adapter.GetUnitInheritedBlackList(userId);
+            return DatabaseAdapterFactory.GetControllerInstance<IIndexerService>().GetFeedAsync(data.Item1, since, data.Item3, page, inheritedUnit).Result;
         }
 
         /// <summary>
@@ -68,13 +73,13 @@ namespace JackTheClipperBusiness.UserManagement
         /// <summary>
         /// Gets the user settings.
         /// </summary>
-        /// <param name="user">The user.</param>
+        /// <param name="userId">The user id.</param>
         /// <returns>The settings of the given user.</returns>
-        public UserSettings GetUserSettings(User user)
+        public UserSettings GetUserSettings(Guid userId)
         {
-            return user.Settings;
+            return DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>().GetUserSettingsByUserId(userId);
         }
-        
+
         /// <summary>
         /// Attempts to reset the password.
         /// </summary>
@@ -87,9 +92,7 @@ namespace JackTheClipperBusiness.UserManagement
             var result = DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>().ResetPassword(userMail, newPassword);
             if (result.IsSucceeded())
             {
-                var user = Factory.GetControllerInstance<IClipperDatabase>()
-                                  .GetUserByCredentials(userMail, newPassword, Guid.Empty, false);
-                QuerySendMailAsync(user, ClipperTexts.PasswordResetMailSubject, string.Format(ClipperTexts.PasswordResetMailBody, newPassword));
+                QuerySendMailAsync(new Notifiable(userMail, userMail), ClipperTexts.PasswordResetMailSubject, string.Format(ClipperTexts.PasswordResetMailBody, newPassword));
             }
 
             return result;
@@ -103,6 +106,10 @@ namespace JackTheClipperBusiness.UserManagement
         /// <returns>MethodResult indicating success.</returns>
         public MethodResult ChangePassword(User user, string newPassword)
         {
+            if (string.IsNullOrWhiteSpace(newPassword))
+            {
+                throw new InvalidDataException("Invalid password");
+            }
             var result = DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>().ChangePassword(user, newPassword);
             if (result.IsSucceeded())
             {
@@ -120,12 +127,16 @@ namespace JackTheClipperBusiness.UserManagement
         /// <returns>MethodResult indicating success.</returns>
         public MethodResult ChangeMailAddress(User user, string newUserMail)
         {
+            if (string.IsNullOrWhiteSpace(newUserMail) || (newUserMail.Contains("@") == false))
+            {
+                throw new InvalidDataException("Ihre Mail Adresse ist unzulässig. Sie kann nicht leer sein und muss ein @-Zeichen enthalten.");
+            }
             var result = DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>().ChangeMailAddress(user, newUserMail);
             if (result.IsSucceeded())
             {
                 QuerySendMailAsync(user, ClipperTexts.MailChangedMailSubject, ClipperTexts.MailChangedMailBody);
             }
-            
+
             return result;
         }
 
@@ -134,27 +145,39 @@ namespace JackTheClipperBusiness.UserManagement
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>List of available sources.</returns>
-        public IReadOnlyList<Source> GetAvailableSources(User user)
+        public IReadOnlyList<Source> GetAvailableSources(Guid user)
         {
             return Factory.GetControllerInstance<IClipperDatabase>().GetAvailableSources(user);
         }
 
-        /// <summary>
-        /// Adds a user.
-        /// </summary>
-        /// <param name="userMail">The new users mail.</param>
-        /// <param name="userName">The new users username.</param>
-        /// <param name="password">The new users password.</param>
-        /// <param name="role">The new users role.</param>
-        /// <param name="principalUnit">The new users principal unit.</param>
-        /// <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
-        /// <param name="valid">A value whether the user is valid or not.</param>
-        /// <returns>The new users <see cref="User"/>object</returns>
-        public User AddUser(string userMail, string userName, string password, Role role, Guid principalUnit, bool mustChangePassword, bool valid)
+        public MethodResult AddUser(User toAdd, string password, Guid selectedUnit)
         {
-            return Factory.GetControllerInstance<IClipperDatabase>().AddUser(userMail, userName, password, role, principalUnit, mustChangePassword, valid);
-        }
+            var adapter = Factory.GetControllerInstance<IClipperDatabase>();
+            var toNotify = adapter.GetEligibleStaffChiefs(selectedUnit);
+            if (!toNotify.Any())
+            {
+                throw new InvalidOperationException("There is no possible staff chief which could approve the registration.");
+            }
 
+            var userMail = toAdd.MailAddress;
+            if (string.IsNullOrWhiteSpace(userMail) || (userMail.Contains("@") == false) || string.IsNullOrWhiteSpace(password))
+            {
+                throw new InvalidDataException("Invalid mail or password.");
+            }
+
+            var innerResult = adapter.AddUser(toAdd.MailAddress, toAdd.UserName, password, toAdd.Role,
+                                              toAdd.PrincipalUnitId, selectedUnit, false, false);
+            if (innerResult.IsSucceeded())
+            {
+                foreach (var user in toNotify)
+                {
+                    QuerySendMailAsync(user, ClipperTexts.NewPendingUserMailSubject,
+                                       string.Format(ClipperTexts.NewPendingUserMailBody, toAdd.UserName, toAdd.UserMailAddress));
+                }
+            }
+
+            return innerResult;
+        }
 
         /// <summary>
         /// Saves the user settings.
@@ -229,15 +252,123 @@ namespace JackTheClipperBusiness.UserManagement
         /// Changes the source.
         /// </summary>
         /// <param name="user">The user.</param>
-        /// <param name="toChange">Id of the source, which should be changed</param>
-        /// <param name="newSource">The new source.</param>
-        /// <returns>MethodResult</returns>
-        public MethodResult ChangeSource(User user, Guid toChange, Source newSource)
+        /// <param name="updatedSource">The updated source.</param>
+        /// <returns>MethodResult indicating success</returns>
+        public MethodResult ChangeSource(User user, Source updatedSource)
         {
-            var controller = Factory.GetControllerInstance<IClipperDatabase>();
-            controller.AddSource(newSource);
+            Factory.GetControllerInstance<IClipperDatabase>().UpdateSource(updatedSource);
             CrawlerController.GetCrawlerController().Restart();
             return new MethodResult();
+        }
+
+        /// <summary>
+        /// Adds the client.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="pbMail">The pb mail.</param>
+        /// <returns>MethodResult indicating success.</returns>
+        public MethodResult AddPrincipalUnit(User user, string name, string pbMail)
+        {
+            var password = PasswordGenerator.GeneratePw();
+            var controller = Factory.GetControllerInstance<IClipperDatabase>();
+            var result = controller.AddPrincipalUnit(name, pbMail, password);
+            if (result.IsSucceeded() && result.Result.Item1 != Guid.Empty && result.Result.Item2 != Guid.Empty)
+            {
+                var newUser = controller.GetUserById(result.Result.Item2);
+                QuerySendMailAsync(newUser, "Ihr Account für die Organisation " + name + " wurde erstellt.",
+                    $"Willkommen bei Jack the Clipper!\nIhr Account wurde erfolgreich erstellt. \nSie können sich unter folgendem Link anmelden: {AppConfiguration.MailConfigurationFELoginLink}{name} \n Ihre Anmeldedaten lauten wie folgt: \nMail Adresse: {pbMail} (Alternativ können Sie auch Ihren Benutzernamen verwenden: {newUser.UserName} ) \nPasswort: {password}");
+                return new MethodResult();
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Gets all principal units.
+        /// </summary>
+        /// <returns>The principal units</returns>
+        public IReadOnlyList<OrganizationalUnit> GetPrincipalUnits()
+        {
+            return Factory.GetControllerInstance<IClipperDatabase>().GetPrincipalUnits();
+        }
+
+        /// <summary>
+        /// Deletes the User
+        /// </summary>
+        /// <param name="userId">The userId of the User to delete</param>
+        /// <returns>MethodResult if successful</returns>
+        public MethodResult DeleteUser(Guid userId)
+        {
+            return Factory.GetControllerInstance<IClipperDatabase>().DeleteUser(userId);
+        }
+
+        public MethodResult AdministrativelyAddUser(User toAdd, IReadOnlyList<Guid> userUnits)
+        {
+            var password = PasswordGenerator.GeneratePw();
+            var result = Factory.GetControllerInstance<IClipperDatabase>().AddUser(toAdd.MailAddress, toAdd.UserName,
+                                                                                   password, toAdd.Role, toAdd.PrincipalUnitId,
+                                                                                   userUnits[0], true, true);
+            MethodResult innerResult = result;
+            if (result.IsSucceeded())
+            {
+
+                if (userUnits.Count > 1)
+                {
+                    innerResult = DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>()
+                                                        .SetUserOrganizationalUnits(result.Result, userUnits.Skip(1));
+                }
+
+                QuerySendMailAsync(toAdd, ClipperTexts.AccountCreatedMailSubject,
+                                   string.Format(ClipperTexts.AccountCreatedMailBody, toAdd.UserName, password));
+            }
+
+            return innerResult;
+        }
+
+        public MethodResult ModifyUser(User toModify, IReadOnlyList<Guid> userUnits)
+        {
+            var adapter = DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>();
+            var currentUser = GetUserInfo(toModify.Id);
+            if (toModify.UserMailAddress != currentUser.MailAddress)
+            {
+               var result = ChangeMailAddress(toModify, toModify.UserMailAddress);
+               if (!result.IsSucceeded())
+               {
+                   return result;
+               }
+            }
+
+            if (toModify.UserName != currentUser.UserName || toModify.Role != currentUser.Role ||
+                toModify.IsValid != currentUser.IsValid ||
+                !userUnits.ToHashSet().SetEquals(currentUser.OrganizationalUnits.Select(x => x.Id)))
+            {
+                return adapter.ModifyUser(toModify.Id, toModify.UserName, toModify.Role, toModify.IsValid, userUnits);
+            }
+
+            return new MethodResult();
+        }
+
+        public IReadOnlyList<BasicUserInformation> GetManageableUsers(Guid userId)
+        {
+            return DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>().GetManageableUsers(userId);
+        }
+
+        public ExtendedUser GetUserInfo(Guid requested)
+        {
+            return DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>().GetUserInfo(requested);
+        }
+
+        private class Notifiable : IMailNotifiable
+        {
+            public string UserMailAddress { get; private set; }
+            public string UserName { get; private set; }
+
+            public Notifiable(string userMailAddress, string userName)
+            {
+                UserMailAddress = userMailAddress;
+                UserName = userName;
+            }
         }
     }
 }

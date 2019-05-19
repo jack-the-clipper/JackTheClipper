@@ -1,5 +1,7 @@
 package org.jacktheclipper.frontend.authentication;
 
+import org.jacktheclipper.frontend.exception.UserLockedException;
+import org.jacktheclipper.frontend.model.User;
 import org.jacktheclipper.frontend.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +22,6 @@ import org.springframework.web.client.HttpClientErrorException;
 @Component
 public class BackendAuthenticationProvider implements AuthenticationProvider {
 
-    @Value("${backend.url}")
-    private String backendUrl;
 
     private static final Logger log = LoggerFactory.getLogger(BackendAuthenticationProvider.class);
 
@@ -60,6 +60,10 @@ public class BackendAuthenticationProvider implements AuthenticationProvider {
 
         try {
             User user = userService.authenticate(username, organization, password);
+            if (!user.isUnlocked()){
+                log.info("Access denied for User [{}] since he is not unlocked", username);
+                throw  new UserLockedException("User was not unlocked but does exist");
+            }
             return new CustomAuthenticationToken(user, password, organization,
                     user.getUserRole().resolveAuthorities());
         } catch (HttpClientErrorException.BadRequest ex) {
@@ -68,7 +72,8 @@ public class BackendAuthenticationProvider implements AuthenticationProvider {
             //implying that authentication failed
         }
 
-        throw new BadCredentialsException(organization + ": No user called [" + username + "] " + "with supplied PW");
+        throw new BadCredentialsException(organization + ": No user called [" + username + "] "
+                + "with supplied PW");
     }
 
     /**

@@ -2,6 +2,7 @@ package org.jacktheclipper.frontend.authentication;
 
 
 import org.jacktheclipper.frontend.enums.UserRole;
+import org.jacktheclipper.frontend.model.User;
 import org.jacktheclipper.frontend.service.UserService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,9 +26,10 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class BackendAuthenticationProviderTest {
-    private User mockUser = new User(UUID.randomUUID(), UserRole.User, "mockUser",
-            "mock@example.com", null, "MOCK", false);
+    private User mockUser = new User(UUID.randomUUID(), UserRole.User, "mockUser", "mock@example" +
+            ".com", null, "MOCK", false, true, null, null);
     private Authentication auth = new CustomAuthenticationToken("mockUser", "daMock", "MOCK");
+
     @Autowired
     private BackendAuthenticationProvider provider;
 
@@ -77,7 +79,8 @@ public class BackendAuthenticationProviderTest {
     }
 
     @Test
-    public void testAuthenticationWithUserAsPrincipal(){
+    public void testAuthenticationWithUserAsPrincipal() {
+
         when(userService.authenticate("mock@example.com", "MOCK", "daMock")).thenReturn(mockUser);
         Authentication mockAuth = new CustomAuthenticationToken(mockUser, "daMock", "MOCK");
         Authentication actualAuth = provider.authenticate(mockAuth);

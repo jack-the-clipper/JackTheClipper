@@ -12,8 +12,9 @@ import java.util.UUID;
  */
 public class UuidStringTuple implements Tuple<UUID, String> {
 
+    @JsonProperty("item2")
     private UUID first;
-
+    @JsonProperty("item1")
     private String second;
 
     public UuidStringTuple() {
@@ -44,13 +45,11 @@ public class UuidStringTuple implements Tuple<UUID, String> {
         return second;
     }
 
-    @JsonProperty("item2")
     public void setFirst(UUID first) {
 
         this.first = first;
     }
 
-    @JsonProperty("item1")
     public void setSecond(String second) {
 
         this.second = second;

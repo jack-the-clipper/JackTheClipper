@@ -1,7 +1,7 @@
 package org.jacktheclipper.frontend.utils;
 
-import org.jacktheclipper.frontend.authentication.User;
 import org.jacktheclipper.frontend.enums.UserRole;
+import org.jacktheclipper.frontend.model.User;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,7 +12,7 @@ import java.util.UUID;
 public class AuthenticationUtilsTest {
 
     private User user = new User(UUID.fromString("10000000-0000-0000-0000-000000000000"),
-            UserRole.User, "test", "test@example.com", "test", "Example", false);
+            UserRole.User, "test", "test@example.com", "test", "Example", false, true, null, null);
     private Authentication invalidAuthentication = new UsernamePasswordAuthenticationToken("otto"
             , "georg");
 

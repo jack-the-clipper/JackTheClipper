@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" class="h-100">
+<html xmlns:th="http://www.thymeleaf.org" class="h-100"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
     <head>
         <title>Jack the Clipper --Error</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -46,8 +47,9 @@
                                     <div th:case="404">
                                         <h3>Sorry, this page does not exist.</h3><br/>
                                         Please do refrain from tinkering with the URI<br/>
-                                        You can go back <a th:href="@{/}">here</a>
-
+                                        <span sec:authorize="isAuthenticated()">You can go back <a
+                                            th:href="@{/{orga}/(orga=${#authentication.getPrincipal().getOrganization()})}">here</a>
+                                        </span>
                                     </div>
 
                                     <div th:case="500">

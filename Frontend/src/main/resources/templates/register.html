@@ -36,8 +36,8 @@
                                                placeholder="Passwort bestätigen" th:field="*{password}">
                                     </div>
                                     <select name="ouId" class="custom-select" required="required">
-                                        <option th:each="ou: ${OUs}" th:value="${ou.getId()}"
-                                                th:text="${ou.getName()}"></option>
+                                        <option th:each="ou: ${OUs}" th:value="${ou.first()}"
+                                                th:text="${ou.second()}"></option>
                                     </select>
 
                                     <button class="btn btn-primary mt-4">registrieren</button>

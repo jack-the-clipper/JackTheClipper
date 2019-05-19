@@ -1,22 +1,22 @@
 package org.jacktheclipper.frontend.service;
 
-import org.apache.commons.lang3.NotImplementedException;
-import org.jacktheclipper.frontend.authentication.User;
 import org.jacktheclipper.frontend.exception.BackendException;
-import org.jacktheclipper.frontend.model.MethodResult;
-import org.jacktheclipper.frontend.model.Tuple;
+import org.jacktheclipper.frontend.model.*;
 import org.jacktheclipper.frontend.utils.ResponseEntityUtils;
 import org.jacktheclipper.frontend.utils.RestTemplateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,17 +26,21 @@ import java.util.UUID;
  */
 @Service
 public class UserService {
-    @Value("${backend.url}")
-    public String backendUrl;
+    private String backendUrl;
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     private final OuService ouService;
 
+    private final RestTemplate template;
+
     @Autowired
-    public UserService(OuService ouService) {
+    public UserService(OuService ouService, RestTemplateBuilder builder,
+                       @Value("${backend.url}") String backendUrl) {
 
         this.ouService = ouService;
+        template = builder.build();
+        this.backendUrl = backendUrl;
     }
 
     /**
@@ -46,64 +50,64 @@ public class UserService {
      * @param organizationId The id of the organization the user should belong to
      * @return The registered user holding only the necessary information for the application. E
      * .g. passwords are not transmitted by the backend
+     *
+     * @throws BackendException If the registration of the user failed. Currenlty there is no way
+     *                          to determine why it failed though. There is no distinction
+     *                          between an already taken
+     *                          username or email
      */
-    public User registerUser(User user, UUID organizationId) {
+    public MethodResult registerUser(User user, UUID organizationId)
+            throws BackendException {
 
         log.debug("Attempting registration of User [{}]", user.getName());
-        //TODO will be refactored by the backend
-        String uriParameters =
-                "?userMail=" + user.geteMail() + "&role=" + user.getUserRole().toString() +
-                        "&principalUnit=" + organizationId.toString() + "&userName=" + user.getName() + "&password=" + user.getPassword();
-
-        RestTemplate restTemplate = RestTemplateUtils.getRestTemplate();
+        String url = backendUrl + "/register?password={password}" + "&selectedUnit={unitId}";
         try {
-            ResponseEntity<User> response =
-                    restTemplate.exchange(backendUrl + "/register" + uriParameters,
-                            HttpMethod.PUT, RestTemplateUtils.prepareBasicHttpEntity(user),
-                            User.class);
+            ResponseEntity<MethodResult> response = template.exchange(url, HttpMethod.PUT,
+                    RestTemplateUtils.prepareBasicHttpEntity(user), MethodResult.class,
+                    user.getPassword(), organizationId.toString());
             if (ResponseEntityUtils.successful(response)) {
-                log.debug("Successfully registered user [{}]", user);
+                log.debug("Successfully sent request to try to register user [{}]", user);
                 return response.getBody();
             }
         } catch (Exception ex) {
             log.info("Failed registration due to [{}] with reason [{}]", ex.getClass().getName(),
                     ex.getMessage());
         }
-        throw new BackendException("Failed registration");
+        throw new BackendException("Failed registration request");
     }
 
-    /**
-     * Raises the access rights of the given user to a staffChief's level
-     *
-     * @param staffChiefId The staffChief promoting the user
-     * @param userId       The id of the user being promoted
-     */
-    public void promoteUser(UUID staffChiefId, UUID userId) {
-
-        throw new NotImplementedException("UserService#promoteUser is not implemented yet");
-    }
-
-    /**
-     * Gives a selfregistered user access to Jack the Clipper
-     *
-     * @param staffChiefId The id of the staffChief unlocking the user for Jack the Clipper
-     * @param userId       The id of the user that should be unlocked
-     */
-    public void unlockUser(UUID staffChiefId, UUID userId) {
-
-        throw new NotImplementedException("UserService#unlockUser is not implemented yet");
-    }
 
     /**
      * Deletes the account of the specified user. Thus the user will not be able to use Jack the
      * Clipper anymore
      *
-     * @param staffChiefId The staffChief deleting removing the user from his organizationalUnit
+     * @param staffChiefId The staffChief removing the user from his organizationalUnit
      * @param userId       The id of the user that should be removed
+     * @return A {@link MethodResult} indicating the success or failure of the call. Callers need
+     * to check {@link MethodResult#state} to see whether the request truly was successful.
+     *
+     * @throws BackendException If the user could not be registered
      */
-    public void deleteUser(UUID staffChiefId, UUID userId) {
+    public MethodResult deleteUser(UUID staffChiefId, UUID userId)
+            throws BackendException {
 
-        throw new NotImplementedException("UserService#deleteUser is not implemented yet");
+        String url = backendUrl + "/deleteuser?staffChiefId=" + staffChiefId.toString() +
+                "&userId=" + userId.toString();
+        try {
+            ResponseEntity<MethodResult> response = template.exchange(url, HttpMethod.DELETE,
+                    RestTemplateUtils.prepareBasicHttpEntity(""), MethodResult.class);
+            if (ResponseEntityUtils.successful(response)) {
+                log.debug("Successfully requested deletion of user [{}] as user [{}]", userId,
+                        staffChiefId);
+                return response.getBody();
+            }
+        } catch (HttpClientErrorException.BadRequest badRequest) {
+            log.warn("Could not execute delete [{}] due to http 400", url);
+            throw new BackendException("Failed delet due to http 400, requesturl: " + url);
+        }
+        log.warn("Failed deletion request [{}]. Response empty or not 2xx", url);
+        throw new BackendException("Could not delete user since response body was null or " +
+                "statuscode not 2xx");
     }
 
     /**
@@ -113,20 +117,22 @@ public class UserService {
      * {@link #updatePassword(UUID, String)} should be used.
      *
      * @param eMail The mail of the user who forgot his password
+     * @throws BackendException If the password for the specified mail could not be reset
      */
-    public void resetPassword(String eMail) {
+    public void resetPassword(String eMail)
+            throws BackendException {
 
-        String uri = backendUrl + "/reset?userMail=" + eMail;
+        String uri = backendUrl + "/reset?userMail={mail}";
 
-        RestTemplate restTemplate = RestTemplateUtils.getRestTemplate();
         try {
-            ResponseEntity<MethodResult> response = restTemplate.exchange(uri, HttpMethod.PUT,
-                    RestTemplateUtils.prepareBasicHttpEntity(eMail), MethodResult.class);
+            ResponseEntity<MethodResult> response = template.exchange(uri, HttpMethod.PUT,
+                    RestTemplateUtils.prepareBasicHttpEntity(eMail), MethodResult.class, eMail);
             if (ResponseEntityUtils.successful(response)) {
                 log.debug("Successfully reset password of user [{}]", eMail);
             }
         } catch (Exception ex) {
-            throw new BackendException("Could not reset user's " + eMail + " " + "password");
+            log.warn("Could not reset password of user with mail [{}]", eMail);
+            throw new BackendException("Could not reset user's [" + eMail + "] password");
         }
     }
 
@@ -137,20 +143,22 @@ public class UserService {
      *
      * @param userId      The id of the user changing his password
      * @param newPassword The new password in plain text. The backend will do the hashing
+     * @throws BackendException If the update of the password failed
      */
-    public void updatePassword(UUID userId, String newPassword) {
+    public void updatePassword(UUID userId, String newPassword)
+            throws BackendException {
 
-        String uri =
-                backendUrl + "/changepassword?userId=" + userId.toString() + "&newPassword=" + newPassword;
+        String uri = backendUrl + "/changepassword?userId={userId}&newPassword={newPassword}";
 
-        RestTemplate restTemplate = RestTemplateUtils.getRestTemplate();
         try {
-            ResponseEntity<MethodResult> response = restTemplate.exchange(uri, HttpMethod.PUT,
-                    RestTemplateUtils.prepareBasicHttpEntity(newPassword), MethodResult.class);
+            ResponseEntity<MethodResult> response = template.exchange(uri, HttpMethod.PUT,
+                    RestTemplateUtils.prepareBasicHttpEntity(newPassword), MethodResult.class,
+                    userId.toString(), newPassword);
             if (ResponseEntityUtils.successful(response)) {
                 log.debug("Successfully changed password of user [{}]", userId);
             }
         } catch (Exception ex) {
+            log.warn("Could not update password of user [{}] to [{}]", userId, newPassword);
             throw new BackendException("Could not update user's " + userId.toString() + " " +
                     "password to " + newPassword);
         }
@@ -163,21 +171,26 @@ public class UserService {
      *
      * @param userId   The id of the user that wants to change his email
      * @param newEMail The new email address
+     * @throws BackendException If the update of the mail address failed
      */
-    public void updateMail(UUID userId, String newEMail) {
+    public void updateMail(UUID userId, String newEMail)
+            throws BackendException {
 
-        String uri = backendUrl + "/changemailaddress?userId=" + userId.toString() +
-                "&newUserMail=" + newEMail;
+        String uri = backendUrl + "/changemailaddress?userId={userId}" + "&newUserMail={mail}";
 
-        RestTemplate restTemplate = RestTemplateUtils.getRestTemplate();
         try {
-            ResponseEntity<MethodResult> response = restTemplate.exchange(uri, HttpMethod.PUT,
-                    RestTemplateUtils.prepareBasicHttpEntity(newEMail), MethodResult.class);
+            ResponseEntity<MethodResult> response = template.exchange(uri, HttpMethod.PUT,
+                    RestTemplateUtils.prepareBasicHttpEntity(newEMail), MethodResult.class,
+                    userId.toString(), newEMail);
             if (ResponseEntityUtils.successful(response)) {
                 log.debug("Successfully changed email of user [{}]", userId);
             }
         } catch (Exception ex) {
-            throw new BackendException("Could not update user's " + userId.toString() + " mail " + "to" + " " + newEMail);
+            log.warn("Could not update the mail of user [{}] to [{}]", userId, newEMail);
+            //@formatter:off
+            throw new BackendException("Could not update user's " + userId.toString() + " mail " +
+                    "to " + newEMail);
+            //@formatter:on
         }
     }
 
@@ -197,10 +210,10 @@ public class UserService {
 
         UUID principalUnit = ouService.mapOuNameToOuUUID(organization);
         String loginUri =
-                backendUrl + "/login?userMailOrName=" + username + "&userPassword=" + password +
-                        "&principalUnit=" + principalUnit.toString();
-        ResponseEntity<User> response = RestTemplateUtils.getRestTemplate().getForEntity(loginUri
-                , User.class);
+                backendUrl + "/login?userMailOrName={username}&userPassword={password}" +
+                        "&principalUnit={unit}";
+        ResponseEntity<User> response = template.getForEntity(loginUri, User.class, username,
+                password, principalUnit.toString());
         if (ResponseEntityUtils.successful(response)) {
             return response.getBody();
         }
@@ -210,19 +223,142 @@ public class UserService {
     }
 
     /**
-     * Resolves the mapping of a {@link org.jacktheclipper.frontend.model.OrganizationalUnit}
-     * name to its id
+     * Returns which users a given user can manage.
+     * No full {@link User} objects are returned but only a {@link Tuple}. {@link Tuple#first()}
+     * will return {@link User#userId}, while {@link Tuple#second()} will return {@link User#name}.
      *
-     * @param organization The name of a top level
-     * {@link org.jacktheclipper.frontend.model.OrganizationalUnit}
-     * @return The UUID corresponding to the given organization name
+     * @param userId The id of the user requesting the information
+     * @return A list of {@link MinimalUser} representing a user's id , username and whether he
+     * is unlocked respectively.
+     *
+     * @throws BackendException If the REST-call to the backend failed due to
+     *                          {@link org.springframework.http.HttpStatus#BAD_REQUEST}.
      */
-    private UUID determineUnitUUID(String organization) {
+    public List<MinimalUser> getManageableUsers(UUID userId)
+            throws BackendException {
 
-        List<Tuple<UUID, String>> list = ouService.getTopLevelOrganizations();
-        // call to Optional#get without Optional#isPresent works since we throw a HttpStatus 400
-        // if the organization is not present, aka a login page with a nonexisting orga is
-        // impossible. Thus we will always find one
-        return list.stream().filter(tuple -> tuple.second().equals(organization)).findFirst().get().first();
+        String url = backendUrl + "/getmanageableusers?userId={userId}";
+        try {
+            ResponseEntity<MinimalUser[]> response = template.getForEntity(url,
+                    MinimalUser[].class, userId.toString());
+            if (ResponseEntityUtils.successful(response)) {
+                return Arrays.asList(response.getBody());
+            }
+        } catch (HttpClientErrorException.BadRequest badRequest) {
+            log.warn("Could not get manageable users of user [{}]", userId);
+            throw new BackendException("Failed to get manageable user");
+        }
+        return Collections.emptyList();
+    }
+
+    /**
+     * Retrieves additional information of a user.
+     * This is intended for users with
+     * {@link org.jacktheclipper.frontend.enums.UserRole#StaffChief} roles. With this they can
+     * see to which {@link OrganizationalUnit}s a {@link User} belongs to.
+     *
+     * @param requesterId The id of the user requesting the information
+     * @param requestedId The id of the user the information is requested of
+     * @return An {@link ExtendedUser} holding all information one can manage about a user
+     *
+     * @throws BackendException If the REST-call failed or returned nothing
+     */
+    public ExtendedUser getUserInformation(UUID requesterId, UUID requestedId)
+            throws BackendException {
+
+        String url = backendUrl + "/getuserinfo?userId={staffChief}&requested={requested}";
+        try {
+            ResponseEntity<ExtendedUser> response = template.getForEntity(url, ExtendedUser.class
+                    , requesterId.toString(), requestedId.toString());
+            if (ResponseEntityUtils.successful(response)) {
+                return response.getBody();
+            }
+        } catch (HttpClientErrorException.BadRequest badRequest) {
+            log.warn("Failed to retrieve information of [{}] for user [{}]", requestedId,
+                    requesterId);
+            throw new BackendException("Could not find userinformation of " + requestedId.toString());
+        }
+        log.warn("Response was empty or not 2xx for request [{}]", url);
+        throw new BackendException("Failed to retrieve userinformation of user " + requestedId.toString());
+    }
+
+    /**
+     * Lets a user with {@link org.jacktheclipper.frontend.enums.UserRole#StaffChief} add an user.
+     * The difference to {@link #registerUser(User, UUID)} is that this method indicates that the
+     * user himself did not make an effort to gain access to the application. Also users created
+     * by this method are valid per default and do not need to wait until they are unlocked
+     *
+     * @param staffChiefId  The id of the user adding the new user
+     * @param basicUserInfo A {@link Tuple} holding the minimal information that is needed to
+     *                      register a user
+     * @return A {@link MethodResult} indicating the success or failure of the call. Callers need
+     * to check {@link MethodResult#state} to see whether the request truly was successful.
+     *
+     * @throws BackendException If the REST-call failed or did return with a null body or an
+     *                          {@link org.springframework.http.HttpStatus} that is not 2xx.
+     */
+    public MethodResult addUser(UUID staffChiefId, UserUuidsTuple basicUserInfo)
+            throws BackendException {
+
+        String url = backendUrl + "/adminadduser?staffChiefId={staffChiefId}";
+        try {
+            ResponseEntity<MethodResult> response = template.exchange(url, HttpMethod.PUT,
+                    RestTemplateUtils.prepareBasicHttpEntity(basicUserInfo), MethodResult.class,
+                    staffChiefId.toString());
+            if (ResponseEntityUtils.successful(response)) {
+                //@formatter:off
+                log.debug("Successfully sent request to add user [{}] belonging to ous [{}] to "
+                        + "the backend", basicUserInfo.first(), basicUserInfo.second());
+                //@formatter:on
+                return response.getBody();
+            }
+        } catch (HttpClientErrorException.BadRequest badRequest) {
+            //@formatter:off
+            log.warn("Could not add user with name [{}] belonging to ous [{}] as user with id " +
+                    "[{}]", basicUserInfo.first(), basicUserInfo.second(), staffChiefId);
+            //@formatter:on
+            throw new BackendException("Could not add user");
+        }
+        throw new BackendException("Response did not include a body for request or was not 2xx");
+    }
+
+    /**
+     * Modifies an already existing {@link User}.
+     * This can be used by a user with
+     * {@link org.jacktheclipper.frontend.enums.UserRole#StaffChief} privileges to promote other
+     * users to {@link org.jacktheclipper.frontend.enums.UserRole#StaffChief} or unlock them so
+     * that they can use the application.
+     *
+     * @param staffChiefId       The id of the {@link User} with
+     *                           {@link org.jacktheclipper.frontend.enums.UserRole#StaffChief}
+     *                           privileges wanting to modify a user, to e.g unlock them
+     * @param updatedInformation The user that should be updated
+     * @return A {@link MethodResult} indicating the success or failure of the call. Callers need
+     * to check {@link MethodResult#state} to see whether the request truly was successful.
+     *
+     * @throws BackendException If the REST-call failed or did return with a null body or an
+     *                          {@link org.springframework.http.HttpStatus} that is not 2xx.
+     */
+    public MethodResult modifyUser(UUID staffChiefId, UserUuidsTuple updatedInformation)
+            throws BackendException {
+
+        String url = backendUrl + "/modifyuser?staffChiefId={staffChiefId}";
+        try {
+            ResponseEntity<MethodResult> response = template.exchange(url, HttpMethod.PUT,
+                    RestTemplateUtils.prepareBasicHttpEntity(updatedInformation),
+                    MethodResult.class, staffChiefId.toString());
+            if (ResponseEntityUtils.successful(response)) {
+                log.debug("Successfully sent request to update userinformation [{}] as " +
+                        "staffchief [{}]", updatedInformation, staffChiefId);
+                return response.getBody();
+            }
+        } catch (HttpClientErrorException.BadRequest badRequest) {
+            log.warn("Could not modify user to [{}] as staffchief [{}]", updatedInformation,
+                    staffChiefId);
+            throw new BackendException("Failed to modify user");
+        }
+        log.warn("Response to request [{}] was null or not 2xx. Payload [{}]", url,
+                updatedInformation);
+        throw new BackendException("Failed to modify user");
     }
 }

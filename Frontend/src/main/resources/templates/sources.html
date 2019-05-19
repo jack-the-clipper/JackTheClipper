@@ -36,22 +36,8 @@
                 $("#sourceModal").modal("show");
             }
 
-            function showDeleteSourceModal(ev) {
-                var sourceName = $(ev.target).parent().parent().children()[0].innerText;
-                var sourceId = $(ev.target).parent().parent().attr("id");
-                $("#deleteSourceModalBody").text("Wollen Sie die Quelle " + sourceName + " wirklich löschen?");
-                $("#confirmDeleteButton").attr("onclick", "deleteSource('" + sourceId + "')");
+            function showDeleteSourceModal() {
                 $("#deleteSourceModal").modal("show");
-            }
-
-            function deleteSource(sourceId) {
-                //TODO Request an das Backend senden
-                $.ajax({
-                    url: "[[@{/admin/sources/delete}]]?sourceId=" + sourceId,
-                    method: 'POST'
-                }).done(function() {
-                   location.reload();
-                });
             }
 
             $(document).ready(function() {
@@ -68,12 +54,12 @@
         </script>
         <div class="d-flex flex-column h-100">
             <div th:replace="layout :: navbar (name='Quellen bearbeiten')"></div>
-            <div th:replace="layout :: alertInfo"></div>
-            <div class="modal fade" id="sourceModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+
+            <div class="modal fade" id="addSourceModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <form th:action="@{/admin/addSource}" th:object="${source}" id="modalForm" method="post">
+                        <form th:action="@{/admin/addSource}" th:object="${source}" id="editModalForm" method="post">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="modalLabel">Quelle hinzufügen</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -115,27 +101,110 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
-                                <button type="submit" class="btn btn-primary odom-submit">Bestätigen</button>
+                                <button type="submit" class="btn btn-primary odom-submit">Speichern</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="deleteSourceModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal fade" id="deleteSourceModal" tabindex="-1" role="dialog" aria-hidden="true" th:if="${focusedSource}">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <div class="modal-body" id="deleteSourceModalBody">
+                        <div class="modal-body" id="deleteSourceModalBody"
+                             th:text="'Wollen Sie die Quelle ' + ${focusedSource.getName()} + ' wirklich löschen?'">
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
-                            <button type="button" class="btn btn-primary" id="confirmDeleteButton">Bestätigen</button>
+                            <form th:action="@{/admin/sources/delete(sourceId=${focusedSource.getId()})}" method="post">
+                            <button type="submit" class="btn btn-primary" id="confirmDeleteButton">
+                                Bestätigen
+                            </button>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="container flex-fill mt-5">
-                <div class="row">
-                    <div class="col-12 table-responsive">
+            <div class="container-fluid flex-grow-1">
+                <div class="row h-100">
+                    <div class="col-sm-3 col-lg-2 px-1 bg-light">
+                        <div class="py-2 sticky-top flex-grow-1">
+                            <div class="nav flex-sm-column">
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#addSourceModal">
+                                    Quelle hinzufügen
+                                </button>
+                                <div th:each="source : ${sources}">
+                                    <b th:if="${source.equals(focusedSource)== true}">
+                                        <a class="nav-link break" th:text="${source.getName()}"
+                                           th:href="@{/admin/sources(sourceId=${source.getId()})}">
+                                        </a>
+                                    </b>
+                                    <a th:unless="${source.equals(focusedSource)== true}" class="nav-link break" th:text="${source.getName()}"
+                                       th:href="@{/admin/sources(sourceId=${source.getId()})}">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="container mt-5">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-6">
+                                    <div th:replace="layout :: alertInfo"></div>
+                                    <div class="card">
+                                        <div th:if="${sources.size() == 0}" class="card-body">
+                                            Momentan existieren noch keine Quellen.
+                                            Sie können die Schaltfläche links verwenden, um eine neue Quelle anzulegen.
+                                        </div>
+                                        <div th:if="${focusedSource == null && sources.size() != 0}" class="card-body">
+                                            Diese Quelle existiert nicht.
+                                        </div>
+                                        <div class="card-body" th:if="${focusedSource}">
+                                            <form th:action="@{/admin/sources/update}" th:object="${focusedSource}" method="post">
+                                                <div class="form-group">
+                                                    <label for="editSourceName">Name</label>
+                                                    <input type="text" class="form-control" placeholder="Name"
+                                                           th:field="*{name}" required="required" id="editSourceName">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="editUri">URL</label>
+                                                    <input type="text" class="form-control" placeholder="URL"
+                                                           th:field="*{uri}" required="required" id="editUri">
+                                                </div>
+                                                <label for="editTypes">Quellentyp</label>
+                                                <select th:field="*{contentType}" class="custom-select" id="editTypes">
+                                                    <option th:each="type : ${contentTypes}" th:value="${type.name()}"
+                                                            th:text="${type.name()}"></option>
+                                                </select>
+                                                <div class="form-group">
+                                                    <label for="editXpath">XPath</label>
+                                                    <input type="text" class="form-control" placeholder="XPath"
+                                                           th:field="*{xPath}" id="editXpath">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="editRegex">Regex</label>
+                                                    <input type="text" class="form-control" placeholder="Regex"
+                                                           th:field="*{regEx}" id="editRegex">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="editBlacklist">Blacklist</label>
+                                                    <input type="text" class="form-control" placeholder="Blacklist"
+                                                           th:field="*{blackList}" id="editBlacklist">
+                                                </div>
+                                                <input type="hidden" th:field="*{id}">
+                                                <button class="btn btn-primary">Speichern</button>
+                                                <button type="button" class="btn btn-danger"
+                                                onclick="showDeleteSourceModal()">Löschen</button>
+                                                <a th:href="@{/admin/sources(sourceId=${focusedSource.getId()})}">
+                                                    <button type="button" class="btn btn-secondary">Abbrechen</button>
+                                                </a>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div class="col-12 table-responsive">
                         <table class="table table-hover">
                             <thead>
                             <tr>
@@ -165,9 +234,7 @@
                             </tr>
                             </tbody>
                         </table>
-                    </div>
-                    <button class="btn btn-primary mt-4 ml-auto" onclick="showAddSourceModal()">Quelle hinzufügen
-                    </button>
+                    </div>-->
                 </div>
             </div>
             <footer th:replace="layout :: footer"></footer>

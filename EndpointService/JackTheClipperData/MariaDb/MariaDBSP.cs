@@ -71,11 +71,6 @@
         SP_CREATE_UNIT,
 
         /// <summary>
-        /// SP_CHANGE_UNIT_NAME(unitId, name)
-        /// </summary>
-        SP_CHANGE_UNIT_NAME,
-
-        /// <summary>
         /// SP_ADD_USER_UNIT(IN userId VARCHAR(36), IN unitId VARCHAR(36))
         /// </summary>
         SP_ADD_USER_UNIT,
@@ -125,6 +120,11 @@
         /// <summary>
         /// SP_REMOVE_SOURCE_FEED(IN feedId VARCHAR(36), IN sourceId VARCHAR(36))
         /// </summary>
-        SP_REMOVE_SOURCE_FEED
+        SP_REMOVE_SOURCE_FEED,
+
+        /// <summary>
+        /// SP_UPDATE_USER_AND_CLEAR_USERUNITS(IN userId VARCHAR(36), IN name TEXT, IN role BIT(4), IN valid BOOL)
+        /// </summary>
+        SP_UPDATE_USER_AND_CLEAR_USERUNITS
     }
 }

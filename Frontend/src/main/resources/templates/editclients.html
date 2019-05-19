@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+    <html xmlns:th="http://www.thymeleaf.org"
+          xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" class="h-100">
+    <head th:replace="layout :: head">
+    </head>
+    <body class="h-100">
+        <script th:if="${currentClient != null}">
+            function showDeleteClientModal() {
+                $("#deleteClientModal").modal("show");
+            }
+
+
+            function submitForm() {
+                var sources = $("#selectSources").val();
+                var sourcesAsString = "";
+                for (var i = 0; i < sources.length; i++) {
+                    sourcesAsString = sourcesAsString + sources[i] + ",";
+                }
+                sourcesAsString = sourcesAsString.substring(0, sourcesAsString.length - 1);
+                $("#sources").val(sourcesAsString);
+                $("#form").submit();
+            }
+        </script>
+        <div class="modal fade" id="addClientModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form th:action="@{/admin/addclient}" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalLabel">Mandant hinzufügen</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="inputName">Name</label>
+                                <input type="text" class="form-control" id="inputName" placeholder="Name" required="required" name="name">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputMail">E-Mail</label>
+                                <input type="text" class="form-control" id="inputMail" placeholder="E-mail" required="required" name="mail">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                            <button type="submit" class="btn btn-primary odom-submit" >Speichern
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="deleteClientModal" tabindex="-1" role="dialog" aria-hidden="true" th:if="${currentClient}">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body" id="deleteClientModalBody"
+                         th:text="'Wollen Sie den Mandant '+ ${currentClient.getName()} + ' wirklich löschen?'">
+                    </div>
+                    <form th:action="@{/admin/deleteclient(clientId=${currentClient.getId()})}" method="post">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                            <button type="submit" class="btn btn-primary">Bestätigen</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-column h-100">
+            <div th:replace="layout :: navbar (name='Mandantenverwaltung')"></div>
+
+            <div class="container-fluid flex-grow-1">
+                <div class="row h-100">
+                    <div class="col-sm-3 col-lg-2 px-1 bg-light">
+                        <div class="py-2 sticky-top flex-grow-1">
+                            <div class="nav flex-sm-column">
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#addClientModal">
+                                    Mandant hinzufügen
+                                </button>
+                                <div th:if="${currentClient != null}" th:each="client : ${clients}">
+                                    <b th:if="${currentClient.getId().equals(client.getId())}">
+                                        <a class="nav-link break" th:text="${client.getName()}"
+                                           th:href="@{/admin/editclients(clientId=${client.getId()})}">Feed1
+                                        </a>
+                                    </b>
+                                    <a th:unless="${currentClient.getId().equals(client.getId())}"
+                                       class="nav-link break" th:text="${client.getName()}"
+                                       th:href="@{/admin/editclients(clientId=${client.getId()})}">Feed1
+                                    </a>
+                                </div>
+                                <div th:unless="${currentClient != null}" th:each="client : ${clients}">
+                                    <a class="nav-link break" th:text="${client.getName()}"
+                                       th:href="@{/admin/editclients(clientId=${client.getId()})}">Feed1
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="container mt-5">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-6">
+                                    <div th:replace="layout :: alertInfo"></div>
+                                    <div class="card">
+                                        <div th:if="${clients.size() == 0}" class="card-body">
+                                            Momentan existieren noch keine Mandanten.
+                                            Sie können die Schaltfläche links verwenden, um einen neuen Mandanten anzulegen.
+                                        </div>
+                                        <div th:if="${currentClient == null && clients.size() != 0}" class="card-body">
+                                            Dieser Mandant existiert nicht.
+                                        </div>
+                                        <div th:if="${currentClient != null}" class="card-body">
+                                            <h1>Mandant bearbeiten</h1>
+                                            <form th:action="@{/admin/editclient}" id="form" method="post">
+                                                <div class="form-group">
+                                                    <input id="clientId" type="hidden" name="id" th:value="${currentClient.getId()}">
+                                                    <input type="hidden" name="parentId" th:value="${currentClient.getParentId()}">
+                                                    <label for="name">Name</label>
+                                                    <input type="text" class="form-control" id="name" name="name"
+                                                           placeholder="name" th:value="${currentClient.getName()}" required>
+                                                    <label for="adminMail">Admin E-Mail</label>
+                                                    <input type="text" class="form-control" id="adminMail" placeholder="Admin E-Mail"
+                                                           name="adminMail" th:value="${currentClient.getAdminMail()}" required>
+                                                    <label class="" for="sources">Quellen</label>
+                                                    <input type="hidden" id="sources" name="sources">
+                                                    <select id="selectSources"
+                                                            multiple="multiple" class="selectpicker form-control" title="Quellen auswählen"
+                                                            data-selected-text-format="static">
+                                                        <option th:each="source:${sources}"
+                                                                th:value="${source.getId()}" th:text="${source.name}"
+                                                                th:selected="${settings.getAvailableSources().contains(source) == true}">
+                                                        </option>
+
+                                                    </select>
+                                                    <label for="blacklist">Blacklist</label>
+                                                    <input type="text" class="form-control" id="blacklist"
+                                                           placeholder="Blacklist" name="blacklist"
+                                                           th:value="${T(java.lang.String).join(',', settings.getBlackList())}">
+                                                </div>
+                                                <button type="button" class="btn btn-primary mt-4"
+                                                        onclick="submitForm()">Speichern</button>
+                                                <a
+                                                        th:href="@{/admin/editclients(clientId=${currentClient.getId()})}">
+                                                    <button type="button" class="btn btn-secondary mt-4">
+                                                        Abbrechen
+                                                    </button>
+                                                </a>
+                                                <button type="button" class="btn btn-danger mt-4" onclick="showDeleteClientModal()">Mandant löschen</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer th:replace="layout :: footer"></footer>
+        </div>
+    </body>
+</html>

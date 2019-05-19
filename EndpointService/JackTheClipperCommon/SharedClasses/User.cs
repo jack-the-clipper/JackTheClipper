@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Runtime.Serialization;
 using JackTheClipperCommon.Enums;
+using JackTheClipperCommon.Interfaces;
 using JetBrains.Annotations;
 
 namespace JackTheClipperCommon.SharedClasses
@@ -13,20 +13,8 @@ namespace JackTheClipperCommon.SharedClasses
     /// It also has a reference to its UserSettings
     /// </summary>
     [DataContract]
-    public class User
+    public class User : BasicUserInformation, IMailNotifiable
     {
-        /// <summary>
-        /// Gets the identifier.
-        /// </summary>
-        [DataMember(Name = "UserId")]
-        public Guid Id { get; private set; }
-
-        /// <summary>
-        /// Gets the name of the user.
-        /// </summary>
-        [DataMember(Name = "UserName")]
-        public string UserName { get; private set; }
-
         /// <summary>
         /// Gets the role(s).
         /// </summary>
@@ -40,13 +28,14 @@ namespace JackTheClipperCommon.SharedClasses
         public string RoleAsString
         {
             get { return Role.ToString(); }
+            private set { Role = Enum.Parse<Role>(value); }
         }
 
         /// <summary>
         /// If True User needs to change his PW on login.
         /// </summary>
         [DataMember(Name = "MustChangePassword")]
-        public bool MustChangePassword { get; set; }
+        public bool MustChangePassword { get; private set; }
 
         /// <summary>
         /// Gets the mail address.
@@ -54,6 +43,9 @@ namespace JackTheClipperCommon.SharedClasses
         [NotNull]
         [DataMember(Name = "UserMail")]
         public string MailAddress { get; private set; }
+
+        [IgnoreDataMember]
+        public string UserMailAddress => MailAddress;
 
         /// <summary>
         /// Gets the name of the principal unit.
@@ -64,7 +56,7 @@ namespace JackTheClipperCommon.SharedClasses
         /// <summary>
         /// Gets the principal unit identifier.
         /// </summary>
-        [IgnoreDataMember]
+        [DataMember(Name = "UserPrincipalUnitId")]
         public Guid PrincipalUnitId { get; private set;  }
 
         /// <summary>
@@ -74,16 +66,10 @@ namespace JackTheClipperCommon.SharedClasses
         public DateTime LastLoginTime { get; private set; }
 
         /// <summary>
-        ///Gets a value indicating whether the user is valid or not.
+        /// Gets the settings id.
         /// </summary>
-        [IgnoreDataMember]
-        public bool IsValid { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the settings.
-        /// </summary>
-        [IgnoreDataMember]
-        public UserSettings Settings { get; private set; }
+        [DataMember(Name="UserSettingsId")]
+        public Guid SettingsId { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="User"/> class.
@@ -92,15 +78,16 @@ namespace JackTheClipperCommon.SharedClasses
         /// <param name="mailAddress">The mail address.</param>
         /// <param name="role">The role.</param>
         /// <param name="name">The name.</param>
-        /// <param name="settings">The users settings.</param>
+        /// <param name="settingsId">The users settings id.</param>
         /// <param name="mustChangePassword">Specifies if user has to reset his password</param>
         /// <param name="lastLoginTime">The last login time.</param>
         /// <param name="isValid">A value indicating whether the user is valid and therefore may login.</param>
         /// <param name="principalUnitName">The name of the principal unit.</param>
         /// <param name="principalUnitId">The id of the principal unit.</param>
         /// <exception cref="ArgumentNullException">mailAddress is null</exception>
-        public User(Guid id, string mailAddress, Role role, string name, UserSettings settings, bool mustChangePassword,
+        public User(Guid id, string mailAddress, Role role, string name, Guid settingsId, bool mustChangePassword,
                     DateTime lastLoginTime, bool isValid, string principalUnitName, Guid principalUnitId)
+        :base(id, name, isValid)
         {
             if (string.IsNullOrEmpty(mailAddress))
             {
@@ -109,24 +96,11 @@ namespace JackTheClipperCommon.SharedClasses
 
             MailAddress = mailAddress;
             Role = role;
-            Id = id;
-            UserName = name;
-            Settings = settings;
+            SettingsId = settingsId;
             MustChangePassword = mustChangePassword;
             LastLoginTime = lastLoginTime;
-            IsValid = isValid;
             PrincipalUnitName = principalUnitName;
             PrincipalUnitId = principalUnitId;
-        }
-
-        /// <summary>
-        /// Gets the feed by id.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>The feed.</returns>
-        public Feed GetFeed(Guid id)
-        {
-            return Settings.Feeds.FirstOrDefault(feed => feed.Id == id);
         }
     }
 }

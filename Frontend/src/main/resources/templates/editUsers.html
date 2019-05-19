@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      class="h-100">
+    <head th:replace="layout :: head">
+    </head>
+    <body class="h-100">
+        <script th:if="${currentUser != null}">
+            function showDeleteUserModal() {
+                $("#deleteUserModalBody").text("Wollen Sie den Benutzer wirklich löschen?");
+                $("#deleteUserModal").modal("show");
+            }
+        </script>
+
+        <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabel">Benutzer hinzufügen</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:object="${newUser}"
+                              th:action="@{/{orga}/users/add(orga=${#authentication.getPrincipal().getOrganization()})}"
+                              method="post">
+                            <div class="form-group">
+                                <label for="userName">Benutzername</label>
+                                <input type="text" class="form-control" id="userName" required="required"
+                                       placeholder="Benutzername" th:field="*{name}">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">E-Mail Adresse</label>
+                                <input type="email" class="form-control" id="email" required="required"
+                                       placeholder="E-Mail Adresse" th:field="*{eMail}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="newPromoted">Personalbeauftragter</label>
+                                <input type="checkbox" name="promoted" id="newPromoted">
+                            </div>
+                            <div class="form-group">
+                                <label for="units">Gehört zu</label>
+                                <select id="units"
+                                        multiple="multiple" class="selectpicker form-control"
+                                        title="Unterorganisationen auswählen"
+                                        data-selected-text-format="static" name="units">
+                                    <option th:each="ou: ${ous}" th:value="${ou.getId()}"
+                                            th:text="${ou.getName()}"></option>
+                                </select>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                                <button type="submit" class="btn btn-primary odom-submit">Speichern
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-hidden="true" th:if="${currentUser != null}">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body" id="deleteUserModalBody">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                        <form
+                                th:action="@{/{orga}/users/delete(toDelete=${currentUser.getUserId()},
+                                orga=${#authentication.getPrincipal().getOrganization()})}" method="post">
+                            <button type="submit" class="btn btn-primary">Bestätigen</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-column h-100">
+            <div th:replace="layout :: navbar (name='Benutzerverwaltung')"></div>
+
+            <div class="container-fluid flex-grow-1">
+                <div class="row h-100">
+                    <div class="col-sm-3 col-lg-2 px-1 bg-light">
+                        <div class="py-2 sticky-top flex-grow-1">
+                            <div class="nav flex-sm-column">
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">
+                                    Benutzer hinzufügen
+                                </button>
+                                <div th:if="${currentUser != null}" th:each="user : ${users}">
+                                    <b th:if="${currentUser.getUserId().equals(user.getUserId()) == true}">
+                                        <a class="nav-link break" th:text="${user.getName()}" th:classappend="${!user.isUnlocked()}?'text-danger'"
+                                           th:href="@{/{orga}/users(userId=${user.getUserId()},orga=${#authentication.getPrincipal().getOrganization()})}">Feed1
+                                        </a>
+                                    </b>
+                                    <a th:unless="${currentUser.getUserId().equals(user.getUserId()) == true}"
+                                       class="nav-link break" th:classappend="${!user.isUnlocked()}?'text-danger'"
+                                       th:text="${user.getName()}"
+                                       th:href="@{/{orga}/users(userId=${user.getUserId()},orga=${#authentication.getPrincipal().getOrganization()})}">Feed1
+                                    </a>
+                                </div>
+                                <div th:unless="${currentUser != null}" th:each="user : ${users}">
+                                    <a class="nav-link break" th:text="${user.getName()}"
+                                       th:href="@{/{orga}/users(userId=${user.getUserId()},orga=${#authentication.getPrincipal().getOrganization()})}">Feed1
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="container mt-5">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-6">
+                                    <div th:replace="layout :: alertInfo"></div>
+                                    <form method="post" class="form-inline"
+                                          th:action="@{/{orga}/users/search(orga=${#authentication.getPrincipal().getOrganization()})}">
+                                        <div class="form-group mx-sm-3 mb-2">
+                                            <label for="searchField">Benutzername</label>
+                                            <input type="text" class="form-control" name="name" id="searchField">
+                                        </div>
+                                        <button class="btn btn-primary mb-2 pull-right" type="submit">
+                                            Suchen
+                                        </button>
+                                    </form>
+                                    <div class="card">
+                                        <div th:if="${users.size() == 0}" class="card-body">
+                                            Momentan existieren noch keine Benutzer für ihre Organisation.
+                                            Sie können die Schaltfläche links verwenden, um einen neuen
+                                            Benutzer anzulegen.
+                                        </div>
+                                        <div th:if="${currentUser == null && users.size() != 0}" class="card-body">
+                                            Dieser Benutzer existiert nicht.
+                                        </div>
+                                        <div th:if="${currentUser != null}" class="card-body">
+                                            <h1>Benutzer bearbeiten</h1>
+                                            <form th:action="@{/{orga}/users/update(orga= ${#authentication.getPrincipal().getOrganization()})}"
+                                                  id="form" method="post" th:object="${currentUser}">
+                                                <div class="form-group">
+                                                    <input id="userId" type="hidden" name="id"
+                                                           th:field="*{userId}">
+                                                    <input id="principalUnitId" type="hidden" name="id"
+                                                           th:field="*{principalUnitId}">
+                                                    <input id="changePw" type="hidden" name="id"
+                                                           th:field="*{mustChangePassword}">
+                                                    <input type="hidden" id="settingsId"
+                                                           th:field="*{settingsId}">
+                                                    <label for="name">Name</label>
+                                                    <input type="text" class="form-control" id="name"
+                                                           placeholder="name" th:field="*{name}" required>
+                                                    <label for="mail">E-Mail</label>
+                                                    <input type="email" class="form-control" id="mail"
+                                                           placeholder="Admin E-Mail" th:field="*{eMail}" required>
+                                                    <br/>
+                                                    <label for="staffchief">Personalbeauftragter</label>
+                                                    <input type="checkbox" id="staffchief"
+                                                           name="promote"
+                                                           th:checked="${currentUser.getUserRole().equals(T(org.jacktheclipper.frontend.enums.UserRole).StaffChief)}">
+                                                    <br/>
+                                                    <label for="selectUnits">Mitglied von</label>
+                                                    <select id="selectUnits"
+                                                            multiple="multiple" class="selectpicker form-control"
+                                                            title="Unterorganisationen auswählen" required="required"
+                                                            data-selected-text-format="static" name="selectedUnits">
+                                                        <option th:each="ou : ${ous}"
+                                                                th:value="${ou.getId()}" th:text="${ou.getName()}"
+                                                                th:selected="${currentUser.getUnits().contains(ou) == true}">
+                                                        </option>
+
+                                                    </select>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary mt-4"
+                                                        th:text="${currentUser.isUnlocked() == true}?'Speichern':'Speichern und freischalten'">
+                                                    Änderungen übernehmen
+                                                </button>
+                                                <button type="button" class="btn btn-danger mt-4"
+                                                        th:unless="${#authentication.getPrincipal().equals(currentUser) == true}"
+                                                        onclick="showDeleteUserModal()">Benutzer löschen
+                                                </button>
+                                                <a th:href="@{/{orga}/users(orga=${#authentication.getPrincipal().getOrganization()},
+                                                        userId=${currentUser.getUserId()})}">
+                                                    <button type="button" class="btn btn-secondary mt-4">
+                                                        Abbrechen
+                                                    </button>
+                                                </a>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer th:replace="layout :: footer"></footer>
+        </div>
+    </body>
+</html>

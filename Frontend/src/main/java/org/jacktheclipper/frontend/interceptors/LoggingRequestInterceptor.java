@@ -14,11 +14,25 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * A class that logs the entirety of all http-requests and -responses from the application for
- * debugging purposes
+ * debugging purposes if it gets configured like that. It logs {@link HttpRequest}s if and only if
+ * {@link #debugRequests} is {@code true} and logs {@link ClientHttpResponse} if and only if
+ * {@link #debugResponses} is {@code true}. See
+ * {@link org.jacktheclipper.frontend.utils.CustomRestTemplateCustomizer} for more information on
+ * how to set what should be traced.
  *
  * @author SBG
  */
 public class LoggingRequestInterceptor implements ClientHttpRequestInterceptor {
+
+    private final boolean debugResponses;
+
+    private final boolean debugRequests;
+
+    public LoggingRequestInterceptor(boolean debugResponses, boolean debugRequests) {
+
+        this.debugResponses = debugResponses;
+        this.debugRequests = debugRequests;
+    }
 
     private final static Logger log = LoggerFactory.getLogger(LoggingRequestInterceptor.class);
 
@@ -37,9 +51,15 @@ public class LoggingRequestInterceptor implements ClientHttpRequestInterceptor {
                                         ClientHttpRequestExecution execution)
             throws IOException {
 
-        traceRequest(request, body);
+        Long start = System.currentTimeMillis();
+        if (debugRequests) {
+            traceRequest(request, body);
+        }
         ClientHttpResponse response = execution.execute(request, body);
-        traceResponse(response);
+        if (debugResponses) {
+            traceResponse(response);
+        }
+        log.info("Tracing of exchange took [{}] ms", System.currentTimeMillis() - start);
         return response;
     }
 
@@ -54,13 +74,13 @@ public class LoggingRequestInterceptor implements ClientHttpRequestInterceptor {
     private void traceRequest(HttpRequest request, byte[] body)
             throws IOException {
 
-        log.info("===========================request " + "begin" +
+        log.info("===========================request begin" +
                 "================================================");
         log.info("URI         : {}", request.getURI());
         log.info("Method      : {}", request.getMethod());
         log.info("Headers     : {}", request.getHeaders());
         log.info("Request body: {}", new String(body, StandardCharsets.UTF_8));
-        log.info("==========================request " + "end" +
+        log.info("==========================request end" +
                 "================================================");
     }
 

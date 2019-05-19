@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using JackTheClipperCommon.SharedClasses;
 
 namespace JackTheClipperCommon.Interfaces
@@ -16,29 +17,11 @@ namespace JackTheClipperCommon.Interfaces
         IReadOnlyList<OrganizationalUnit> GetOrganizationalUnits(User user);
 
         /// <summary>
-        /// Adds a given organizational unit.
-        /// </summary>
-        /// <param name="user">The user who requests the addition.</param>
-        /// <param name="parent">The parent of the new organizational unit.</param>
-        /// <param name="toAdd">To unit add.</param>
-        /// <returns>MethodResult indicating success</returns>
-        MethodResult AddOrganizationalUnit(User user, OrganizationalUnit parent, OrganizationalUnit toAdd);
-
-        /// <summary>
-        /// Deletes the organizational unit.
-        /// </summary>
-        /// <param name="user">The user who requests the deletion.</param>
-        /// <param name="toDelete">The unit to delete.</param>
-        /// <returns>MethodResult indicating success</returns>
-        MethodResult DeleteOrganizationalUnit(User user, OrganizationalUnit toDelete);
-
-        /// <summary>
         /// Gets the organizational unit settings.
         /// </summary>
-        /// <param name="user">The user who requests the settings.</param>
-        /// <param name="unit">The unit.</param>
+        /// <param name="unitId">The organizational unit id.</param>
         /// <returns>The requested settings.</returns>
-        OrganizationalUnitSettings GetOrganizationalUnitSettings(User user, OrganizationalUnit unit);
+        OrganizationalUnitSettings GetOrganizationalUnitSettings(Guid unitId);
 
         /// <summary>
         /// Saves the organizational unit settings.
@@ -46,5 +29,35 @@ namespace JackTheClipperCommon.Interfaces
         /// <param name="toSave">The settings to save.</param>
         /// <returns>MethodResult indicating success</returns>
         MethodResult SaveOrganizationalUnitSettings(OrganizationalUnitSettings toSave);
+        
+        /// <summary>
+        /// Adds a new unit.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="parentUnitId">The parent unit id.</param>
+        /// <returns>MethodResult indicating success.</returns>
+        MethodResult AddOrganizationalUnit(string name, Guid parentUnitId);
+
+        /// <summary>
+        /// Deletes an organizational unit.
+        /// </summary>
+        /// <param name="unitId">The unit identifier.</param>
+        /// <returns>MethodResult indicating success.</returns>
+        MethodResult DeleteOrganizationalUnit(Guid unitId);
+
+        /// <summary>
+        /// Updates an existing organizational unit to the given values.
+        /// </summary>
+        /// <param name="updatedUnit">The updated unit.</param>
+        /// <returns>MethodResult indicating success.</returns>
+        MethodResult UpdateOrganizationalUnit(OrganizationalUnit updatedUnit);
+
+        /// <summary>
+        /// Sets the organizational units of a user.
+        /// </summary>
+        /// <param name="user">The user to be changed.</param>
+        /// <param name="units">The organizational units.</param>
+        /// <returns>MethodResult indicating success.</returns>
+        MethodResult SetUserOrganizationalUnits(User user, IReadOnlyList<Guid> units);
     }
 }

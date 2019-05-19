@@ -34,20 +34,22 @@ namespace JackTheClipperData
         /// <summary>
         /// Gets the requested feed
         /// </summary>
-        /// <param name="user">The User for which the feed is requested.</param>
-        /// <param name="feedId">The Id to the feed which should be generated.</param>
+        /// <param name="feed">The requested feed.</param>
         /// <param name="since">The date from which on articles should be considered.</param>
+        /// <param name="articlesPerPage">The amount of articles per page.</param>
         /// <param name="page">The requested page.</param>
+        /// <param name="unitBlackList"></param>
         /// <returns>List of articles within the feed</returns>
-        Task<IReadOnlyCollection<ShortArticle>> GetFeedAsync(User user, Guid feedId, DateTime since, int page);
+        Task<IReadOnlyCollection<ShortArticle>> GetFeedAsync(Feed feed, DateTime since, int articlesPerPage, int page,
+            IEnumerable<string> unitBlackList);
 
         /// <summary>
-        /// Gets the complete feed (= all relevant articles in any feed) of a given user.
+        /// Gets the complete feed (= all relevant articles in any feed) of a given user setting.
         /// </summary>
-        /// <param name="user">The User for which the complete feed is requested</param>
+        /// <param name="userSettings">The user settings for which the complete feed is requested</param>
         /// <param name="since">The date from which on articles should be considered.</param>
         /// <returns>List of articles within any feed of the user.</returns>
-        Task<IReadOnlyCollection<ShortArticle>> GetCompleteFeedAsync(User user, DateTime since);
+        Task<IReadOnlyCollection<ShortArticle>> GetCompleteFeedAsync(UserSettings userSettings, DateTime since);
 
         /// <summary>Gets a specific Article.</summary>
         /// <param name="articleId">The Id of the article to search.</param>

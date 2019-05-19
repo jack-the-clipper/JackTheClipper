@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using JackTheClipperBusiness;
 using JackTheClipperCommon.Enums;
 using JackTheClipperCommon.Interfaces;
@@ -19,12 +18,6 @@ namespace JackTheClipperRequestHandler.Controllers
         {
             try
             {
-                if (userId == Guid.Parse("10000000-0000-0000-0000-000000000000"))
-                {
-                    //TODO: Remove after providing new api
-                    userId = Guid.Parse("aaa342bb-680c-11e9-8c47-9615dc5f263c");
-                }
-
                 var user = ClipperUserController.Get<User>(userId);
                 return user.Role > Role.User
                     ? new ActionResult<IReadOnlyList<OrganizationalUnit>>(Factory.GetControllerInstance<IClipperOrganizationalUnitAPI>().GetOrganizationalUnits(user))
@@ -37,16 +30,6 @@ namespace JackTheClipperRequestHandler.Controllers
             }
         }
 
-        //public MethodResult AddOrganizationalUnit(User user, OrganizationalUnit parent, OrganizationalUnit toAdd)
-        //{
-        //    throw new System.NotImplementedException();
-        //}
-
-        //public MethodResult DeleteOrganizationalUnit(User user, OrganizationalUnit toDelete)
-        //{
-        //    throw new System.NotImplementedException();
-        //}
-
         [Route("getorganizationalunitsettings")]
         [HttpGet]
         public ActionResult<OrganizationalUnitSettings> GetOrganizationalUnitSettings([FromQuery]Guid userId, [FromQuery]Guid unitId)
@@ -54,9 +37,8 @@ namespace JackTheClipperRequestHandler.Controllers
             try
             {
                 var user = ClipperUserController.Get<User>(userId);
-                var unit = Factory.GetObjectInstanceById<OrganizationalUnit>(unitId);
                 return user.Role > Role.User
-                    ? new ActionResult<OrganizationalUnitSettings>(Factory.GetControllerInstance<IClipperOrganizationalUnitAPI>().GetOrganizationalUnitSettings(user, unit))
+                    ? new ActionResult<OrganizationalUnitSettings>(Factory.GetControllerInstance<IClipperOrganizationalUnitAPI>().GetOrganizationalUnitSettings(unitId))
                     : Forbid();
             }
             catch (Exception error)
@@ -66,9 +48,22 @@ namespace JackTheClipperRequestHandler.Controllers
             }
         }
 
-        //public MethodResult SaveOrganizationalUnitSettings(OrganizationalUnitSettings currentSettings)
-        //{
-        //    throw new System.NotImplementedException();
-        //}
+        [Route("saveorganizationalunitsettings")]
+        [HttpPut]
+        public ActionResult<MethodResult> SaveOrganizationalUnitSettings([FromQuery]Guid userId, [FromBody]OrganizationalUnitSettings unitSettings)
+        {
+            try
+            {
+                var user = ClipperUserController.Get<User>(userId);
+                return user.Role > Role.User
+                    ? new ActionResult<MethodResult>(Factory.GetControllerInstance<IClipperOrganizationalUnitAPI>().SaveOrganizationalUnitSettings(unitSettings))
+                    : Forbid();
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error);
+                return BadRequest(error.Message);
+            }
+        }
     }
 }

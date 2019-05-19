@@ -1,5 +1,7 @@
-package org.jacktheclipper.frontend.authentication;
+package org.jacktheclipper.frontend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jacktheclipper.frontend.enums.UserRole;
 
@@ -7,18 +9,31 @@ import java.security.Principal;
 import java.util.UUID;
 
 /**
+ * Adds additional information  to {@link MinimalUser}. E.g. {@link #eMail} which represents a
+ * users mail address which is unique in the entire application. It also holds a user's role on
+ * which some access control decisions are based.
  * This class represents a user for this application. A user can be uniquely identified by his
  * {@link UUID}, by his eMail or by his username within the organization he belongs to. A name does
  * not need to be unique in the entire application.
  */
-public class User implements Principal {
-    private UUID userId;
+public class User extends MinimalUser  {
+
+    @JsonProperty("UserRole")
     private UserRole userRole;
-    private String name;
+
+    @JsonProperty("UserMail")
     private String eMail;
+    @JsonIgnore
     private String password;
+    @JsonProperty("UserPrincipalUnit")
     private String organization;
+    @JsonProperty("MustChangePassword")
     private boolean mustChangePassword = false;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("UserSettingsId")
+    private UUID settingsId;
+    @JsonProperty("UserPrincipalUnitId")
+    private UUID principalUnitId;
 
 
     //Used by Jackson to deserialize from JSON
@@ -27,40 +42,25 @@ public class User implements Principal {
     }
 
     public User(UUID userId, UserRole userRole, String name, String eMail, String password,
-                String organization, boolean mustChangePassword) {
+                String organization, boolean mustChangePassword, boolean unlocked,
+                UUID settingsId, UUID principalUnitId) {
 
-        this.userId = userId;
+        super(name, userId, unlocked);
         this.userRole = userRole;
-        this.name = name;
         this.eMail = eMail;
         this.password = password;
         this.organization = organization;
         this.mustChangePassword = mustChangePassword;
+        this.settingsId = settingsId;
+        this.principalUnitId = principalUnitId;
     }
 
-    public UUID getUserId() {
-
-        return userId;
-    }
-
-    @JsonProperty("UserName")
-    public void setName(String name) {
-
-        this.name = name;
-    }
-
-    @JsonProperty("UserId")
-    public void setUserId(UUID userId) {
-
-        this.userId = userId;
-    }
 
     public UserRole getUserRole() {
 
         return userRole;
     }
 
-    @JsonProperty("UserRole")
     public void setUserRole(UserRole userRole) {
 
         this.userRole = userRole;
@@ -69,8 +69,8 @@ public class User implements Principal {
     @Override
     public boolean equals(Object another) {
 
-        if (another instanceof User) {
-            return this.userId.equals(((User) another).getUserId());
+        if (another instanceof User && getUserId() != null) {
+            return getUserId().equals(((User) another).getUserId());
         }
         return false;
     }
@@ -85,23 +85,11 @@ public class User implements Principal {
         }
     }
 
-
-    @Override
-    public String getName() {
-
-        if (name != null)
-            return name;
-        else {
-            return "Anonymous";
-        }
-    }
-
     public String geteMail() {
 
         return eMail;
     }
 
-    @JsonProperty("UserMail")
     public void seteMail(String eMail) {
 
         this.eMail = eMail;
@@ -112,7 +100,6 @@ public class User implements Principal {
         return password;
     }
 
-    @JsonProperty("PassWord")
     public void setPassword(String password) {
 
         this.password = password;
@@ -123,7 +110,6 @@ public class User implements Principal {
         return organization;
     }
 
-    @JsonProperty("UserPrincipalUnit")
     public void setOrganization(String organization) {
 
         this.organization = organization;
@@ -134,9 +120,28 @@ public class User implements Principal {
         return mustChangePassword;
     }
 
-    @JsonProperty("MustChangePassword")
     public void setMustChangePassword(boolean mustChangePassword) {
 
         this.mustChangePassword = mustChangePassword;
+    }
+
+    public UUID getSettingsId() {
+
+        return settingsId;
+    }
+
+    public void setSettingsId(UUID settingsId) {
+
+        this.settingsId = settingsId;
+    }
+
+    public UUID getPrincipalUnitId() {
+
+        return principalUnitId;
+    }
+
+    public void setPrincipalUnitId(UUID principalUnitId) {
+
+        this.principalUnitId = principalUnitId;
     }
 }

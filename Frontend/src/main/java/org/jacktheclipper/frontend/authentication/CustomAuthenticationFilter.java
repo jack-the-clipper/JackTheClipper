@@ -33,7 +33,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
             throws AuthenticationException {
 
         if (!request.getMethod().equals("POST")) {
-            throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
+            throw new AuthenticationServiceException("Authentication method not supported: "
+                    + request.getMethod());
         }
 
         CustomAuthenticationToken authRequest = getAuthRequest(request);

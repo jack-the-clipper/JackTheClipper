@@ -22,7 +22,8 @@ public class RedirectAttributesUtils {
      * @param message            The message the user is intended to see. This might be a failure
      *                           message or a message indicating success
      */
-    public static void populateDefaultRedirectAttributes(final RedirectAttributes redirectAttributes, boolean error, String message) {
+    public static void populateDefaultRedirectAttributes(final RedirectAttributes redirectAttributes,
+                                                         boolean error, String message) {
 
         if (error) {
             redirectAttributes.addFlashAttribute("css", "alert-warning");

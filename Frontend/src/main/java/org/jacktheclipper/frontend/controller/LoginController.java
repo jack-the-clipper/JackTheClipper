@@ -55,12 +55,11 @@ public class LoginController {
                             HttpServletRequest request) {
 
         HttpSession session = request.getSession();
-        if (ouService.getTopLevelOrganizations().stream().noneMatch(unit -> unit.second().equals(organization))) {
+        if (ouService.mapOuNameToOuUUID(organization) == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        if (session.getAttribute(Constants.SAVED_ORGANIZATION_KEY) == null) {
-            session.setAttribute(Constants.SAVED_ORGANIZATION_KEY, organization);
-        }
+        session.setAttribute(Constants.SAVED_ORGANIZATION_KEY, organization);
+
         model.addAttribute("org", organization);
         return "login";
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using JackTheClipperCommon.SharedClasses;
 
 namespace JackTheClipperCommon.Interfaces
@@ -24,14 +25,28 @@ namespace JackTheClipperCommon.Interfaces
         /// <returns>MethodResult indicating success</returns>
         MethodResult DeleteSource(User user, Guid toAdd);
 
-
         /// <summary>
         /// Changes the source.
         /// </summary>
         /// <param name="user">The user.</param>
-        /// <param name="toChange">Id of the source, which should be changed</param>
-        /// <param name="newSource">The new source.</param>
+        /// <param name="updatedSource">The updated source.</param>
         /// <returns>MethodResult indicating success</returns>
-        MethodResult ChangeSource(User user, Guid toChange, Source newSource);
+        MethodResult ChangeSource(User user, Source updatedSource);
+
+        /// <summary>
+        /// Adds the client.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="pbMail">The pb mail.</param>
+        /// <returns>MethodResult indicating success.</returns>
+        MethodResult AddPrincipalUnit(User user, string name, string pbMail);
+
+
+        /// <summary>
+        /// Gets all principal units.
+        /// </summary>
+        /// <returns>The principal units</returns>
+        IReadOnlyList<OrganizationalUnit> GetPrincipalUnits();
     }
 }

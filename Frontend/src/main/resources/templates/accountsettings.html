@@ -6,47 +6,70 @@
     <body class="h-100">
         <script>
             function showChangeEmailModal() {
-                $("#modalForm").attr("action", "[[@{/{orga}/feed/changemailaddress(orga=${#authentication.getPrincipal().getOrganization()})}]]");
-                $("#modalLabel").text("E-Mail Adresse ändern")
-                $("#toChangeLabel").text("neue E-Mail Adresse");
-                $("#toChange").attr("placeholder", "E-Mail Adresse").attr("name", "email").attr("type", "text").val("");
-                $("#passwordLabel").text("Passwort");
-                $("#password").val("").attr("name", "password");
-                $("#modal").modal("show");
+                $("#mailModal").modal("show");
             }
 
             function showChangePasswordModal() {
-                $("#modalForm").attr("action", "[[@{/{orga}/feed/changepassword(orga=${#authentication.getPrincipal().getOrganization()})}]]");
-                $("#modalLabel").text("Passwort ändern");
-                $("#toChangeLabel").text("neues Passwort");
-                $("#toChange").attr("placeholder", "Passwort").attr("name", "newPassword").attr("type", "password").val("");
-                $("#passwordLabel").text(" altes Passwort");
-                $("#password").val("").attr("name", "oldPassword");
+
                 $("#modal").modal("show");
             }
         </script>
         <div class="d-flex flex-column h-100">
-            <div th:replace="layout :: navbar (name='Profileinstellungen')"></div>
+            <div th:replace="layout :: navbar (name='Einstellungen')"></div>
             <div th:replace="layout :: alertInfo"></div>
-            <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+                 aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <form id="modalForm" method="post">
+                        <form id="modalForm" method="post" th:action="@{/{orga}/feed/changepassword(orga=${#authentication.getPrincipal().getOrganization()})}">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel"></h5>
+                                <h5 class="modal-title" id="modalLabel">Passwort ändern</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
                                     <div class="form-group">
-                                        <label for="toChange" id="toChangeLabel"></label>
-                                        <input type="text" class="form-control" id="toChange" required>
+                                        <label for="toChange" id="toChangeLabel">neues Passwort</label>
+                                        <input type="password" class="form-control" id="toChange" required
+                                               name="newPassword" placeholder="Passwort">
                                     </div>
                                     <div class="form-group">
-                                        <label for="password" id="passwordLabel"></label>
-                                        <input type="password" class="form-control" id="password" placeholder="Passwort" required>
+                                        <label for="password" id="passwordLabel">altes Passwort</label>
+                                        <input type="password" class="form-control" id="password" placeholder="Passwort" required
+                                        name="oldPassword">
                                     </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                                <button type="submit" class="btn btn-primary">Bestätigen</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="mailModal" tabindex="-1" role="dialog" aria-labelledby="mailModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <form id="mailModalForm" method="post" th:action="@{/{orga}/feed/changemailaddress(orga=${#authentication.getPrincipal().getOrganization()})}">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="mailModalLabel">E-Mail Adresse ändern</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="newMail" id="mailLabel">neue E-Mail Adresse</label>
+                                    <input type="email" class="form-control" id="newMail" required
+                                           placeholder="E-Mail Adresse" name="email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="mailPassword" id="mailPasswordLabel">Passwort</label>
+                                    <input type="password" class="form-control" id="mailPassword" placeholder="Passwort"
+                                           required name="password">
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
@@ -70,7 +93,7 @@
                         <label for="notSetting"> Benachrichtigungseinstellung</label>
                         <select th:field="*{notificationSetting}" id="notSetting" required="required" class="custom-select">
                             <option th:each="item : ${notificationSettings}" th:value="${item.name()}"
-                                    th:text="${item.name()}"></option>
+                                    th:text="${item.toString()}"></option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -78,11 +101,18 @@
                         <input id="articlesPerPage" class="form-control"
                                th:field="*{articlesPerPage}" required="required"/>
                     </div>
-
+                    <div>
+                        <button type="button" class="btn btn-primary mt-3" onclick="showChangeEmailModal()">E-Mail Adresse ändern</button>
+                        <button type="button" class="btn btn-primary mt-3" onclick="showChangePasswordModal()">Passwort ändern</button>
+                    </div>
+                    <br/>
                     <button type="submit" class="btn btn-primary">Speichern</button>
+                    <a th:href="@{/{orga}/feed/profile(orga=${#authentication.getPrincipal().getOrganization()})}">
+                        <button type="button" class="btn btn-secondary">
+                            Abbrechen
+                        </button>
+                    </a>
                 </form>
-                <button type="button" class="btn btn-primary mt-3" onclick="showChangeEmailModal()">E-Mail Adresse ändern</button>
-                <button type="button" class="btn btn-primary mt-3" onclick="showChangePasswordModal()">Passwort ändern</button>
             </div>
             <footer th:replace="layout :: footer"></footer>
         </div>

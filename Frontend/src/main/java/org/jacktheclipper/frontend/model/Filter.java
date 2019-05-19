@@ -12,9 +12,13 @@ import java.util.UUID;
  */
 public class Filter {
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("FilterId")
     private UUID id;
+    @JsonProperty("FilterKeywords")
     private List<String> keywords;
+    @JsonProperty("FilterExpressions")
     private List<String> expressions;
+    @JsonProperty("FilterBlacklist")
     private List<String> blackList;
 
     public Filter() {
@@ -35,7 +39,6 @@ public class Filter {
         return id;
     }
 
-    @JsonProperty("FilterId")
     public void setId(UUID id) {
 
         this.id = id;
@@ -46,7 +49,6 @@ public class Filter {
         return keywords;
     }
 
-    @JsonProperty("FilterKeywords")
     public void setKeywords(List<String> keywords) {
 
         this.keywords = keywords;
@@ -57,7 +59,6 @@ public class Filter {
         return expressions;
     }
 
-    @JsonProperty("FilterExpressions")
     public void setExpressions(List<String> expressions) {
 
         this.expressions = expressions;
@@ -68,7 +69,6 @@ public class Filter {
         return blackList;
     }
 
-    @JsonProperty("FilterBlacklist")
     public void setBlackList(List<String> blackList) {
 
         this.blackList = blackList;

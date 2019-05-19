@@ -24,14 +24,26 @@ namespace JackTheClipperBusiness
         }
         #endregion
 
-        #region GetPrincipalUnits
+        #region GetPrincipalUnitBasicInformation
         /// <summary>
         /// Gets the principal units.
         /// </summary>
         /// <returns>List of principal units.</returns>
-        public IReadOnlyList<Tuple<string, Guid>> GetPrincipalUnits()
+        public IReadOnlyList<Tuple<string, Guid>> GetPrincipalUnitBasicInformation()
         {
-            return DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>().GetPrincipalUnits();
+            return DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>().GetPrincipalUnitBasicInformation();
+        }
+        #endregion
+
+        #region GetPrincipalUnitChildren
+        /// <summary>
+        /// Gets the children of a principal unit.
+        /// </summary>
+        /// <param name="principalUnitId">The principal unit identifier.</param>
+        /// <returns>List of children of given principal unit.</returns>
+        public IReadOnlyList<Tuple<string, Guid>> GetPrincipalUnitChildren(Guid principalUnitId)
+        {
+            return DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>().GetPrincipalUnitChildren(principalUnitId);
         }
         #endregion
     }

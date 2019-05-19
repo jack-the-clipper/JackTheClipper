@@ -25,6 +25,7 @@ namespace JackTheClipperCommon.Configuration
         public static string ElasticPermanentIndexName { get; private set; }
         public static string ElasticTemporaryIndexName { get; private set; }
         public static string ElasticRssSpeedIndexName { get; private set; }
+        public static bool PerformanceTraceActive { get; private set; }
 
         /// <summary>
         /// Set the default configuration settings for the connection.
@@ -56,6 +57,7 @@ namespace JackTheClipperCommon.Configuration
             ElasticTemporaryIndexName = configuration["ServerConfiguration:ElasticTemporaryIndex"];
             ElasticRssSpeedIndexName = configuration["ServerConfiguration:ElasticRssSpeedIndex"];
             ElasticClearIndex = bool.Parse(configuration["ServerConfiguration:ClearElasticIndexes"] ?? "false");
+            PerformanceTraceActive = bool.Parse(configuration["ServerConfiguration:PerfTrace"] ?? "false");
         }
     }
 }

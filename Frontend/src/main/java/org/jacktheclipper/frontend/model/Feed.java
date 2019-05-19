@@ -13,9 +13,13 @@ import java.util.UUID;
  */
 public class Feed {
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("FeedId")
     private UUID id;
+    @JsonProperty("FeedSources")
     private List<Source> feedSources;
+    @JsonProperty("FeedFilter")
     private Filter filter;
+    @JsonProperty("FeedName")
     private String name;
 
     public Feed() {
@@ -36,7 +40,6 @@ public class Feed {
         return id;
     }
 
-    @JsonProperty("FeedId")
     public void setId(UUID id) {
 
         this.id = id;
@@ -47,7 +50,7 @@ public class Feed {
         return feedSources;
     }
 
-    @JsonProperty("FeedSources")
+
     public void setFeedSources(List<Source> feedSources) {
 
         this.feedSources = feedSources;
@@ -58,13 +61,13 @@ public class Feed {
         return filter;
     }
 
-    @JsonProperty("FeedFilter")
+
     public void setFilter(Filter filter) {
 
         this.filter = filter;
     }
 
-    @JsonProperty("FeedName")
+
     public String getName() {
 
         return name;
@@ -78,9 +81,6 @@ public class Feed {
     @Override
     public boolean equals(Object obj) {
 
-        if (this.id == null) {
-            return false;
-        }
         if (obj instanceof Feed) {
             return this.id.equals(((Feed) obj).getId());
         }

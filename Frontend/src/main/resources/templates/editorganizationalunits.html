@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" class="h-100">
+    <head th:replace="layout :: head">
+    </head>
+    <script>
+        function showMore(ev) {
+            $("#sidebar").children().children().children().addClass("nested");
+            var newObject = $(ev.target).parent().parent().parent().parent().clone();
+            //newObject.children().children().children().removeClass("nested");
+            newObject.children().first().toggleClass("caret-down");
+            newObject.children().children().children().first().remove();
+            newObject.appendTo($("#sidebar").children().children());
+            if (newObject.parent().children().first().text() != "zurück") {
+                var back = "<a href='#' onclick='goBack(event)'>zurück</a>";
+                newObject.parent().prepend(back);
+            } else {
+                $("#sidebar").children().children().children().first().removeClass("nested");
+            }
+        }
+
+        function goBack(ev) {
+            $(ev.target).parent().children().last().remove();
+            if ($(ev.target).parent().children().length == [[${units.size()}]] + 1) {
+                $(ev.target).parent().children().removeClass("nested");
+                $(ev.target).remove();
+            } else {
+                $(ev.target).parent().children().last().removeClass("nested");
+            }
+        }
+
+        function showDeleteOrganizationModal() {
+            $("#deleteOrganizationModal").modal("show");
+        }
+
+
+        function toggleChildren(ev) {
+            if ($(ev.target).parent().children().children().children().children().first().text() != "mehr anzeigen") {
+                $(ev.target).parent().children().children().children().toggleClass("nested");
+            } else {
+                $(ev.target).parent().children().children().children().first().toggleClass("nested");
+            }
+            $(ev.target).toggleClass("caret-down");
+        }
+    </script>
+    <body class="h-100">
+        <div class="modal fade" id="addUnitModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form th:action="@{/{orga}/addorganization(orga=${#authentication.getPrincipal().getOrganization()})}" method="post">
+                        <div class="modal-body">
+                            <h1>Organisation hinzufügen</h1>
+                            <div class="form-group">
+                                <input type="hidden" name="parentId" th:value="${unit.getId()}">
+                                <label for="name">Name</label>
+                                <input type="text" class="form-control" id="name" placeholder="Name"
+                                       name="name" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                            <button type="submit" class="btn btn-primary">Organisation speichern</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="deleteOrganizationModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body" id="deleteOrganizationModalBody"
+                         th:text="'Wollen Sie die Organisation '+ ${unit.getName()}+' wirklich löschen?'">
+                    </div>
+
+                    <div class="modal-footer">
+                        <form method="post"
+                            th:action="@{/{orga}/deleteorganization(orga=${#authentication.getPrincipal().getOrganization()},unitId=${unit.getId()})}">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                        <button type="submit" class="btn btn-primary" th:onclick="deleteOrganization()">Bestätigen</button></form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-column h-100">
+            <div th:replace="layout :: navbar (name='Organisationsverwaltung')"></div>
+            <div class="container-fluid flex-grow-1">
+                <div class="row h-100">
+                    <div class="col-sm-4 col-lg-3 px-1 bg-light">
+                        <div class="py-2 sticky-top flex-grow-1">
+                            <div class="nav flex-sm-column" id="sidebar">
+                                <button type="button" class="btn btn-primary mt-4"
+                                        data-toggle="modal" data-target="#addUnitModal">Unterorganisation anlegen</button>
+                                <div th:replace="listitem :: listitem (units=${units},
+                                orga=${#authentication.getPrincipal().getOrganization()}, count=-1)"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="container mt-5">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-6">
+                                    <div th:replace="layout :: alertInfo"></div>
+                                    <div class="card">
+                                        <div th:if="${unit.isPrincipalUnit() == true}" class="card-body">
+                                            <h1 th:text="${#authentication.getPrincipal().getOrganization()}"></h1>
+                                            <button type="button" class="btn btn-primary"
+                                                    data-toggle="modal" data-target="#addUnitModal">Unterorganisation anlegen</button>
+                                        </div>
+                                        <div th:unless="${unit.isPrincipalUnit() == true}" class="card-body">
+                                            <h1 th:text="${unit.getName()}"></h1>
+                                            <form th:object="${unitSettings}"
+                                                  th:action="@{/{orga}/editorganization(orga=${#authentication.getPrincipal().getOrganization()},
+                                                  unitId=${unit.getId()})}"
+                                                  method="post" class="mb-3">
+                                                <input type="hidden" th:field="*{id}">
+                                                <input type="hidden" th:field="*{notificationSetting}">
+                                                <input type="hidden" th:field="*{notificationCheckInterval}">
+                                                <input type="hidden" th:field="*{articlesPerPage}">
+                                                <div class="form-group">
+                                                    <label class="" for="sources">Quellen</label>
+                                                    <select id="sources" th:field="*{availableSources}" required="required"
+                                                            multiple="multiple" class="selectpicker form-control" title="Quellen auswählen"
+                                                            data-selected-text-format="static">
+                                                        <option th:each="source:${parentSettings.getAvailableSources()}" th:value="${source}"
+                                                                th:text="${source.name}">
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="blacklist">Blacklist</label>
+                                                    <input type="text" class="form-control" id="blacklist"
+                                                           placeholder="Blacklist" th:field="*{blackList}"
+                                                           name="blacklist">
+                                                </div>
+                                                <button class="btn btn-primary">Speichern</button>
+                                            </form>
+                                            <a th:href="@{/{orga}/editdefaultfeeds(orga=${#authentication.getPrincipal().getOrganization()},
+                                                  unitId=${unit.getId()})}">Defaultfeeds verwalten</a>
+                                            <br />
+                                            <button type="button" class="btn btn-danger mt-4"
+                                                    onclick="showDeleteOrganizationModal()">Organisation löschen</button>
+                                            <a th:href="@{/{orga}/editorganizations(orga=${#authentication.getPrincipal().getOrganization()},
+                                                        unitId=${unitId})}">
+                                                <button type="button" class="btn btn-secondary mt-4">
+                                                    Abbrechen
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer th:replace="layout :: footer"></footer>
+        </div>
+    </body>
+</html>

@@ -19,6 +19,13 @@ namespace JackTheClipperCommon.Interfaces
         /// Gets the principal units.
         /// </summary>
         /// <returns>List of principal units.</returns>
-        IReadOnlyList<Tuple<string, Guid>> GetPrincipalUnits();
+        IReadOnlyList<Tuple<string, Guid>> GetPrincipalUnitBasicInformation();
+
+        /// <summary>
+        /// Gets the children of a principal unit.
+        /// </summary>
+        /// <param name="principalUnitId">The principal unit identifier.</param>
+        /// <returns>List of children of principal units.</returns>
+        IReadOnlyList<Tuple<string, Guid>> GetPrincipalUnitChildren(Guid principalUnitId);
     }
 }

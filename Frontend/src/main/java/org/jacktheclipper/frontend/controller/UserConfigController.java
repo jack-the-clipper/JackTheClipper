@@ -1,7 +1,7 @@
 package org.jacktheclipper.frontend.controller;
 
 import org.jacktheclipper.frontend.authentication.CustomAuthenticationToken;
-import org.jacktheclipper.frontend.authentication.User;
+import org.jacktheclipper.frontend.model.User;
 import org.jacktheclipper.frontend.enums.NotificationSetting;
 import org.jacktheclipper.frontend.exception.BackendException;
 import org.jacktheclipper.frontend.model.Feed;
@@ -13,6 +13,7 @@ import org.jacktheclipper.frontend.utils.AuthenticationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -71,6 +72,7 @@ public class UserConfigController {
      * @return The page where a user can edit his feeds
      */
     @GetMapping("/edit")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public String editFeed(@RequestParam(value = "feedId", required = false) UUID feedId,
                            Authentication auth, Model model) {
 
@@ -112,6 +114,7 @@ public class UserConfigController {
      * @return The page where a user can edit his feeds
      */
     @PostMapping("/update")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public String updateFeed(@ModelAttribute("feed") Feed feed, Authentication auth,
                              @RequestParam("settingsId") UUID settingsId, @PathVariable(
                                      "organization") String organization,
@@ -125,10 +128,10 @@ public class UserConfigController {
         try {
             feedService.updateFeed(feed, settingsId);
             populateDefaultRedirectAttributes(redirectAttributes, false,
-                    "Feed " + "erfolgreich " + "aktualisiert");
-        } catch (HttpClientErrorException.BadRequest badRequest) {
-            populateDefaultRedirectAttributes(redirectAttributes, true, "Etwas ist falsch " +
-                    "gelaufen");
+                    "Feed erfolgreich aktualisiert");
+        } catch (BackendException badRequest) {
+            populateDefaultRedirectAttributes(redirectAttributes, true,
+                    "Etwas ist falsch gelaufen");
         }
         return "redirect:/" + organization + "/feed/edit" + redirectQuery;
     }
@@ -145,6 +148,7 @@ public class UserConfigController {
      * @return The page where a user can edit his feeds
      */
     @PostMapping("/addFeed")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public String addFeed(@ModelAttribute("emptyFeed") Feed feed, Authentication auth,
                           @RequestParam("settingsId") UUID settingsId, @PathVariable(
                                   "organization") String organization,
@@ -154,11 +158,11 @@ public class UserConfigController {
         try {
             feed.setFeedSources(sourceService.recoverSources(feed.getFeedSources(), userId));
             feedService.addFeed(settingsId, feed);
-            populateDefaultRedirectAttributes(redirectAttributes, false, "Feed erfolgreich " +
-                    "hinzugefügt");
-        } catch (HttpClientErrorException.BadRequest badRequest) {
-            populateDefaultRedirectAttributes(redirectAttributes, true, "Das Hinzufügen des " +
-                    "Feeds ist fehlgeschlagen");
+            populateDefaultRedirectAttributes(redirectAttributes, false,
+                    "Feed erfolgreich hinzugefügt");
+        } catch (BackendException badRequest) {
+            populateDefaultRedirectAttributes(redirectAttributes, true,
+                    "Das Hinzufügen des Feeds ist fehlgeschlagen");
         }
         return "redirect:/" + organization + "/feed/edit";
     }
@@ -172,17 +176,18 @@ public class UserConfigController {
      * @return The page where a user can edit his feeds
      */
     @PostMapping("/remove")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public String removeFeed(@RequestParam("feedId") UUID feedId,
                              final RedirectAttributes redirectAttributes, @PathVariable(
                                      "organization") String organization) {
 
         try {
             feedService.deleteFeed(feedId);
-            populateDefaultRedirectAttributes(redirectAttributes, false, "Feed erfolgreich " +
-                    "entfernt");
-        } catch (HttpClientErrorException.BadRequest badRequest) {
-            populateDefaultRedirectAttributes(redirectAttributes, true, "Feed konnte nicht " +
-                    "gelöscht werden");
+            populateDefaultRedirectAttributes(redirectAttributes, false,
+                    "Feed erfolgreich entfernt");
+        } catch (BackendException badRequest) {
+            populateDefaultRedirectAttributes(redirectAttributes, true,
+                    "Feed konnte nicht gelöscht werden");
         }
         return "redirect:/" + organization + "/feed/edit";
     }
@@ -267,16 +272,16 @@ public class UserConfigController {
                 user.seteMail(email);
                 user.setPassword(password);
                 login(request, user);
-                populateDefaultRedirectAttributes(redirectAttributes, false, "E-Mail " +
-                        "erfolgreich geändert");
+                populateDefaultRedirectAttributes(redirectAttributes, false,
+                        "E-Mail erfolgreich geändert");
             } catch (BackendException ex) {
                 log.info("something went wrong");
-                populateDefaultRedirectAttributes(redirectAttributes, true, "E-Mail konnte nicht "
-                        + "geändert werden");
+                populateDefaultRedirectAttributes(redirectAttributes, true,
+                        "E-Mail konnte nicht geändert werden");
             } catch (HttpClientErrorException.BadRequest badRequest) {
                 log.info("Supplied password [{}] did not match actual", password);
-                populateDefaultRedirectAttributes(redirectAttributes, true, "E-Mail konnte " +
-                        "nicht geändert werden");
+                populateDefaultRedirectAttributes(redirectAttributes, true,
+                        "E-Mail konnte nicht geändert werden");
             }
         }
         return "redirect:/" + organization + "/feed/profile";
@@ -312,26 +317,25 @@ public class UserConfigController {
                 User user = (User) auth.getPrincipal();
                 user.setPassword(newPassword);
                 login(request, user);
-                populateDefaultRedirectAttributes(redirectAttributes, false, "Passwort " +
-                        "erfolgreich geändert");
+                populateDefaultRedirectAttributes(redirectAttributes, false,
+                        "Passwort erfolgreich geändert");
             } catch (BackendException ex) {
                 log.info("something went wrong");
-                populateDefaultRedirectAttributes(redirectAttributes, true, "Passwort konnte " +
-                        "nicht geändert werden");
+                populateDefaultRedirectAttributes(redirectAttributes, true,
+                        "Passwort konnte nicht geändert werden");
             } catch (HttpClientErrorException.BadRequest badRequest) {
                 log.info("Supplied password [{}] did not match actual", oldPassword);
-                populateDefaultRedirectAttributes(redirectAttributes, true, "Passwort konnte " +
-                        "nicht geändert werden");
+                populateDefaultRedirectAttributes(redirectAttributes, true,
+                        "Passwort konnte nicht geändert werden");
             }
         }
         return "redirect:/" + organization + "/feed/profile";
     }
 
     /**
-     * Logs the user into the session. This is duplicated code from
-     * {@link RegistrationController#login(HttpServletRequest, User)}
-     * but it will be removed from there soon as being logged in after registering will not be
-     * supported in the final version anymore
+     * Logs the user into the session.
+     * And updates the {@link SecurityContext} of the application. Can be used to automatically
+     * login an user or just update the information if necessary.
      *
      * @param request the http-request holding the http session
      * @param user    the user to authenticate

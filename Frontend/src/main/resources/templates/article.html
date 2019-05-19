@@ -8,6 +8,8 @@
         <div class="container mt-5">
             <h1 th:text="${article.getTitle()}"></h1>
             <p th:text="${article.getLongText()}"></p>
+            <img th:if="${article.getImageLink() != null}" th:src="${article.getImageLink()}"
+                 th:alt="|Das Bild zum Artikel ${article.getTitle()}|"/>
             <a th:href="${article.getLink()}" rel="noopener" target="_blank">Zur Quelle</a>
             <a class="page-link"
                th:if="${#session.getAttribute(T(org.jacktheclipper.frontend.utils.Constants).LAST_VIEWED_FEED_ID) == null}"

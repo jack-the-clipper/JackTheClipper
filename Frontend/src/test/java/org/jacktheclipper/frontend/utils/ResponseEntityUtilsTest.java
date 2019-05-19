@@ -1,6 +1,6 @@
 package org.jacktheclipper.frontend.utils;
 
-import org.jacktheclipper.frontend.authentication.User;
+import org.jacktheclipper.frontend.model.User;
 import org.jacktheclipper.frontend.enums.UserRole;
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public class ResponseEntityUtilsTest {
     private User user = new User(UUID.fromString("10000000-0000-0000-0000-000000000000"),
-            UserRole.User, "test", "test@example.com", "test", "Example",false);
+            UserRole.User, "test", "test@example.com", "test", "Example", false, true, null, null);
 
     @Test
     public void testSuccessfulResponse() {
@@ -21,14 +21,16 @@ public class ResponseEntityUtilsTest {
     }
 
     @Test
-    public void testNullBody(){
-        ResponseEntity<User> response = new ResponseEntity<User>((User)null,HttpStatus.OK);
+    public void testNullBody() {
+
+        ResponseEntity<User> response = new ResponseEntity<User>((User) null, HttpStatus.OK);
         Assert.assertFalse(ResponseEntityUtils.successful(response));
     }
 
     @Test
-    public void testUnsuccessfulHttpStatus(){
-        ResponseEntity<User> response = new ResponseEntity<User>(user,HttpStatus.BAD_REQUEST);
+    public void testUnsuccessfulHttpStatus() {
+
+        ResponseEntity<User> response = new ResponseEntity<User>(user, HttpStatus.BAD_REQUEST);
         Assert.assertFalse(ResponseEntityUtils.successful(response));
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using JackTheClipperBusiness.CrawlerManagement;
 using JackTheClipperBusiness.Notification;
 using JackTheClipperBusiness.OrganizationalUnitManagement;
@@ -21,10 +22,12 @@ namespace JackTheClipperBusiness
         /// </summary>
         /// <typeparam name="T">The type oof the requested interface.</typeparam>
         /// <returns>An instance of the requested interface.</returns>
-        [NotNull, Pure]
+        [NotNull, Pure, DebuggerStepThrough]
         public static T GetControllerInstance<T>()
         {
-            if (typeof(T) == typeof(IClipperUserAPI) || typeof(IClipperSystemAdministratorAPI) == typeof(T))
+            if (typeof(T) == typeof(IClipperUserAPI) || 
+                typeof(IClipperSystemAdministratorAPI) == typeof(T) || 
+                typeof(IClipperStaffChiefAPI) == typeof(T))
             {
                 return (T)(object)new UserController();
             }

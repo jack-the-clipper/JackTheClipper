@@ -11,10 +11,16 @@ import java.util.UUID;
  * wishes for and a user's feeds
  */
 public class UserSettings {
+
+    @JsonProperty("SettingsId")
     private UUID id;
+    @JsonProperty("UserSettingsFeeds")
     private List<Feed> feeds;
+    @JsonProperty("UserNotificationSetting")
     private NotificationSetting notificationSetting;
+    @JsonProperty("UserNotificationCheckInterval")
     private int notificationCheckInterval;
+    @JsonProperty("UserNumberOfArticles")
     private int articlesPerPage;
 
     public UserSettings() {
@@ -36,7 +42,6 @@ public class UserSettings {
         return feeds;
     }
 
-    @JsonProperty("UserSettingsFeeds")
     public void setFeeds(List<Feed> feeds) {
 
         this.feeds = feeds;
@@ -47,7 +52,6 @@ public class UserSettings {
         return notificationSetting;
     }
 
-    @JsonProperty("UserNotificationSetting")
     public void setNotificationSetting(NotificationSetting notificationSetting) {
 
         this.notificationSetting = notificationSetting;
@@ -58,7 +62,6 @@ public class UserSettings {
         return notificationCheckInterval;
     }
 
-    @JsonProperty("UserNotificationCheckInterval")
     public void setNotificationCheckInterval(int notificationCheckInterval) {
 
         this.notificationCheckInterval = notificationCheckInterval;
@@ -69,7 +72,6 @@ public class UserSettings {
         return id;
     }
 
-    @JsonProperty("SettingsId")
     public void setId(UUID id) {
 
         this.id = id;
@@ -80,7 +82,6 @@ public class UserSettings {
         return articlesPerPage;
     }
 
-    @JsonProperty("UserNumberOfArticles")
     public void setArticlesPerPage(int articlesPerPage) {
 
         this.articlesPerPage = articlesPerPage;

@@ -5,6 +5,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ResponseEntityUtilsTest.class, RestTemplateUtilsTest.class,
-        AuthenticationUtilsTest.class, RedirectAttributeUtilsTest.class})
+        AuthenticationUtilsTest.class, RedirectAttributeUtilsTest.class,
+        CustomRestTemplateCustomizerTest.class})
 public class UtilsSuite {
 }

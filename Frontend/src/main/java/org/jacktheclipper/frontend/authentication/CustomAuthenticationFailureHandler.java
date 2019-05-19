@@ -1,5 +1,6 @@
 package org.jacktheclipper.frontend.authentication;
 
+import org.jacktheclipper.frontend.exception.UserLockedException;
 import org.jacktheclipper.frontend.utils.Constants;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -45,7 +46,13 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         String hostPart = request.getRequestURL().toString().replace(request.getRequestURI(), "");
         String contextPath = StringUtils.isEmpty(request.getContextPath()) ? "" :
                 request.getContextPath();
-        String redirectUri = hostPart + contextPath + "/" + organization + "/login?error";
+        String query;
+        if (e instanceof UserLockedException) {
+            query = "locked";
+        } else {
+            query = "error";
+        }
+        String redirectUri = hostPart + contextPath + "/" + organization + "/login?" + query;
         response.sendRedirect(redirectUri);
     }
 }

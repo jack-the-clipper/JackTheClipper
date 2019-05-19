@@ -117,6 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AccountCreatedMailBody" xml:space="preserve">
+    <value>... wurde für sie angelegt.
+
+Sie können sich mittels folgender Angaben einloggen:
+Benutzername: {0}
+Passwort: {1}
+
+Bitte beachten Sie, dass das Passwort beim nächsten Login geändert werden muss.
+
+Mit freundlichen Grüßen,
+
+Jack the Clipper</value>
+  </data>
+  <data name="AccountCreatedMailSubject" xml:space="preserve">
+    <value>Ihr Account bei "Jack the Clipper"...</value>
+  </data>
   <data name="DefaultMailSubject" xml:space="preserve">
     <value>Es gibt Neuigkeiten bei "Jack the Clipper"...</value>
   </data>
@@ -131,6 +147,17 @@ Jack the Clipper</value>
   </data>
   <data name="MailChangedMailSubject" xml:space="preserve">
     <value>Ihre E-Mailadresse bei "Jack the Clipper"...</value>
+  </data>
+  <data name="NewPendingUserMailBody" xml:space="preserve">
+    <value>... beitreten.
+
+Sie müssen die Registrierungsanfrage von {0} (E-Mail:{1}) genehmigen.
+Mit freundlichen Grüßen,
+
+Jack the Clipper</value>
+  </data>
+  <data name="NewPendingUserMailSubject" xml:space="preserve">
+    <value>Ein Benutzer möchte "Jack the Clipper"...</value>
   </data>
   <data name="PasswordChangedMailBody" xml:space="preserve">
     <value>... wurde geändert.
@@ -147,7 +174,7 @@ Jack the Clipper</value>
   <data name="PasswordResetMailBody" xml:space="preserve">
     <value>... wurde zurückgesetzt. 
 
-Ihr neues Passwort lautet: {0}.
+Ihr neues Passwort lautet: {0}
 Dass Passwort muss beim nächsten Login geändert werden.
 
 Sollten Sie nicht die Änderung Ihres Passworts veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten.

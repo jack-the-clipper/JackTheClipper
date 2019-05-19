@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using JackTheClipperCommon.Enums;
 using JackTheClipperCommon.SharedClasses;
 
@@ -17,7 +16,7 @@ namespace JackTheClipperCommon.Interfaces
         /// <param name="userMailOrName">The user email or name.</param>
         /// <param name="userPassword">The password of the user.</param>
         /// <param name="principalUnit">The principal unit.</param>
-        /// <returns>The <see cref="User"/>; if authenticated successfully</returns>
+        /// <returns>The user (if existing).</returns>
         User TryAuthenticateUser(string userMailOrName, string userPassword, Guid principalUnit);
 
         /// <summary>
@@ -30,12 +29,12 @@ namespace JackTheClipperCommon.Interfaces
         /// <summary>
         /// Gets the feed data.
         /// </summary>
-        /// <param name="user">The user.</param>
-        /// <param name="feed">The feed.</param>
+        /// <param name="userId">The user id.</param>
+        /// <param name="feedId">The feed id.</param>
         /// <param name="page">The requested page.</param>
         /// <param name="showArchived">A value indicating whether the archived articles should be shown or not.</param>
         /// <returns>List of <see cref="ShortArticle"/>s within the feed.</returns>
-        IReadOnlyCollection<ShortArticle> GetFeed(User user, Feed feed, int page, bool showArchived);
+        IReadOnlyCollection<ShortArticle> GetFeed(Guid userId, Guid feedId, int page, bool showArchived);
 
         /// <summary>
         /// Gets a specific article.
@@ -47,9 +46,9 @@ namespace JackTheClipperCommon.Interfaces
         /// <summary>
         /// Gets the user settings.
         /// </summary>
-        /// <param name="user">The user.</param>
+        /// <param name="userId">The user id.</param>
         /// <returns>The settings of the given user.</returns>
-        UserSettings GetUserSettings(User user);
+        UserSettings GetUserSettings(Guid userId);
 
         /// <summary>
         /// Attempts to reset the password.
@@ -73,26 +72,22 @@ namespace JackTheClipperCommon.Interfaces
         /// <param name="newUserMail">The new mail address.</param>
         /// <returns>MethodResult indicating success.</returns>
         MethodResult ChangeMailAddress(User user, string newUserMail);
-        
+
         /// <summary>
         /// Gets the available sources for a given user.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>List of available sources.</returns>
-        IReadOnlyList<Source> GetAvailableSources(User user);
+        IReadOnlyList<Source> GetAvailableSources(Guid user);
 
         /// <summary>
         /// Adds a user.
         /// </summary>
-        /// <param name="userMail">The new users mail.</param>
-        /// <param name="username">The new users username.</param>
-        /// <param name="password">The new users password.</param>
-        /// <param name="role">The new users role.</param>
-        /// <param name="principalUnit">The new users principal unit.</param>
-        /// <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
-        /// <param name="valid">A value whether the user is valid or not.</param>
-        /// <returns>The new users <see cref="User"/>object</returns>
-        User AddUser(string userMail, string username, string password, Role role, Guid principalUnit, bool mustChangePassword, bool valid);
+        /// <param name="toAdd">The new user to add.</param>
+        /// <param name="password">The password.</param>
+        /// <param name="selectedUnit">The selected requested unit.</param>
+        /// <returns>MethodResult indicating success.</returns>
+        MethodResult AddUser(User toAdd, string password, Guid selectedUnit);
 
         /// <summary>
         /// Saves the user settings.

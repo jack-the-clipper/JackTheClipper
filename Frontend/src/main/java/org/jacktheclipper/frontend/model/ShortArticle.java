@@ -12,18 +12,24 @@ import java.util.UUID;
 /**
  * Represents a short version of an article. Thus the text of it is limited by the backend. This
  * is used to show the content of an user feed.
- *
- * @author SBG
  */
 public class ShortArticle {
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("ArticleId")
     private UUID id;
+    @JsonProperty("ArticleTitle")
     private String title;
+    @JsonProperty("ArticleShortText")
     private String shortText;
+    @JsonProperty("ArticleLink")
     private String link;
+    @JsonProperty("ArticlePublished")
     private LocalDate published;
+    @JsonProperty("ArticleIndexed")
     private LocalDate indexed;
+    @JsonProperty("IndexingSourceId")
     private UUID indexingSourceId;
+    @JsonProperty("ImageLink")
     private String imageLink;
     private static DateTimeFormatter formatter =
             DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).withLocale(new Locale("de"));
@@ -50,7 +56,6 @@ public class ShortArticle {
         return id;
     }
 
-    @JsonProperty("ArticleId")
     public void setId(UUID id) {
 
         this.id = id;
@@ -61,7 +66,6 @@ public class ShortArticle {
         return title;
     }
 
-    @JsonProperty("ArticleTitle")
     public void setTitle(String title) {
 
         this.title = title;
@@ -72,7 +76,6 @@ public class ShortArticle {
         return shortText;
     }
 
-    @JsonProperty("ArticleShortText")
     public void setShortText(String shortText) {
 
         this.shortText = shortText;
@@ -83,7 +86,6 @@ public class ShortArticle {
         return link;
     }
 
-    @JsonProperty("ArticleLink")
     public void setLink(String link) {
 
         this.link = link;
@@ -94,7 +96,6 @@ public class ShortArticle {
         return published;
     }
 
-    @JsonProperty("ArticlePublished")
     public void setPublished(LocalDate published) {
 
         this.published = published;
@@ -106,7 +107,6 @@ public class ShortArticle {
         return indexed;
     }
 
-    @JsonProperty("ArticleIndexed")
     public void setIndexed(LocalDate indexed) {
 
         this.indexed = indexed;
@@ -117,7 +117,6 @@ public class ShortArticle {
         return indexingSourceId;
     }
 
-    @JsonProperty("IndexingSourceId")
     public void setIndexingSourceId(UUID indexingSourceId) {
 
         this.indexingSourceId = indexingSourceId;
@@ -128,7 +127,6 @@ public class ShortArticle {
         return imageLink;
     }
 
-    @JsonProperty("ImageLink")
     public void setImageLink(String imageLink) {
 
         this.imageLink = imageLink;

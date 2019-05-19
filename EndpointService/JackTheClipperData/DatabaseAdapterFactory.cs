@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using JackTheClipperData.MariaDb;
 using JetBrains.Annotations;
 
@@ -15,7 +16,7 @@ namespace JackTheClipperData
         /// <typeparam name="T">Type of database controller</typeparam>
         /// <returns>Instance which implements T</returns>
         /// <exception cref="ArgumentOutOfRangeException">T not supported</exception>
-        [NotNull, Pure]
+        [NotNull, Pure, DebuggerStepThrough]
         public static T GetControllerInstance<T>()
         {
             if (typeof(T) == typeof(IClipperDatabase))

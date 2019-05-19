@@ -9,7 +9,10 @@ ALTER TABLE tbuser ALTER coPrincipalUnit DROP DEFAULT;
 ALTER TABLE tbuser
 ADD CONSTRAINT fk60 FOREIGN KEY (coPrincipalUnit) REFERENCES tborganizationalunit(coId) ON DELETE CASCADE;
 
+
 ALTER TABLE tborganizationalunit ADD COLUMN coMail VARCHAR(191) NOT NULL;
+UPDATE tborganizationalunit SET coMail = 'SA' where coID =  0x00000000BEEFBEEFBEEF000000000000;
+ALTER TABLE tborganizationalunit
 ADD CONSTRAINT fk61 FOREIGN KEY (coMail) REFERENCES tbUser(coMail)
 ON DELETE CASCADE
 ON UPDATE CASCADE;
@@ -30,21 +33,21 @@ BEGIN
 	 DECLARE settingsuuid BINARY(16);
 	 DECLARE tempuuid BINARY(16);
      START TRANSACTION;
-	    IF EXISTS (SELECT coId FROM tbUser
-			 							WHERE tbUser.coName = name
-										AND tbUser.coPrincipalUnit = UUID_TO_BIN(principalUnit))
+	    IF EXISTS (SELECT coId FROM tbUser 
+			 							WHERE tbUser.coName = name 
+										AND tbUser.coPrincipalUnit = UUID_TO_BIN(principalUnit))  
 		 THEN
 		    SIGNAL SQLSTATE 'ERR0R' SET MESSAGE_TEXT = 'Duplicate pricipal unit name';
 	    END IF;
 	    SET settingsuuid = UUID_TO_BIN(UUID());
 	    SET tempuuid = UUID_TO_BIN(UUID());
 		 INSERT INTO tbusersettings(coId, coNotification) VALUES(settingsuuid, 0);
-		 INSERT INTO tbUser(coId, coName, coMail, coPasswordHash, coRole, coSettingsId, coPrincipalUnit, coMustChangePassword, coValid)
+		 INSERT INTO tbUser(coId, coName, coMail, coPasswordHash, coRole, coSettingsId, coPrincipalUnit, coMustChangePassword, coValid) 
 		 			VALUES(tempuuid, name, mail, pwhash, role, settingsuuid, UUID_TO_BIN(principalUnit), mustChangePassword, valid);
 		 SET newUserId = BIN_TO_UUID(tempuuid);
 	 COMMIT;
 
-END //
+END //  
 
 CREATE OR REPLACE PROCEDURE SP_ADD_USER_UNIT(
 	 IN userId VARCHAR(36),
@@ -52,8 +55,8 @@ CREATE OR REPLACE PROCEDURE SP_ADD_USER_UNIT(
 )
 BEGIN
    START TRANSACTION;
-		INSERT INTO tbuserorganizationalunit(coUserId, coOrganizationalUnitId)
-			    VALUES (UUID_TO_BIN(userId), UUID_TO_BIN(unitId));
+		INSERT INTO tbuserorganizationalunit(coUserId, coOrganizationalUnitId) 
+			    VALUES (UUID_TO_BIN(userId), UUID_TO_BIN(unitId)); 
 	COMMIT;
 END //
 
@@ -63,9 +66,9 @@ CREATE OR REPLACE PROCEDURE SP_REMOVE_USER_UNIT(
 )
 BEGIN
    START TRANSACTION;
-		DELETE FROM tbuserorganizationalunit
+		DELETE FROM tbuserorganizationalunit 
 			    WHERE coUserId = UUID_TO_BIN(userId)
-				 AND coOrganizationalUnitId = UUID_TO_BIN(unitId);
+				 AND coOrganizationalUnitId = UUID_TO_BIN(unitId); 
 	COMMIT;
 END //
 
@@ -82,9 +85,9 @@ BEGIN
 	 DECLARE tempuuid BINARY(16);
 	 DECLARE unituuid BINARY(16);
     START TRANSACTION;
-	 	IF EXISTS (SELECT coId FROM tborganizationalunit
-		 								WHERE tborganizationalunit.coName = name
-										AND tborganizationalunit.coParentId = 0x00000000BEEFBEEFBEEF000000000000)
+	 	IF EXISTS (SELECT coId FROM tborganizationalunit 
+		 								WHERE tborganizationalunit.coName = name 
+										AND tborganizationalunit.coParentId = 0x00000000BEEFBEEFBEEF000000000000)  
 		THEN
 	        SIGNAL SQLSTATE 'ERR0R' SET MESSAGE_TEXT = 'Duplicate pricipal unit name';
 	    END IF;
@@ -97,13 +100,13 @@ BEGIN
 		SET tempuuid = UUID_TO_BIN(UUID());
 		SET usersettingsuuid = UUID_TO_BIN(UUID());
 		INSERT INTO tbusersettings(coId, coNotification) VALUES(usersettingsuuid, 0);
-		INSERT INTO tbUser(coId, coName, coMail, coPasswordHash, coRole, coSettingsId, coPrincipalUnit)
+		INSERT INTO tbUser(coId, coName, coMail, coPasswordHash, coRole, coSettingsId, coPrincipalUnit) 
 		 			VALUES(tempuuid, name, mail, adminPwHash, 7, usersettingsuuid, unituuid);
 		SET newUserId = BIN_TO_UUID(tempuuid);
 		SET newPrincipalUnitId = BIN_TO_UUID(unituuid);
 	 COMMIT;
 
-END //
+END //  
 
 CREATE OR REPLACE PROCEDURE SP_CREATE_UNIT(
     IN name TEXT,
@@ -131,7 +134,7 @@ BEGIN
    DECLARE unituuid BINARY(16);
    START TRANSACTION;
 		SET unituuid = UUID_TO_BIN(unitId);
-		UPDATE tborganizationalunit
+		UPDATE tborganizationalunit 
 		SET tborganizationalunit.coName = name
 		WHERE tborganizationalunit.coId = unituuid;
 	COMMIT;
@@ -156,7 +159,7 @@ BEGIN
    DECLARE settingsuuid BINARY(16);
    START TRANSACTION;
 		SET settingsuuid = UUID_TO_BIN(settingsId);
-		UPDATE tborganizationalunitsettings
+		UPDATE tborganizationalunitsettings 
 		SET tborganizationalunitsettings.coBlacklist = blackList
 		WHERE tborganizationalunitsettings.coId = settingsuuid;
 	COMMIT;
@@ -168,8 +171,8 @@ CREATE OR REPLACE PROCEDURE SP_ADD_UNIT_SOURCE(
 )
 BEGIN
    START TRANSACTION;
-		INSERT INTO tborganizationalunitsettingssource(coOrganizationalUnitSettingsId, coSourceId)
-			    VALUES (UUID_TO_BIN(settingsId), UUID_TO_BIN(sourceId));
+		INSERT INTO tborganizationalunitsettingssource(coOrganizationalUnitSettingsId, coSourceId) 
+			    VALUES (UUID_TO_BIN(settingsId), UUID_TO_BIN(sourceId)); 
 	COMMIT;
 END //
 
@@ -202,7 +205,7 @@ CREATE OR REPLACE PROCEDURE SP_REMOVE_SOURCE_FEED(
 )
 BEGIN
    START TRANSACTION;
-   	DELETE FROM tbfeedsource
+   	DELETE FROM tbfeedsource 
 		WHERE coFeedId = UUID_TO_BIN(feedId)
 		AND coSourceId = UUID_TO_BIN(sourceId);
 	COMMIT;
@@ -217,10 +220,10 @@ CREATE OR REPLACE PROCEDURE SP_CHANGE_USERPW(
 BEGIN
 	 SET success = FALSE;
     START TRANSACTION;
-	    IF EXISTS(SELECT coId FROM tbuser WHERE tbuser.coMail = mail)
+	    IF EXISTS(SELECT coId FROM tbuser WHERE tbuser.coMail = mail) 
 	    THEN
 	    	BEGIN
-			    UPDATE tbuser
+			    UPDATE tbuser 
 				 SET tbuser.coPasswordHash = pwHash, tbuser.coMustChangePassword = mustChangePassword
 				 WHERE tbuser.coMail = mail;
 				 SET success = TRUE;

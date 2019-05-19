@@ -11,8 +11,7 @@ public class FrontendApplicationTests {
 
     @Test
     public void contextLoads() {
-        //this method forces the application to be started
-        //the test will fail if the application does not start
+       //smoke test
     }
 
 }

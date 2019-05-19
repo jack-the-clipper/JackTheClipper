@@ -1,6 +1,7 @@
 package org.jacktheclipper.frontend.authentication;
 
 import org.jacktheclipper.frontend.model.OrganizationalUnit;
+import org.jacktheclipper.frontend.model.User;
 import org.jacktheclipper.frontend.service.OuService;
 import org.jacktheclipper.frontend.utils.AuthenticationUtils;
 import org.slf4j.Logger;
@@ -37,13 +38,15 @@ public class OrganizationGuard {
      */
     public boolean isOwnOrganization(Authentication authentication, String accessedOrga) {
 
-        if (authentication == null || authentication.getPrincipal() == null || !(authentication.getPrincipal() instanceof User)) {
+        if (authentication == null ||
+                !(authentication.getPrincipal() instanceof User)) {
             return false;
         }
         log.debug("trying to access [{}] with own orga [{}]", accessedOrga,
                 AuthenticationUtils.getOrganization(authentication));
 
-        return isValidOrganization(accessedOrga) && accessedOrga.equals(AuthenticationUtils.getOrganization(authentication));
+        return isValidOrganization(accessedOrga) &&
+                accessedOrga.equals(AuthenticationUtils.getOrganization(authentication));
     }
 
     /**
@@ -58,8 +61,8 @@ public class OrganizationGuard {
     }
 
     /**
-     * Checks whether a user has to change his password. It basically only delegates to
-     * {@link AuthenticationUtils#isMustChangePassword(Authentication)}.
+     * Checks whether a user has to change his password. It delegates to
+     * {@link AuthenticationUtils#isMustChangePassword(Authentication)} and negates the result.
      *
      * @param authentication
      * @return {@code True} if the user does not need to change his password, {@code false}

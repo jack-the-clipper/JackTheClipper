@@ -11,6 +11,7 @@ import java.util.UUID;
  */
 public class Article extends ShortArticle {
 
+    @JsonProperty("ArticleLongText")
     private String longText;
 
     public Article() {
@@ -30,7 +31,6 @@ public class Article extends ShortArticle {
         return longText;
     }
 
-    @JsonProperty("ArticleLongText")
     public void setLongText(String longText) {
 
         this.longText = longText;

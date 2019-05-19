@@ -96,7 +96,8 @@ namespace JackTheClipperBusiness.CrawlerManagement
                                     }
 
                                     Observer.NotifyNewRssFeedFoundThreadSave(item, key, Source);
-                                    HandleImages(item.Summary?.Text, item.Title?.Text, key);
+                                    var content = item.Content == null ? item.Summary?.Text : (item.Content as TextSyndicationContent)?.Text;
+                                    HandleImages(content, item.Title?.Text, key);
                                 }
                             }
                         }

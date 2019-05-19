@@ -1,5 +1,7 @@
 package org.jacktheclipper.frontend.authentication;
 
+import org.jacktheclipper.frontend.enums.UserRole;
+import org.jacktheclipper.frontend.model.User;
 import org.jacktheclipper.frontend.utils.AuthenticationUtils;
 import org.jacktheclipper.frontend.utils.Constants;
 import org.springframework.security.core.Authentication;
@@ -25,6 +27,9 @@ public class CustomAuthenticationSuccessHandler
         implements AuthenticationSuccessHandler {
     /**
      * Handles a successful authentication event.
+     * If an {@link UserRole#SystemAdministrator} is authenticated he will always be redirected
+     * to the page where he can manage the {@link org.jacktheclipper.frontend.model.Source}s of
+     * the application.
      * If a user needs to change his password he will be redirected to the page where he can do
      * exactly that. If that is not the case and the user attempted to access a protected page
      * before, he will be redirected to that page.
@@ -41,23 +46,26 @@ public class CustomAuthenticationSuccessHandler
                                         Authentication authentication)
             throws IOException, ServletException {
 
+        String organization = AuthenticationUtils.getOrganization(authentication);
+        String hostPart = request.getRequestURL().toString().replace(request.getRequestURI(), "");
+        String contextPath = StringUtils.isEmpty(request.getContextPath()) ? "" :
+                request.getContextPath();
+        //systemadministrators are redirected to the edit source page
+        if (((User) authentication.getPrincipal()).getUserRole().equals(UserRole.SystemAdministrator)) {
+            String redirectUri = hostPart + contextPath + "/admin/sources";
+            response.sendRedirect(redirectUri);
+            return;
+        }
+        //user needs to change his password so redirect him to profile page
         if (AuthenticationUtils.isMustChangePassword(authentication)) {
-            String organization = AuthenticationUtils.getOrganization(authentication);
-            String hostPart = request.getRequestURL().toString().replace(request.getRequestURI(),
-                    "");
-            String contextPath = StringUtils.isEmpty(request.getContextPath()) ? "" :
-                    request.getContextPath();
             String redirectUri = hostPart + contextPath + "/" + organization + "/feed/profile";
             response.sendRedirect(redirectUri);
+
+            //user wanted to access a specific page so redirect him by calling supermethod
         } else if (request.getSession(false).getAttribute(Constants.SAVED_REQUEST_KEY) != null) {
             super.onAuthenticationSuccess(request, response, authentication);
+            //user logged in directly on the login page so show him his feedoverview
         } else {
-            String organization = AuthenticationUtils.getOrganization(authentication);
-            String hostPart = request.getRequestURL().toString().replace(request.getRequestURI(),
-                    "");
-            String contextPath = StringUtils.isEmpty(request.getContextPath()) ? "" :
-                    request.getContextPath();
-
             String redirectUri = hostPart + contextPath + "/" + organization + "/feed/";
             response.sendRedirect(redirectUri);
         }

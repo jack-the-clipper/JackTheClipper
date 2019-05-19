@@ -11,9 +11,17 @@
                     <div class="col-lg-6">
                         <div class="card">
                             <div class="card-body">
+                                <div>Willkommen bei <b th:text="${org}"></b></div>
                                 <div th:if="${param.error}">
                                     <div class="alert alert-danger">
                                         Anmeldung fehlgeschlagen, fehlerhafte E-Mail oder falsches Passwort
+                                    </div>
+                                </div>
+                                <div th:if="${param.locked}">
+                                    <div class="alert alert-danger">
+                                        Anmeldung fehlgeschlagen, Ihr Personalbeauftragter hat Sie nicht
+                                        freigeschaltet. Bitte versuchen Sie es später erneut oder kontaktieren Sie
+                                        ihren Personalbeauftragten.
                                     </div>
                                 </div>
                                 <div th:if="${param.logout}">

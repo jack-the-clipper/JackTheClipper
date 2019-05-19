@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +32,7 @@ import java.util.UUID;
  * selected feed
  */
 @Controller
+@PreAuthorize("hasRole('ROLE_USER')")
 public class UserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
@@ -65,7 +67,8 @@ public class UserController {
     public String showFeedOverview(Authentication auth, @RequestParam(value = "feedId", required
             = false) UUID feedId, Model model,
                                    @RequestParam(value = "page", required = false) Integer page,
-                                   @RequestParam(value = "showArchived", required = false) Boolean showArchived, HttpSession session) {
+                                   @RequestParam(value = "showArchived", required = false) Boolean showArchived,
+                                   HttpSession session) {
 
         UUID userId = AuthenticationUtils.getUserId(auth);
         List<Feed> feeds = feedService.getUserFeedsNoArticles(userId);

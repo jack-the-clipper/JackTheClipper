@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using JetBrains.Annotations;
 
@@ -9,7 +11,7 @@ namespace JackTheClipperCommon.SharedClasses
     /// Contains an Id, a name, Parent Organization
     /// </summary>
     [DataContract]
-    public class OrganizationalUnit
+    public class OrganizationalUnit : IEquatable<OrganizationalUnit>
     {
         /// <summary>
         /// Gets the identifier.
@@ -31,33 +33,71 @@ namespace JackTheClipperCommon.SharedClasses
         public string AdminMailAddress { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating whether this unit is a customer root (="mandant") unit.
+        /// Gets the parent unit.
         /// </summary>
-        [IgnoreDataMember]
-        public bool CustomerRoot { get; private set; }
+        [DataMember(Name = "ParentId")]
+        public Guid ParentId { get; private set; }
 
         /// <summary>
-        /// Gets the default settings of the unit.
+        /// Gets or sets the children.
         /// </summary>
-        [IgnoreDataMember]
-        public OrganizationalUnitSettings DefaultSettings { get; private set; }
+        [DataMember(Name = "Children")]
+        public IReadOnlyCollection<OrganizationalUnit> Children { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this unit is a principal (="mandant") unit.
+        /// </summary>
+        [DataMember(Name = "IsPrincipalUnit")]
+        public bool IsPrincipalUnit { get; private set; }
+
+        /// <summary>
+        /// Gets the identifier of the belonging <see cref="OrganizationalUnitSettings"/>.
+        /// </summary>
+        [DataMember(Name = "SettingsId")]
+        public Guid SettingsId { get; private set; }
+
+        public IEnumerable<OrganizationalUnit> GetAllChildren()
+        {
+            return Children.Concat(Children.SelectMany(unit => unit.GetAllChildren()));
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OrganizationalUnit"/> class.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="name">The name.</param>
-        /// <param name="customerRoot">Flag, indicating whether mandant.</param>
+        /// <param name="isPrincipalUnit">Flag, indicating whether mandant.</param>
         /// <param name="parentOrganizationalUnit">The parent organizational unit.</param>
         /// <param name="defaultSettings">The default settings.</param>
-        public OrganizationalUnit(Guid id, [NotNull] string name, bool customerRoot,
-                                  OrganizationalUnitSettings defaultSettings, string adminMailAddress)
+        public OrganizationalUnit(Guid id, [NotNull] string name, bool isPrincipalUnit,
+                                  string adminMailAddress, Guid parentId, Guid settingsId)
         {
             Id = id;
             Name = name;
-            CustomerRoot = customerRoot;
-            DefaultSettings = defaultSettings;
+            IsPrincipalUnit = isPrincipalUnit;
             AdminMailAddress = adminMailAddress;
+            ParentId = parentId;
+            SettingsId = settingsId;
+        }
+
+        public bool Equals(OrganizationalUnit other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Id.Equals(other.Id);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((OrganizationalUnit)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
         }
     }
 }

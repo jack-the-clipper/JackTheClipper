@@ -14,8 +14,7 @@ ENGINE=InnoDB
 CREATE OR REPLACE TABLE tbOrganizationalUnitSettings (
 	coUserSettingsId BINARY(16) NOT NULL,
 	coBlacklist TEXT,
-	PRIMARY KEY (coUserSettingsId),
-	FOREIGN KEY (coUserSettingsId) REFERENCES tbUserSettings(coId)
+	PRIMARY KEY (coUserSettingsId)
 )
 ENGINE=InnoDB
 ;
@@ -145,6 +144,9 @@ add constraint fk11 foreign key (coFilterId) References tbfeedfilter(coId) ON DE
 
 alter table tbuser
 add constraint fk12 foreign key (coSettingsId) References tbusersettings(coId) ON DELETE CASCADE;
+
+alter table tborganizationalunitsettings
+add constraint fk13 FOREIGN KEY (coUserSettingsId) REFERENCES tbUserSettings(coId) ON DELETE CASCADE;
 
 DELIMITER //  
 CREATE OR REPLACE FUNCTION BIN_TO_UUID ( uuid BINARY(16) )  

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using JackTheClipperBusiness;
 using JackTheClipperCommon.Enums;
 using JackTheClipperCommon.Extensions;
 using JackTheClipperCommon.Interfaces;
@@ -58,8 +60,7 @@ namespace JackTheClipperRequestHandler.Controllers
         {
             try
             {
-                var user = Get<User>(userId);
-                return GetControllerInstance<IClipperUserAPI>().GetFeed(user, user.GetFeed(feedId), page, showArchived);
+                return GetControllerInstance<IClipperUserAPI>().GetFeed(userId, feedId, page, showArchived);
             }
             catch (Exception error)
             {
@@ -91,8 +92,7 @@ namespace JackTheClipperRequestHandler.Controllers
         {
             try
             {
-                var user = Get<User>(userId);
-                return GetControllerInstance<IClipperUserAPI>().GetUserSettings(user);
+                return GetControllerInstance<IClipperUserAPI>().GetUserSettings(userId);
             }
             catch (Exception error)
             {
@@ -110,7 +110,7 @@ namespace JackTheClipperRequestHandler.Controllers
         /// <param name="articlesPerPage">The articles per page.</param>
         [Route("saveusersettings")]
         [HttpPut]
-        public ActionResult SaveUserSettings([FromQuery]Guid settingsId, [FromQuery]int notificationCheckInterval, 
+        public ActionResult SaveUserSettings([FromQuery]Guid settingsId, [FromQuery]int notificationCheckInterval,
                                              [FromQuery]NotificationSetting notificationSetting, [FromQuery]int articlesPerPage)
         {
             try
@@ -189,16 +189,16 @@ namespace JackTheClipperRequestHandler.Controllers
 
         //Ok
         [Route("reset")]
-        [HttpPut] 
+        [HttpPut]
         public ActionResult ResetPassword([FromQuery]string userMail)
         {
             try
             {
-               var result = GetControllerInstance<IClipperUserAPI>().ResetPassword(userMail);
-               if (result.IsSucceeded())
-               {
-                   return Ok();
-               }
+                var result = GetControllerInstance<IClipperUserAPI>().ResetPassword(userMail);
+                if (result.IsSucceeded())
+                {
+                    return Ok();
+                }
             }
             catch (Exception error)
             {
@@ -232,7 +232,7 @@ namespace JackTheClipperRequestHandler.Controllers
 
         [Route("changemailaddress")]
         [HttpPut]
-        public ActionResult ChangeMailAddress([FromQuery]Guid userId, [FromQuery] string newUserMail)
+        public ActionResult ChangeMailAddress([FromQuery] Guid userId, [FromQuery] string newUserMail)
         {
             try
             {
@@ -251,6 +251,7 @@ namespace JackTheClipperRequestHandler.Controllers
             return BadRequest();
         }
 
+
         //Ok
         [Route("availablesources")]
         [HttpGet]
@@ -258,8 +259,7 @@ namespace JackTheClipperRequestHandler.Controllers
         {
             try
             {
-                var user = Get<User>(userId);
-                return new ActionResult<IReadOnlyList<Source>>(GetControllerInstance<IClipperUserAPI>().GetAvailableSources(user));
+                return new ActionResult<IReadOnlyList<Source>>(GetControllerInstance<IClipperUserAPI>().GetAvailableSources(userId));
             }
             catch (Exception error)
             {
@@ -271,13 +271,11 @@ namespace JackTheClipperRequestHandler.Controllers
         //Ok
         [HttpPut]
         [Route("register")]
-        public ActionResult<User> AddUser([FromQuery]string userMail, [FromQuery]string userName,
-            [FromQuery] string password, [FromQuery]string role,[FromQuery]Guid principalUnit)
+        public ActionResult<MethodResult> AddUser([FromBody]User toAdd, [FromQuery]string password, [FromQuery]Guid selectedUnit)
         {
             try
             {
-                return new ActionResult<User>(GetControllerInstance<IClipperUserAPI>().AddUser(
-                    userMail, userName, password, (Role)Enum.Parse(typeof(Role), role), principalUnit, false, true));
+                return new ActionResult<MethodResult>(GetControllerInstance<IClipperUserAPI>().AddUser(toAdd, password, selectedUnit));
             }
             catch (Exception error)
             {

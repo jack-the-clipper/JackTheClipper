@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.ConnectException;
 
 
 /**
@@ -34,6 +35,12 @@ public class ExceptionHandlingController {
         model.addAttribute("message", ex.getMessage());
         log.warn("Request to [{}] failed, reason [{}]", request.getRequestURL().toString(),
                 ex.getMessage());
+        return "redirect:/error";
+    }
+
+    @ExceptionHandler(ConnectException.class)
+    public String handleConnectionRefused(ConnectException ex){
+        log.error("Could not connect to the configured backend, msg [{}]", ex.getMessage());
         return "redirect:/error";
     }
 

@@ -45,4 +45,19 @@ namespace JackTheClipperCommon.SharedClasses
         {
         }
     }
+
+    public class MethodResult<T> : MethodResult
+    {
+        public T Result { get; private set; }
+
+        public MethodResult(T result)
+        {
+            Result = result;
+        }
+
+        public MethodResult(SuccessState status, string userMessage, T result) : base(status, userMessage)
+        {
+            Result = result;
+        }
+    }
 }

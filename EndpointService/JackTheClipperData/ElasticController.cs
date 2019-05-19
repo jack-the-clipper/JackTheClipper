@@ -160,26 +160,32 @@ namespace JackTheClipperData
         #endregion
 
         #region GetFeedAsync
+
         /// <summary>
         /// Gets the requested feed
         /// </summary>
-        /// <param name="user">The User for which the feed is requested.</param>
-        /// <param name="feedId">The Id to the feed which should be generated.</param>
+        /// <param name="feed">The requested feed.</param>
         /// <param name="since">The date from which on articles should be considered.</param>
+        /// <param name="articlesPerPage">The amount of articles per page.</param>
         /// <param name="page">The requested page.</param>
+        /// <param name="unitBlackList">The unit black list.</param>
         /// <returns>List of articles within the feed</returns>
-        public async Task<IReadOnlyCollection<ShortArticle>> GetFeedAsync(User user, Guid feedId, DateTime since, int page)
+        public async Task<IReadOnlyCollection<ShortArticle>> GetFeedAsync(Feed feed, DateTime since, int articlesPerPage, int page, 
+                                                                          IEnumerable<string> unitBlackList)
         {
             try
             {
-                using (new PerfTracer(nameof(GetFeedAsync) + user.MailAddress))
+                using (new PerfTracer(nameof(GetFeedAsync) + feed.Name))
                 {
-                    var itemsPerPage = user.Settings.ArticlesPerPage;
                     var client = new ElasticClient(settings);
-                    var relevantFeed = new[] { user.GetFeed(feedId) };
+                    var relevantFeed = new[] { feed };
+
+                    var blackList = (unitBlackList ?? new List<string>()).Union(feed.Filter.Blacklist).ToList();
+
+                    //Take twice the amount of requested articles cause of possible duplicates
                     var searchResult =
-                        await client.SearchAsync(GetFeedSelector(relevantFeed, page * itemsPerPage, itemsPerPage, since));
-                    return GetDistinctNoBlackListViolations(relevantFeed, searchResult.Documents);
+                        await client.SearchAsync(GetFeedSelector(relevantFeed, page * articlesPerPage, articlesPerPage * 2, since, blackList));
+                    return searchResult.Documents.Distinct(ArticleComparer.FullArticleComparer).Take(articlesPerPage).ToList();
                 }
             }
             catch (Exception e)
@@ -192,29 +198,32 @@ namespace JackTheClipperData
 
         #region GetCompleteFeedAsync
         /// <summary>
-        /// Gets the complete feed (= all relevant articles in any feed) of a given user.
+        /// Gets the complete feed (= all relevant articles in any feed) of a given user setting.
         /// </summary>
-        /// <param name="user">The User for which the complete feed is requested</param>
+        /// <param name="userSettings">The user settings for which the complete feed is requested</param>
         /// <param name="since">The date from which on articles should be considered.</param>
         /// <returns>List of articles within any feed of the user.</returns>
-        public async Task<IReadOnlyCollection<ShortArticle>> GetCompleteFeedAsync(User user, DateTime since)
+        public async Task<IReadOnlyCollection<ShortArticle>> GetCompleteFeedAsync(UserSettings userSettings, DateTime since)
         {
             try
             {
-                using (new PerfTracer(nameof(GetCompleteFeedAsync) + user.MailAddress))
+                var relevantFeeds = userSettings.Feeds;
+                if (relevantFeeds.Any())
                 {
-                    var client = new ElasticClient(settings);
-                    var relevantFeeds = user.Settings.Feeds;
-                    var searchResult =
-                        await client.SearchAsync(GetFeedSelector(relevantFeeds, 0, 1000, since));
-                    return GetDistinctNoBlackListViolations(relevantFeeds, searchResult.Documents);
+                    using (new PerfTracer(nameof(GetCompleteFeedAsync) + userSettings.Id))
+                    {
+                        var client = new ElasticClient(settings);
+                        var searchResult = await client.SearchAsync(GetFeedSelector(relevantFeeds, 0, 1000, since, null));
+                        return searchResult.Documents.Distinct(ArticleComparer.FullArticleComparer).ToList();
+                    }
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return new List<ShortArticle>();
             }
+
+            return new List<ShortArticle>();
         }
         #endregion
 
@@ -404,6 +413,7 @@ namespace JackTheClipperData
         #endregion
 
         #region GetFeedSelector       
+
         /// <summary>
         /// Builds and returns the feed selector.
         /// </summary>
@@ -411,10 +421,11 @@ namespace JackTheClipperData
         /// <param name="from">Starting index for return value (paging).</param>
         /// <param name="size">Number of items to return (paging).</param>
         /// <param name="since">The time from which on feeds should be queried.</param>
+        /// <param name="blacklist">The blacklist</param>
         /// <returns>Function, representing the feed selector.</returns>
         private static Func<SearchDescriptor<Article>, ISearchRequest> GetFeedSelector(IEnumerable<Feed> feeds,
                                                                                        int from, int size, 
-                                                                                       DateTime since)
+                                                                                       DateTime since, IEnumerable<string> blacklist)
         {
             return s => s
                         .Index(AppConfiguration.ElasticPermanentIndexName)
@@ -424,25 +435,60 @@ namespace JackTheClipperData
                                    q.DateRange(d => d
                                                     .Field(f => f.Indexed)
                                                     .GreaterThanOrEquals(since)) &&
-                                   GetFeedQuery(feeds))
+                                   GetFeedQuery(feeds, blacklist))
                         .Sort(x => x.Descending(y => y.Published));
         }
 
         #endregion
 
         #region GetFeedQuery
+
         /// <summary>
         /// Gets the elastic query for the given feeds.
         /// </summary>
         /// <param name="relevantFeeds">The relevant feeds to determine their query.</param>
+        /// <param name="blackList">The blacklist to not violate.</param>
         /// <returns>The query for the feed.</returns>
-        private static QueryContainer GetFeedQuery(IEnumerable<Feed> relevantFeeds)
+        private static QueryContainer GetFeedQuery(IEnumerable<Feed> relevantFeeds, IEnumerable<string> blackList)
         {
             QueryContainer finalContainer = null;
+            if (relevantFeeds == null || !relevantFeeds.Any())
+            {
+                throw new InvalidOperationException(nameof(relevantFeeds));
+            }
+
+            blackList = blackList?.Select(x => x.ToLowerInvariant()).ToList();
             foreach (var feed in relevantFeeds)
             {
                 var keywordList = feed.Filter.Keywords.Select(x => x.ToLowerInvariant()).ToList();
-                var basicTermsOperator = new TermsQuery
+                QueryBase basicTermsOperator;
+                if (blackList != null && blackList.Any())
+                {
+                    basicTermsOperator = !(new TermsQuery
+                                               {
+                                                   Field = "ArticleTitle",
+                                                   Terms = blackList
+                                               } ||
+                                           new TermsQuery
+                                               {
+                                                   Field = "ArticleLongText",
+                                                   Terms = blackList
+                                               }) 
+                                         && 
+                                          (new TermsQuery
+                                               {
+                                                   Field = "ArticleTitle",
+                                                   Terms = keywordList
+                                               } || 
+                                           new TermsQuery
+                                               {
+                                                   Field = "ArticleLongText",
+                                                   Terms = keywordList
+                                               });
+                }
+                else
+                {
+                    basicTermsOperator = new TermsQuery
                                          {
                                              Field = "ArticleTitle",
                                              Terms = keywordList
@@ -452,6 +498,8 @@ namespace JackTheClipperData
                                              Field = "ArticleLongText",
                                              Terms = keywordList
                                          };
+                }              
+
                 foreach (var guid in feed.Sources.Select(x => x.Id))
                 {
                     finalContainer |= new MatchPhraseQuery
@@ -463,35 +511,6 @@ namespace JackTheClipperData
             }
 
             return finalContainer;
-        }
-        #endregion
-
-        #region GetDistinctNoBlackListViolations        
-        /// <summary>
-        /// Distincts the input and checks whether the input doesnt violates any black list.
-        /// </summary>
-        /// <param name="feeds">The relevant feeds.</param>
-        /// <param name="value">The value.</param>
-        /// <returns>True if no violation occured.</returns>
-        private static List<Article> GetDistinctNoBlackListViolations([NotNull]IReadOnlyCollection<Feed> feeds, [NotNull]IEnumerable<Article> value)
-        {
-            var checkedValues = new List<Article>();
-            foreach (var articles in value.Distinct(ArticleComparer.FullArticleComparer).GroupBy(x => x.IndexingSourceId))
-            {
-                var belongingFeeds = feeds.Where(x => x.Sources.Any(src => src.Id == articles.Key));
-                var blackList = belongingFeeds.Select(x => x.Filter.Blacklist ?? new List<string>()).SelectMany(d => d).ToList();
-                if (blackList.Any())
-                {
-                    checkedValues.AddRange(articles.Where(x => !blackList.Any((x.Text ?? string.Empty).Contains) &&
-                                                               !blackList.Any((x.Title ?? string.Empty).Contains)));
-                }
-                else
-                {
-                    checkedValues.AddRange(articles);
-                }
-            }
-
-            return checkedValues;
         }
         #endregion
 
@@ -541,7 +560,8 @@ namespace JackTheClipperData
             /// </summary>
             public ElasticDuplicateRemover()
             {
-                this.scheduler = new Timer(CleanUp, null, 0, 6 * 60 * 1000);
+                //all 12 hours
+                this.scheduler = new Timer(CleanUp, null, 0, 12 * 60 * 60 * 1000);
             }
 
             #region CleanUp

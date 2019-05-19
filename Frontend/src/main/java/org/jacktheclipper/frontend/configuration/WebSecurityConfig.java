@@ -59,7 +59,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http)
             throws Exception {
 
-        http.addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class).antMatcher("/**").csrf().disable().
+        http.addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class).
+                antMatcher("/**").csrf().disable().
                 formLogin().loginPage("/login").successHandler(successHandler()).permitAll().
                 and().exceptionHandling().accessDeniedPage("/403").and().
                 logout().logoutSuccessHandler(logoutSuccessHandler()).permitAll().and().
@@ -72,48 +73,53 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         antMatchers("/error").permitAll().
 
                 //users can only reset passwords at sites with an existing organization
-                        antMatchers("/{organization}/resetpassword").access("@organizationGuard" + ".isValidOrganization(#organization)").
+                        antMatchers("/{organization}/resetpassword").
+                        access("@organizationGuard.isValidOrganization(#organization)").
 
                 //users can only register to existing organizations
-                        antMatchers("/{organization}/register").access("@organizationGuard" +
-                ".isValidOrganization(#organization)").
+                        antMatchers("/{organization}/register").
+                        access("@organizationGuard.isValidOrganization(#organization)").
 
                 //users can only see the privacy policy under existing organizations. They do not
                 // need to be authenticated
-                        antMatchers("/{organization}/privacypolicy").access("@organizationGuard" + ".isValidOrganization(#organization)").
+                        antMatchers("/{organization}/privacypolicy").
+                        access("@organizationGuard.isValidOrganization(#organization)").
 
                 //users can only see the impressum under existing organizations. They do not
                 // need to be authenticated
-                        antMatchers("/{organization}/impressum").access("@organizationGuard" +
-                ".isValidOrganization(#organization)").
+                        antMatchers("/{organization}/impressum").
+                        access("@organizationGuard.isValidOrganization(#organization)").
 
                 //anybody can load our css, js, etc. used for displaying sites
-                        antMatchers("/css/**", "/webjars/**", "/img/**", "/bootstrap_select/**").permitAll().
+                        antMatchers("/css/**", "/webjars/**",
+                        "/img/**", "/bootstrap_select/**").permitAll().
 
                 //only systemadministrators can access the admin portion of this application
                         antMatchers("/admin/**").hasRole("SYSADMIN").
 
                 //every user can access the profile page under his organization
-                        antMatchers("/{organization}/feed/profile").access("authenticated " +
-                "and @organizationGuard.isOwnOrganization(authentication,#organization)").
+                        antMatchers("/{organization}/feed/profile").
+                        access("authenticated and " +
+                        "@organizationGuard.isOwnOrganization(authentication,#organization)").
 
 
                 //every authenticated user can update his password when doing that under his
                 // organization
-                        antMatchers("/{organization}/feed/changepassword").access("authenticated "
-                + "and @organizationGuard.isOwnOrganization(authentication,#organization)").
+                        antMatchers("/{organization}/feed/changepassword").
+                        access("authenticated and " +
+                        "@organizationGuard.isOwnOrganization(authentication,#organization)").
 
                 //every authenticated user can update his mail address when doing that under his
                 // organization
-                        antMatchers("/{organization}/feed/changemailaddress").access(
-                                "authenticated " + "and @organizationGuard.isOwnOrganization" +
-                                        "(authentication,#organization)").
+                        antMatchers("/{organization}/feed/changemailaddress").
+                        access("authenticated " +
+                        "and @organizationGuard.isOwnOrganization(authentication,#organization)").
 
                 //users can only access the rest of the application if they are authenticated,
                 // in the same organization and do not need to change their password
-                        antMatchers("/{organization}/**").access("authenticated and " +
-                "@organizationGuard.isOwnOrganization(authentication,#organization) and " +
-                "@organizationGuard.passwordOkay(authentication)").
+                        antMatchers("/{organization}/**").access("authenticated " +
+                        "and @organizationGuard.isOwnOrganization(authentication,#organization) " +
+                        "and @organizationGuard.passwordOkay(authentication)").
 
                 //nothing else can be accessed with only one path element
                         antMatchers("/*").denyAll().

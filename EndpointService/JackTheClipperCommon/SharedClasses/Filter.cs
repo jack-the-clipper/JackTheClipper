@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using JetBrains.Annotations;
 
 namespace JackTheClipperCommon.SharedClasses
 {
@@ -21,21 +20,18 @@ namespace JackTheClipperCommon.SharedClasses
         /// <summary>
         /// Gets the filter keywords.
         /// </summary>
-        [NotNull]
         [DataMember(Name = "FilterKeywords")]
         public IReadOnlyCollection<string> Keywords { get; private set; }
 
         /// <summary>
         /// Gets the filter expressions.
         /// </summary>
-        [NotNull]
         [DataMember(Name = "FilterExpressions")]
         public IReadOnlyCollection<string> Expressions { get; private set; }
 
         /// <summary>
         /// Gets the filter blacklist.
         /// </summary>
-        [NotNull]
         [DataMember(Name = "FilterBlacklist")]
         public IReadOnlyCollection<string> Blacklist { get; private set; }
 
@@ -70,9 +66,9 @@ namespace JackTheClipperCommon.SharedClasses
         public bool Equals(Filter other)
         {
             return Id.Equals(other.Id) &&
-                   Keywords.SequenceEqual(other.Keywords) &&
-                   Expressions.SequenceEqual(other.Expressions) &&
-                   Blacklist.SequenceEqual(other.Blacklist);
+                   (Keywords ?? new List<string>()).SequenceEqual(other.Keywords ?? new List<string>()) &&
+                   (Expressions ?? new List<string>()).SequenceEqual(other.Expressions ?? new List<string>()) &&
+                   (Blacklist ?? new List<string>()).SequenceEqual(other.Blacklist ?? new List<string>());
         }
 
         /// <summary>Determines whether the specified object is equal to the current object.</summary>
@@ -95,9 +91,9 @@ namespace JackTheClipperCommon.SharedClasses
             unchecked
             {
                 var hashCode = Id.GetHashCode();
-                hashCode = (hashCode * 397) ^ Keywords.GetHashCode();
-                hashCode = (hashCode * 397) ^ Expressions.GetHashCode();
-                hashCode = (hashCode * 397) ^ Blacklist.GetHashCode();
+                hashCode = (hashCode * 397) ^ (Keywords == null ? 0 : Keywords.GetHashCode());
+                hashCode = (hashCode * 397) ^ (Expressions == null ? 0 : Expressions.GetHashCode());
+                hashCode = (hashCode * 397) ^ (Blacklist == null ? 0 : Blacklist.GetHashCode());
                 return hashCode;
             }
         }

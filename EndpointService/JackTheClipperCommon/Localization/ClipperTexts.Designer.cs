@@ -61,6 +61,34 @@ namespace JackTheClipperCommon.Localization {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die ... wurde für sie angelegt.
+        ///
+        ///Sie können sich mittels folgender Angaben einloggen:
+        ///Benutzername: {0}
+        ///Passwort: {1}
+        ///
+        ///Bitte beachten Sie, dass das Passwort beim nächsten Login geändert werden muss.
+        ///
+        ///Mit freundlichen Grüßen,
+        ///
+        ///Jack the Clipper ähnelt.
+        /// </summary>
+        public static string AccountCreatedMailBody {
+            get {
+                return ResourceManager.GetString("AccountCreatedMailBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Ihr Account bei &quot;Jack the Clipper&quot;... ähnelt.
+        /// </summary>
+        public static string AccountCreatedMailSubject {
+            get {
+                return ResourceManager.GetString("AccountCreatedMailSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Es gibt Neuigkeiten bei &quot;Jack the Clipper&quot;... ähnelt.
         /// </summary>
         public static string DefaultMailSubject {
@@ -94,6 +122,29 @@ namespace JackTheClipperCommon.Localization {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die ... beitreten.
+        ///
+        ///Sie müssen die Registrierungsanfrage von {0} (E-Mail:{1}) genehmigen.
+        ///Mit freundlichen Grüßen,
+        ///
+        ///Jack the Clipper ähnelt.
+        /// </summary>
+        public static string NewPendingUserMailBody {
+            get {
+                return ResourceManager.GetString("NewPendingUserMailBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Ein Benutzer möchte &quot;Jack the Clipper&quot;... ähnelt.
+        /// </summary>
+        public static string NewPendingUserMailSubject {
+            get {
+                return ResourceManager.GetString("NewPendingUserMailSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die ... wurde geändert.
         ///
         ///Sollten Sie nicht die Änderung Ihres Passworts veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten.
@@ -120,7 +171,7 @@ namespace JackTheClipperCommon.Localization {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die ... wurde zurückgesetzt. 
         ///
-        ///Ihr neues Passwort lautet: {0}.
+        ///Ihr neues Passwort lautet: {0}
         ///Dass Passwort muss beim nächsten Login geändert werden.
         ///
         ///Sollten Sie nicht die Änderung Ihres Passworts veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten.

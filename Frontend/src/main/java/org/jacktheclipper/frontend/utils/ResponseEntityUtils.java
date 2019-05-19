@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 public class ResponseEntityUtils {
 
     /**
-     * Checks whether the REST-called returned a successful response.
+     * Checks whether the REST-call returned a successful response.
      * This is the case if its statuscode is 2xx and its body is not empty/null
      *
      * @param entity The ResponseEntity to check

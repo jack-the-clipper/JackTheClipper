@@ -13,12 +13,19 @@ import java.util.UUID;
 public class Source {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("SourceId")
     private UUID id;
+    @JsonProperty("SourceUri")
     private String uri;
+    @JsonProperty("SourceName")
     private String name;
+    @JsonProperty("SourceContentType")
     private ContentType contentType;
+    @JsonProperty("SourceRegex")
     private String regEx;
+    @JsonProperty("SourceBlacklist")
     private List<String> blackList;
+    @JsonProperty("SourceXPath")
     private String xPath;
 
     public Source() {
@@ -59,10 +66,6 @@ public class Source {
     @Override
     public boolean equals(Object obj) {
 
-        if (obj instanceof UUID) {
-            return this.id.equals(obj);
-        }
-
         if (obj instanceof Source) {
             return this.id.equals(((Source) obj).getId());
         }
@@ -74,7 +77,6 @@ public class Source {
         return id;
     }
 
-    @JsonProperty("SourceId")
     public void setId(UUID id) {
 
         this.id = id;
@@ -85,7 +87,6 @@ public class Source {
         return uri;
     }
 
-    @JsonProperty("SourceUri")
     public void setUri(String uri) {
 
         this.uri = uri;
@@ -96,7 +97,6 @@ public class Source {
         return name;
     }
 
-    @JsonProperty("SourceName")
     public void setName(String name) {
 
         this.name = name;
@@ -107,7 +107,6 @@ public class Source {
         return contentType;
     }
 
-    @JsonProperty("SourceContentType")
     public void setContentType(ContentType contentType) {
 
         this.contentType = contentType;
@@ -118,7 +117,6 @@ public class Source {
         return regEx;
     }
 
-    @JsonProperty("SourceRegex")
     public void setRegEx(String regEx) {
 
         this.regEx = regEx;
@@ -129,7 +127,6 @@ public class Source {
         return blackList;
     }
 
-    @JsonProperty("SourceBlacklist")
     public void setBlackList(List<String> blackList) {
 
         this.blackList = blackList;
@@ -140,7 +137,6 @@ public class Source {
         return xPath;
     }
 
-    @JsonProperty("SourceXPath")
     public void setxPath(String xPath) {
 
         this.xPath = xPath;
@@ -158,6 +154,8 @@ public class Source {
     @Override
     public String toString() {
 
-        return id.toString() + ";;;" + name;
+        String prefix = id != null ? id.toString() : "";
+        String postfix = name != null ? name : "";
+        return prefix + ";;;" + postfix;
     }
 }

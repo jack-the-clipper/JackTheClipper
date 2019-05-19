@@ -5,7 +5,7 @@ using System.Net.Mail;
 using System.Threading.Tasks;
 using JackTheClipperCommon;
 using JackTheClipperCommon.Configuration;
-using JackTheClipperCommon.SharedClasses;
+using JackTheClipperCommon.Interfaces;
 
 namespace JackTheClipperBusiness
 {
@@ -17,22 +17,22 @@ namespace JackTheClipperBusiness
         /// <summary>
         /// Queries the send of a mail asynchronous.
         /// </summary>
-        /// <param name="user">The user to send the mail to.</param>
+        /// <param name="toNotify">The notifiable object to send the mail to.</param>
         /// <param name="subject">The subject.</param>
         /// <param name="content">The content.</param>
         /// <param name="pdfStream">The PDF stream (optional).</param>
         /// <param name="pdfName">Name of the PDF (optional).</param>
-        public static void QuerySendMailAsync(User user, string subject, string content, MemoryStream pdfStream = null, string pdfName = null)
+        public static void QuerySendMailAsync(IMailNotifiable toNotify, string subject, string content, MemoryStream pdfStream = null, string pdfName = null)
         {
             Task.Run(delegate
             {
                 try
                 {
-                    using (new PerfTracer(nameof(QuerySendMailAsync) + user.MailAddress))
+                    using (new PerfTracer(nameof(QuerySendMailAsync) + toNotify.UserMailAddress))
                     {
                         var from = new MailAddress(AppConfiguration.MailConfigurationFrom,
                             "Jack The Clipper");
-                        var to = new MailAddress(user.MailAddress, user.UserName);
+                        var to = new MailAddress(toNotify.UserMailAddress, toNotify.UserName);
 
                         using (var smtp = new SmtpClient
                         {

@@ -1,6 +1,6 @@
 package org.jacktheclipper.frontend.utils;
 
-import org.jacktheclipper.frontend.authentication.User;
+import org.jacktheclipper.frontend.model.User;
 import org.springframework.security.core.Authentication;
 
 import java.util.UUID;
@@ -34,7 +34,8 @@ public class AuthenticationUtils {
             return ((User) auth.getPrincipal()).getUserId();
         }
         throw new IllegalArgumentException("auth#Principal must be of type org.jacktheclipper" +
-                ".frontend.authentication.User but was of type " + auth.getPrincipal().getClass().getCanonicalName());
+                ".frontend.authentication.User but was of type " +
+                auth.getPrincipal().getClass().getCanonicalName());
     }
 
     /**
@@ -59,7 +60,8 @@ public class AuthenticationUtils {
             return ((User) auth.getPrincipal()).getOrganization();
         }
         throw new IllegalArgumentException("auth#Principal must be of type org.jacktheclipper" +
-                ".frontend.authentication.User but was of type " + auth.getPrincipal().getClass().getCanonicalName());
+                ".frontend.authentication.User but was of type " +
+                auth.getPrincipal().getClass().getCanonicalName());
     }
 
     /**
@@ -82,7 +84,8 @@ public class AuthenticationUtils {
             return ((User) auth.getPrincipal()).geteMail();
         }
         throw new IllegalArgumentException("auth#Principal must be of type org.jacktheclipper" +
-                ".frontend.authentication.User but was of type " + auth.getPrincipal().getClass().getCanonicalName());
+                ".frontend.authentication.User but was of type " +
+                auth.getPrincipal().getClass().getCanonicalName());
     }
 
     /**
@@ -113,6 +116,7 @@ public class AuthenticationUtils {
             return ((User) auth.getPrincipal()).isMustChangePassword();
         }
         throw new IllegalArgumentException("auth#Principal must be of type org.jacktheclipper" +
-                ".frontend.authentication.User but was of type " + auth.getPrincipal().getClass().getCanonicalName());
+                ".frontend.authentication.User but was of type " +
+                auth.getPrincipal().getClass().getCanonicalName());
     }
 }

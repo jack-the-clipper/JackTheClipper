@@ -93,7 +93,7 @@ namespace JackTheClipperBusinessTest
 
             Assert.IsNotNull(feed);
 
-            var elasticFeed = userController.GetFeed(user, feed, 0, true);
+            var elasticFeed = userController.GetFeed(user.Id, feed.Id, 0, true);
 
             Assert.IsNotNull(elasticFeed);
 
@@ -117,7 +117,7 @@ namespace JackTheClipperBusinessTest
 
             Assert.IsNotNull(feed);
 
-            var elasticFeed = userController.GetFeed(user, feed, 0, true);
+            var elasticFeed = userController.GetFeed(user.Id, feed.Id, 0, true);
 
             Assert.IsNotNull(elasticFeed);
 

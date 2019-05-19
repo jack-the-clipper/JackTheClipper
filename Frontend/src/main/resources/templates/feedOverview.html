@@ -25,18 +25,14 @@
                            th:text="${article.getTitle()}"></a></h3>
                     <p th:text="${article.getShortText()}"></p>
                     <p>Veröffentlicht: <span th:text="${article.publishedAsGermanDate()}"></span></p>
+                    <img th:if="${article.getImageLink() != null}" th:src="${article.getImageLink()}"
+                         th:alt="|Das Bild zum Artikel ${article.getTitle()}|"/>
                     <a th:href="${article.getLink()}" target="_blank" rel="noopener">Zur Quelle</a>
                 </div>
             </div>
             <nav th:unless="${feedId} == null" aria-label="Page navigation example">
                 <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" th:href="@{/{orga}/feed(feedId=${feedId},
-                                             orga=${#authentication.getPrincipal().getOrganization()},
-                                             page=${0},showArchived=${showArchived})}">Erste Seite
-                        </a>
-                    </li>
-                    <li th:if="${currentPage}>0" class="page-item">
+                    <li th:if="${currentPage} > 0" class="page-item">
                         <a class="page-link" th:href="@{/{orga}/feed(feedId=${feedId},
                                              orga=${#authentication.getPrincipal().getOrganization()},
                                              page=${currentPage - 1},showArchived=${showArchived})}">
@@ -66,16 +62,16 @@
                     </li>
                 </ul>
             </nav>
-            <a class="page-link" th:if="${showArchived}" th:href="@{/{orga}/feed(feedId=${feedId},
+            <a class="page-link p-0" th:if="${showArchived}" th:href="@{/{orga}/feed(feedId=${feedId},
                                              orga=${#authentication.getPrincipal().getOrganization()},
                                              page=${0},showArchived=${false})}">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Nur
+                <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Nur
                     neue Artikel anzeigen</button>
             </a>
-            <a class="page-link" th:unless="${showArchived}" th:href="@{/{orga}/feed(feedId=${feedId},
+            <a class="page-link p-0" th:unless="${showArchived}" th:href="@{/{orga}/feed(feedId=${feedId},
                                              orga=${#authentication.getPrincipal().getOrganization()},
                                              page=${0},showArchived=${true})}">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Alle Artikel anzeigen</button>
+                <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Alle Artikel anzeigen</button>
             </a>
             <footer th:replace="layout :: footer"></footer>
         </div>

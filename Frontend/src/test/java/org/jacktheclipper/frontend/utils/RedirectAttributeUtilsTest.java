@@ -31,8 +31,8 @@ public class RedirectAttributeUtilsTest {
     @Test
     public void populateDefaultNoError() {
 
-        RedirectAttributesUtils.populateDefaultRedirectAttributes(redirectAttributes, false, "This"
-                + " is a test");
+        RedirectAttributesUtils.populateDefaultRedirectAttributes(redirectAttributes, false,
+                "This is a test");
 
         Map<String, ?> map = redirectAttributes.getFlashAttributes();
         Assert.assertEquals("This is a test", map.get("msg"));

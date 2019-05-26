@@ -1,10 +1,10 @@
 package org.jacktheclipper.frontend.controller;
 
 import org.jacktheclipper.frontend.authentication.CustomAuthenticationToken;
-import org.jacktheclipper.frontend.model.User;
 import org.jacktheclipper.frontend.enums.NotificationSetting;
 import org.jacktheclipper.frontend.exception.BackendException;
 import org.jacktheclipper.frontend.model.Feed;
+import org.jacktheclipper.frontend.model.User;
 import org.jacktheclipper.frontend.model.UserSettings;
 import org.jacktheclipper.frontend.service.FeedService;
 import org.jacktheclipper.frontend.service.SourceService;
@@ -15,12 +15,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -127,11 +129,11 @@ public class UserConfigController {
         String redirectQuery = "?feedId=" + feed.getId();
         try {
             feedService.updateFeed(feed, settingsId);
-            populateDefaultRedirectAttributes(redirectAttributes, false,
-                    "Feed erfolgreich aktualisiert");
+            populateDefaultRedirectAttributes(redirectAttributes, false, "Feed erfolgreich " +
+                    "aktualisiert");
         } catch (BackendException badRequest) {
-            populateDefaultRedirectAttributes(redirectAttributes, true,
-                    "Etwas ist falsch gelaufen");
+            populateDefaultRedirectAttributes(redirectAttributes, true, "Etwas ist falsch " +
+                    "gelaufen");
         }
         return "redirect:/" + organization + "/feed/edit" + redirectQuery;
     }
@@ -158,11 +160,11 @@ public class UserConfigController {
         try {
             feed.setFeedSources(sourceService.recoverSources(feed.getFeedSources(), userId));
             feedService.addFeed(settingsId, feed);
-            populateDefaultRedirectAttributes(redirectAttributes, false,
-                    "Feed erfolgreich hinzugefügt");
+            populateDefaultRedirectAttributes(redirectAttributes, false, "Feed erfolgreich " +
+                    "hinzugefügt");
         } catch (BackendException badRequest) {
-            populateDefaultRedirectAttributes(redirectAttributes, true,
-                    "Das Hinzufügen des Feeds ist fehlgeschlagen");
+            populateDefaultRedirectAttributes(redirectAttributes, true, "Das Hinzufügen des " +
+                    "Feeds ist fehlgeschlagen");
         }
         return "redirect:/" + organization + "/feed/edit";
     }
@@ -183,11 +185,11 @@ public class UserConfigController {
 
         try {
             feedService.deleteFeed(feedId);
-            populateDefaultRedirectAttributes(redirectAttributes, false,
-                    "Feed erfolgreich entfernt");
+            populateDefaultRedirectAttributes(redirectAttributes, false, "Feed erfolgreich " +
+                    "entfernt");
         } catch (BackendException badRequest) {
-            populateDefaultRedirectAttributes(redirectAttributes, true,
-                    "Feed konnte nicht gelöscht werden");
+            populateDefaultRedirectAttributes(redirectAttributes, true, "Feed konnte nicht " +
+                    "gelöscht werden");
         }
         return "redirect:/" + organization + "/feed/edit";
     }
@@ -206,8 +208,10 @@ public class UserConfigController {
 
         UUID userId = AuthenticationUtils.getUserId(auth);
         if (AuthenticationUtils.isMustChangePassword(auth)) {
-            model.addAttribute("msg", "Bitte ändern Sie Ihr Passwort");
-            model.addAttribute("css", "alert-warning");
+            if (!model.containsAttribute("msg")) {
+                model.addAttribute("msg", "Bitte ändern Sie Ihr Passwort");
+                model.addAttribute("css", "alert-warning");
+            }
         }
         model.addAttribute("notificationSettings", NotificationSetting.values());
         model.addAttribute("settings", feedService.getSettingsForUser(userId));
@@ -272,16 +276,16 @@ public class UserConfigController {
                 user.seteMail(email);
                 user.setPassword(password);
                 login(request, user);
-                populateDefaultRedirectAttributes(redirectAttributes, false,
-                        "E-Mail erfolgreich geändert");
+                populateDefaultRedirectAttributes(redirectAttributes, false, "E-Mail erfolgreich "
+                        + "geändert");
             } catch (BackendException ex) {
                 log.info("something went wrong");
-                populateDefaultRedirectAttributes(redirectAttributes, true,
-                        "E-Mail konnte nicht geändert werden");
+                populateDefaultRedirectAttributes(redirectAttributes, true, "E-Mail konnte nicht "
+                        + "geändert werden");
             } catch (HttpClientErrorException.BadRequest badRequest) {
                 log.info("Supplied password [{}] did not match actual", password);
-                populateDefaultRedirectAttributes(redirectAttributes, true,
-                        "E-Mail konnte nicht geändert werden");
+                populateDefaultRedirectAttributes(redirectAttributes, true, "E-Mail konnte nicht "
+                        + "geändert werden. Ihr altes Passwort konnte Sie nicht authentifizieren");
             }
         }
         return "redirect:/" + organization + "/feed/profile";
@@ -290,6 +294,8 @@ public class UserConfigController {
     /**
      * @param auth               The user who wants to change the password
      * @param newPassword        The new password
+     * @param newPasswordRepeat  The new password again to ensure that a user did not make any
+     *                           silly typing mistakes
      * @param oldPassword        The users old password
      * @param organization       The organization the user belongs to
      * @param request
@@ -301,13 +307,17 @@ public class UserConfigController {
                                  @RequestParam("newPassword") String newPassword, @RequestParam(
                                          "oldPassword") String oldPassword, @PathVariable(
                                                  "organization") String organization,
+                                 @RequestParam("newPasswordRepeat") String newPasswordRepeat,
                                  HttpServletRequest request,
                                  final RedirectAttributes redirectAttributes) {
 
         UUID userId = AuthenticationUtils.getUserId(auth);
 
-        if (!newPassword.equals("")) {
+        if (!StringUtils.isEmpty(newPassword) && !(StringUtils.isEmpty(newPasswordRepeat))) {
             try {
+                if (!newPassword.equals(newPasswordRepeat)) {
+                    throw new BadCredentialsException("New Passwords did not match");
+                }
                 userService.authenticate(AuthenticationUtils.getEmail(auth),
                         AuthenticationUtils.getOrganization(auth), oldPassword);
                 userService.updatePassword(userId, newPassword);
@@ -317,16 +327,22 @@ public class UserConfigController {
                 User user = (User) auth.getPrincipal();
                 user.setPassword(newPassword);
                 login(request, user);
-                populateDefaultRedirectAttributes(redirectAttributes, false,
-                        "Passwort erfolgreich geändert");
+                populateDefaultRedirectAttributes(redirectAttributes, false, "Passwort " +
+                        "erfolgreich geändert");
+            } catch (BadCredentialsException bdException) {
+                log.info("Got two different new passwords, namely [{}] and [{}]", newPassword,
+                        newPasswordRepeat);
+                populateDefaultRedirectAttributes(redirectAttributes, true, "Passwort konnte " +
+                        "nicht geändert werden. Die neuen Passwörter stimmten nicht überein.");
             } catch (BackendException ex) {
                 log.info("something went wrong");
-                populateDefaultRedirectAttributes(redirectAttributes, true,
-                        "Passwort konnte nicht geändert werden");
+                populateDefaultRedirectAttributes(redirectAttributes, true, "Passwort konnte " +
+                        "nicht geändert werden");
             } catch (HttpClientErrorException.BadRequest badRequest) {
                 log.info("Supplied password [{}] did not match actual", oldPassword);
-                populateDefaultRedirectAttributes(redirectAttributes, true,
-                        "Passwort konnte nicht geändert werden");
+                populateDefaultRedirectAttributes(redirectAttributes, true, "Passwort konnte " +
+                        "nicht geändert werden. Ihr aktuelles Passwort konnte Sie nicht " +
+                        "authentifizieren");
             }
         }
         return "redirect:/" + organization + "/feed/profile";

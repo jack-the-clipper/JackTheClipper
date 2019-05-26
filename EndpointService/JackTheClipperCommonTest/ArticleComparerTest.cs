@@ -1,6 +1,9 @@
 using System;
+using System.IO;
 using JackTheClipperCommon;
+using JackTheClipperCommon.Configuration;
 using JackTheClipperCommon.SharedClasses;
+using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace JackTheClipperCommonTest
@@ -8,6 +11,15 @@ namespace JackTheClipperCommonTest
     [TestClass]
     public class ArticleComparerTest
     {
+        [AssemblyInitialize]
+        public static void AssemblyInit(TestContext context)
+        {
+            var config = new ConfigurationBuilder()
+                         .AddJsonFile(new FileInfo(@"..\..\..\..\JackTheClipperRequestHandler\appsettings.json").FullName, optional: false)
+                         .Build();
+            AppConfiguration.RegisterConfig(config);
+        }
+
         [TestMethod]
         public void CompareArticleSuccess()
         {

@@ -6,7 +6,9 @@ import enums.SuccessState;
  */
 public class MethodResult {
 
+    @JsonProperty("Status")
     private SuccessState state;
+    @JsonProperty("UserMessage")
     private String message;
 
     public MethodResult() {
@@ -24,7 +26,6 @@ public class MethodResult {
         return state;
     }
 
-    @JsonProperty("Status")
     public void setState(SuccessState state) {
 
         this.state = state;
@@ -35,9 +36,29 @@ public class MethodResult {
         return message;
     }
 
-    @JsonProperty("UserMessage")
     public void setMessage(String message) {
 
         this.message = message;
     }
+
+    /**
+     * Turns the error codes returned by the backend into human readable messages
+     *
+     * @param prefix The prefix to be appended to every mapped error message
+     * @return A human read- and understandable version of the returned error code.
+     */
+    public String mapErrorCodeToMessage(String prefix) {
+
+        String msgToShow;
+        if (message.startsWith("ERROR999992")) {
+            msgToShow = "Der Benutzername wird bereits verwendet.";
+        } else if (message.startsWith("ERROR999993")) {
+            msgToShow = "Die E-Mail-Adresse ist bereits vergeben.";
+        } else if (message.startsWith("ERROR999991")) {
+            msgToShow = "Der Mandantenname wird bereits verwendet.";
+        } else {
+            msgToShow = "Etwas ist schief gelaufen";
+        } return prefix + msgToShow;
+    }
+
 }

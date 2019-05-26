@@ -9,7 +9,6 @@ import java.util.Collection;
  * A custom Token holding information from the login form, which in this case is a username, a
  * password and the name of an organization. The username may be an email
  *
- * @author SBG
  */
 public class CustomAuthenticationToken extends UsernamePasswordAuthenticationToken {
 

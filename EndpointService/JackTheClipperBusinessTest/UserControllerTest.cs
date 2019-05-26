@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Xml.Xsl;
 using JackTheClipperBusiness;
 using JackTheClipperCommon.Enums;
 using JackTheClipperCommon.Interfaces;
@@ -14,25 +15,17 @@ namespace JackTheClipperBusinessTest
     [TestClass]
     public class UserControllerTest
     {
+        internal static readonly Guid TestUnit = Guid.Parse("6d64d93a-7cad-11e9-910b-9615dc5f263c");
         internal static readonly Guid SystemUnit = Guid.Parse("00000000-BEEF-BEEF-BEEF-000000000000");
+
 
         [TestMethod]
         public void AuthenticationFailTest()
         {
             var userController = Factory.GetControllerInstance<IClipperUserAPI>();
 
-            User user = null;
-            try
-            {
-                user = userController.TryAuthenticateUser("wrong", "just wrong", SystemUnit);
-                Assert.Fail();
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-
-
+            var user = userController.TryAuthenticateUser("wrong", "just wrong", TestUnit);
+            
             Assert.IsNull(user);
         }
 
@@ -40,18 +33,7 @@ namespace JackTheClipperBusinessTest
         public void AuthenticationTest()
         {
             var userController = Factory.GetControllerInstance<IClipperUserAPI>();
-
-            var user = userController.TryAuthenticateUser("root@example.com", "root", SystemUnit);
-
-            Assert.IsNotNull(user);
-        }
-
-        [TestMethod]
-        public void AuthenticationTestLoginByName()
-        {
-            var userController = Factory.GetControllerInstance<IClipperUserAPI>();
-
-            var user = userController.TryAuthenticateUser("roor", "root", SystemUnit);
+            var user = userController.TryAuthenticateUser("timroethel@web.de", "Passwort", TestUnit);
 
             Assert.IsNotNull(user);
         }
@@ -61,7 +43,7 @@ namespace JackTheClipperBusinessTest
         {
             var userController = Factory.GetControllerInstance<IClipperUserAPI>();
 
-            var user = userController.TryAuthenticateUser("i17029@hb.dhbw-stuttgart.de", "Passwort", SystemUnit);
+            var user = userController.TryAuthenticateUser("timmaster121@web.de", "Passwort", TestUnit);
 
             Assert.IsNotNull(user);
 
@@ -81,7 +63,7 @@ namespace JackTheClipperBusinessTest
         {
             var userController = Factory.GetControllerInstance<IClipperUserAPI>();
 
-            var user = userController.TryAuthenticateUser("i17029@hb.dhbw-stuttgart.de", "Passwort", SystemUnit);
+            var user = userController.TryAuthenticateUser("timmaster121@web.de", "Passwort", TestUnit);
 
             Assert.IsNotNull(user);
 
@@ -105,7 +87,7 @@ namespace JackTheClipperBusinessTest
         {
             var userController = Factory.GetControllerInstance<IClipperUserAPI>();
 
-            var user = userController.TryAuthenticateUser("i17029@hb.dhbw-stuttgart.de", "Passwort", SystemUnit);
+            var user = userController.TryAuthenticateUser("timmaster121@web.de", "Passwort", TestUnit);
 
             Assert.IsNotNull(user);
 
@@ -133,11 +115,11 @@ namespace JackTheClipperBusinessTest
         {
             var userController = Factory.GetControllerInstance<IClipperUserAPI>();
 
-            var user = userController.TryAuthenticateUser("i17029@hb.dhbw-stuttgart.de", "Passwort", SystemUnit);
+            var user = userController.TryAuthenticateUser("timmaster121@web.de", "Passwort", TestUnit);
 
             Assert.IsNotNull(user);
 
-            var settings = userController.GetUserSettings(user);
+            var settings = userController.GetUserSettings(user.Id);
 
             Assert.IsNotNull(settings);
         }
@@ -147,11 +129,11 @@ namespace JackTheClipperBusinessTest
         {
             var userController = Factory.GetControllerInstance<IClipperUserAPI>();
 
-            var user = userController.TryAuthenticateUser("i17029@hb.dhbw-stuttgart.de", "Passwort", SystemUnit);
+            var user = userController.TryAuthenticateUser("timmaster121@web.de", "Passwort", TestUnit);
 
             Assert.IsNotNull(user);
 
-            var settings = userController.GetUserSettings(user);
+            var settings = userController.GetUserSettings(user.Id);
 
             Assert.IsNotNull(settings);
 
@@ -160,21 +142,21 @@ namespace JackTheClipperBusinessTest
             var time = random.Next();
             userController.SaveUserSettings(settings.Id, time, NotificationSetting.None, pages);
 
-            user = userController.TryAuthenticateUser("i17029@hb.dhbw-stuttgart.de", "Passwort", SystemUnit);
-            settings = userController.GetUserSettings(user);
+            user = userController.TryAuthenticateUser("timmaster121@web.de", "Passwort", TestUnit);
+            settings = userController.GetUserSettings(user.Id);
             Assert.IsNotNull(settings);
             Assert.AreEqual(settings.ArticlesPerPage, pages);
             Assert.AreEqual(settings.NotificationCheckIntervalInMinutes, time);
             Assert.AreEqual(settings.NotificationSettings, NotificationSetting.None);
         }
 
-        [TestMethod]
+        /*[TestMethod]
         public void AddModifyDeleteFeedTest()
         {
             var userController = Factory.GetControllerInstance<IClipperUserAPI>();
-            var user = userController.TryAuthenticateUser("i17029@hb.dhbw-stuttgart.de", "Passwort", SystemUnit);
+            var user = userController.TryAuthenticateUser("timmaster121@web.de", "Passwort", TestUnit);
             Assert.IsNotNull(user);
-            var settings = userController.GetUserSettings(user);
+            var settings = userController.GetUserSettings(user.);
             Assert.IsNotNull(settings);
 
             var sources = DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>().GetAvailableSources(user);
@@ -186,7 +168,7 @@ namespace JackTheClipperBusinessTest
             userController.AddFeed(settings.Id, toAdd);
 
             //Reload
-            user = userController.TryAuthenticateUser("i17029@hb.dhbw-stuttgart.de", "Passwort", SystemUnit);
+            user = userController.TryAuthenticateUser("timmaster121@web.de", "Passwort", TestUnit);
             settings = userController.GetUserSettings(user);
             Assert.IsNotNull(settings);
             Assert.IsTrue(settings.Feeds.Any(x => x.Name == now));
@@ -197,7 +179,7 @@ namespace JackTheClipperBusinessTest
             var updatedFeed = new Feed(feed.Id, sources.Take(3).ToList(), new Filter(feed.Filter.Id, new[] {now}, new string[0], new string[0]), now + "test");
             userController.ModifyFeed(settings.Id, updatedFeed);
 
-            user = userController.TryAuthenticateUser("i17029@hb.dhbw-stuttgart.de", "Passwort", SystemUnit);
+            user = userController.TryAuthenticateUser("timmaster121@web.de", "Passwort", TestUnit);
             settings = userController.GetUserSettings(user);
             Assert.IsNotNull(settings);
             Assert.IsTrue(settings.Feeds.Any(x => x.Name == now + "test"));
@@ -208,7 +190,7 @@ namespace JackTheClipperBusinessTest
             updatedFeed = new Feed(feed.Id, sources.Take(1).ToList(), feed.Filter, now + "test");
             userController.ModifyFeed(settings.Id, updatedFeed);
 
-            user = userController.TryAuthenticateUser("i17029@hb.dhbw-stuttgart.de", "Passwort", SystemUnit);
+            user = userController.TryAuthenticateUser("timmaster121@web.de", "Passwort", TestUnit);
             settings = userController.GetUserSettings(user);
             Assert.IsNotNull(settings);
             Assert.IsTrue(settings.Feeds.Any(x => x.Name == now + "test"));
@@ -217,11 +199,11 @@ namespace JackTheClipperBusinessTest
             Assert.IsTrue(feed.Filter.Equals(updatedFeed.Filter));
 
             userController.DeleteFeed(feed.Id);
-            user = userController.TryAuthenticateUser("i17029@hb.dhbw-stuttgart.de", "Passwort", SystemUnit);
+            user = userController.TryAuthenticateUser("timmaster121@web.de", "Passwort", TestUnit);
             settings = userController.GetUserSettings(user);
             Assert.IsNotNull(settings);
             Assert.IsFalse(settings.Feeds.Any(x => x.Name == now + "test"));
-        }
+        }*/
 
 
         [TestMethod]
@@ -229,11 +211,11 @@ namespace JackTheClipperBusinessTest
         {
             var userController = Factory.GetControllerInstance<IClipperUserAPI>();
 
-            var user = userController.TryAuthenticateUser("i17029@hb.dhbw-stuttgart.de", "Passwort", SystemUnit);
+            var user = userController.TryAuthenticateUser("timmaster121@web.de", "Passwort", TestUnit);
 
             Assert.IsNotNull(user);
 
-            var sources = userController.GetAvailableSources(user);
+            var sources = userController.GetAvailableSources(user.Id);
 
             Assert.IsNotNull(sources);
 
@@ -241,55 +223,13 @@ namespace JackTheClipperBusinessTest
         }
 
         [TestMethod]
-        public void AddUserTest()
-        {
-            var userController = Factory.GetControllerInstance<IClipperUserAPI>();
-
-            var milliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-
-            var user = userController.AddUser(milliseconds.ToString(), milliseconds.ToString(), "password", Role.User,
-                Guid.Parse("00000000-BEEF-BEEF-BEEF-000000000000"), false, true);
-
-            Assert.IsNotNull(user);
-
-            var testuser = userController.TryAuthenticateUser(milliseconds.ToString(), "password", SystemUnit);
-
-            Assert.IsNotNull(testuser);
-
-            Assert.AreEqual(user.Id, testuser.Id);
-            Assert.AreEqual(user.IsValid, testuser.IsValid);
-            Assert.AreEqual(user.MailAddress, testuser.MailAddress);
-            Assert.AreEqual(user.Role, testuser.Role);
-            Assert.AreEqual(user.UserName, testuser.UserName);
-        }
-
-        [TestMethod]
         public void AddUserDuplicateUserNameFailsTest()
         {
             var userController = Factory.GetControllerInstance<IClipperUserAPI>();
 
-            Thread.Sleep(10);
-            var milliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            var result = userController.AddUser(new User(Guid.NewGuid(), "blub@blub.de", Role.User, "sticki", Guid.Empty, false, DateTime.Now, true, "TimTest", TestUnit), "lol", TestUnit);
 
-            var user = userController.AddUser(milliseconds.ToString(), milliseconds.ToString(), "password", Role.User,
-                Guid.Parse("00000000-BEEF-BEEF-BEEF-000000000000"), false, true);
-
-            Assert.IsNotNull(user);
-
-            var testuser = userController.TryAuthenticateUser(milliseconds.ToString(), "password", SystemUnit);
-
-            Assert.IsNotNull(testuser);
-
-            Assert.AreEqual(user.Id, testuser.Id);
-            Assert.AreEqual(user.IsValid, testuser.IsValid);
-            Assert.AreEqual(user.MailAddress, testuser.MailAddress);
-            Assert.AreEqual(user.Role, testuser.Role);
-            Assert.AreEqual(user.UserName, testuser.UserName);
-
-            userController.AddUser("othermail" + milliseconds + "@example.com", milliseconds.ToString(), "password", Role.User,
-                Guid.Parse("00000000-BEEF-BEEF-BEEF-000000000000"), false, true);
-            testuser = userController.TryAuthenticateUser("othermail" + milliseconds + "@example.com", "password", SystemUnit);
-            Assert.IsNull(testuser);
+            Assert.AreEqual(SuccessState.UnknownError, result.Status);
         }
 
         [TestMethod]
@@ -297,30 +237,19 @@ namespace JackTheClipperBusinessTest
         {
             var userController = Factory.GetControllerInstance<IClipperUserAPI>();
 
-            var milliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-
-            var user2 = userController.AddUser(milliseconds.ToString() + @"@example.com", milliseconds.ToString(), "Passwort", Role.User,
-                Guid.Parse("00000000-BEEF-BEEF-BEEF-000000000000"), false, true);
-
-            var guidOfUser2 = user2.Id;
-            var result = userController.ResetPassword(milliseconds.ToString() + @"@example.com");
+            var guidOfUser2 = Guid.Parse("38dfe95b-7cae-11e9-910b-9615dc5f263c");
+            var result = userController.ResetPassword("reset@reset.com");
             Assert.AreEqual(SuccessState.Successful, result.Status);
 
             var user = Factory.GetObjectInstanceById<User>(guidOfUser2);
             Assert.IsNotNull(user);
             Assert.AreEqual(true, user.MustChangePassword);
 
-            try
-            {
-                Factory.GetControllerInstance<IClipperUserAPI>()
-                    .TryAuthenticateUser(milliseconds.ToString() + @"@example.com", "Passwort", SystemUnit);
-                Assert.Fail("Password reset wasn't successfully. Even tho the MethodResult indicated that it was successfully.");
+            var nouser = userController.TryAuthenticateUser("reseter", "reset", TestUnit);
+            Assert.IsNull(nouser);
 
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
+            userController.ChangePassword(user, "reset");
+            Assert.IsNotNull(userController.TryAuthenticateUser("reseter", "reset", TestUnit));
         }
 
         [TestMethod]
@@ -328,23 +257,19 @@ namespace JackTheClipperBusinessTest
         {
             var userController = Factory.GetControllerInstance<IClipperUserAPI>();
 
-            var milliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-
-            var user2 = userController.AddUser(milliseconds.ToString() + @"@example.com", milliseconds.ToString(), "Passwort", Role.User,
-                Guid.Parse("00000000-BEEF-BEEF-BEEF-000000000000"), false, true);
+            var user2 = userController.TryAuthenticateUser("tester", "Passwort", TestUnit);
 
             var result = userController.ChangePassword(user2, "hallo123");
             Assert.AreEqual(SuccessState.Successful, result.Status);
 
-            try
-            {
-                var user = userController.TryAuthenticateUser(milliseconds.ToString(), "hallo123", SystemUnit);
-                Assert.IsNotNull(user);
-            }
-            catch (Exception)
-            {
-                Assert.Fail("Password wasn't changed successfully.");
-            }
+            var user = userController.TryAuthenticateUser("tester", "hallo123", TestUnit);
+            Assert.IsNotNull(user);
+
+            result = userController.ChangePassword(user2, "Passwort");
+            Assert.AreEqual(SuccessState.Successful, result.Status);
+
+            user = userController.TryAuthenticateUser("tester", "Passwort", TestUnit);
+            Assert.IsNotNull(user);
         }
 
         [TestMethod]
@@ -354,24 +279,145 @@ namespace JackTheClipperBusinessTest
 
             var milliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
-            var user2 = userController.AddUser(milliseconds.ToString() + @"@example.com", milliseconds.ToString(), "Passwort", Role.User,
-                Guid.Parse("00000000-BEEF-BEEF-BEEF-000000000000"), false, true);
+            var user2 = userController.TryAuthenticateUser("tester", "Passwort", TestUnit);
 
-
-           
-            var result = userController.ChangeMailAddress(user2, milliseconds.ToString() + @"@example.de");
+            var result = userController.ChangeMailAddress(user2,"timtest@exam.de");
             Assert.AreEqual(SuccessState.Successful, result.Status);
 
-            try
+            var user = userController.TryAuthenticateUser("timtest@exam.de", "Passwort", TestUnit);
+
+            Assert.IsNotNull(user);
+
+            result = userController.ChangeMailAddress(user2, "timtest@example.de");
+            Assert.AreEqual(SuccessState.Successful, result.Status);
+
+            user = userController.TryAuthenticateUser("timtest@example.de", "Passwort", TestUnit);
+
+            Assert.IsNotNull(user);
+        }
+
+        [TestMethod]
+        public void AddPrincipalUnitTest()
+        {
+            var userController = Factory.GetControllerInstance<IClipperSystemAdministratorAPI>();
+            var milliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+            var result = userController.AddPrincipalUnit(null, milliseconds.ToString(), milliseconds+"mail@example.com");
+
+            Assert.AreEqual(SuccessState.Successful, result.Status);
+
+            var principals = userController.GetPrincipalUnits();
+
+            Assert.IsTrue(principals.Any(e=> e.Name == milliseconds.ToString()));
+        }
+
+        [TestMethod]
+        public void AddFeedTest()
+        {
+            var userController = Factory.GetControllerInstance<IClipperUserAPI>();
+            var milliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+            var feed = new Feed(Guid.NewGuid(), new List<Source>(), new Filter(Guid.NewGuid(), new List<string>()
+                {
+                    "Test"
+                }, new List<string>(), new List<string>())
+                , milliseconds.ToString());
+
+            var user = Factory.GetControllerInstance<IClipperUserAPI>()
+                .TryAuthenticateUser("tester", "Passwort", TestUnit);
+
+            userController.AddFeed(user.SettingsId, feed);
+
+            var user2 = Factory.GetControllerInstance<IClipperUserAPI>()
+                .TryAuthenticateUser("tester", "Passwort", TestUnit);
+            Assert.IsTrue(userController.GetUserSettings(user2.Id).Feeds.Any(e=> e.Name == milliseconds.ToString()));
+        }
+
+        [TestMethod]
+        public void ModifyFeedTest()
+        {
+            var userController = Factory.GetControllerInstance<IClipperUserAPI>();
+            var milliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+            var user = Factory.GetControllerInstance<IClipperUserAPI>()
+                .TryAuthenticateUser("tester", "Passwort", TestUnit);
+            if (userController.GetUserSettings(user.Id).Feeds.Count == 0)
             {
-                var user = userController.TryAuthenticateUser(milliseconds.ToString() + @"@example.de", "Passwort", SystemUnit);
-                Assert.IsNotNull(user);
+                Assert.IsTrue(true);
+                return;
             }
-            catch (Exception)
+            var feed = new Feed(userController.GetUserSettings(user.Id).Feeds.First().Id, new List<Source>(), new Filter(Guid.NewGuid(), new List<string>()
+                {
+                    "Test"
+                }, new List<string>(), new List<string>())
+                , milliseconds+"VERÄNDERT");
+
+            userController.ModifyFeed(userController.GetUserSettings(user.Id).Id, feed);
+
+            var user2 = Factory.GetControllerInstance<IClipperUserAPI>()
+                .TryAuthenticateUser("tester", "Passwort", TestUnit);
+            Assert.IsTrue(userController.GetUserSettings(user2.Id).Feeds.Any(e => e.Name == milliseconds+"VERÄNDERT"));
+        }
+        [TestMethod]
+        public void DeleteFeedTest()
+        {
+            var userController = Factory.GetControllerInstance<IClipperUserAPI>();
+
+            var user = Factory.GetControllerInstance<IClipperUserAPI>()
+                .TryAuthenticateUser("tester", "Passwort", TestUnit);
+
+            if (userController.GetUserSettings(user.Id).Feeds.Count == 0)
             {
-                
-                Assert.Fail("Mail address wasn't changed successfully.");
+                Assert.IsTrue(true);
+                return;
             }
+
+            var feedCount = userController.GetUserSettings(user.Id).Feeds.Count;
+
+            userController.DeleteFeed(userController.GetUserSettings(user.Id).Feeds.First().Id);
+
+            var user2 = Factory.GetControllerInstance<IClipperUserAPI>()
+                .TryAuthenticateUser("tester", "Passwort", TestUnit);
+
+            Assert.AreEqual(feedCount - 1, userController.GetUserSettings(user2.Id).Feeds.Count);
+        }
+
+        [TestMethod]
+        public void SourceManagementTest()
+        {
+            var controller = Factory.GetControllerInstance<IClipperSystemAdministratorAPI>();
+
+            var user = Factory.GetControllerInstance<IClipperUserAPI>().TryAuthenticateUser("SA", "123", SystemUnit);
+
+            var count = Factory.GetControllerInstance<IClipperUserAPI>().GetAvailableSources(user.Id).Count;
+
+            var source = new Source(Guid.NewGuid(), "test.de", "Test", ContentType.Rss, "", "", new List<string>());
+
+            controller.AddSource(null, source);
+
+            user = Factory.GetControllerInstance<IClipperUserAPI>().TryAuthenticateUser("SA", "123", SystemUnit);
+
+            var available = Factory.GetControllerInstance<IClipperUserAPI>().GetAvailableSources(user.Id);
+
+            Assert.IsTrue(available.Any(e => e.Name == "Test"));
+
+            var sourceChanged = new Source(source.Id, source.Uri, "Changed", ContentType.Rss, "", "", new List<string>());
+
+            controller.ChangeSource(null, sourceChanged);
+
+            user = Factory.GetControllerInstance<IClipperUserAPI>().TryAuthenticateUser("SA", "123", SystemUnit);
+
+            available = Factory.GetControllerInstance<IClipperUserAPI>().GetAvailableSources(user.Id);
+
+            Assert.IsTrue(available.Any(e => e.Name == "Changed"));
+
+            controller.DeleteSource(null, available.FirstOrDefault(e => e.Name == "Changed").Id);
+
+            user = Factory.GetControllerInstance<IClipperUserAPI>().TryAuthenticateUser("SA", "123", SystemUnit);
+
+            var count2 = Factory.GetControllerInstance<IClipperUserAPI>().GetAvailableSources(user.Id).Count;
+
+            Assert.AreEqual(count, count2);
         }
     }
 }

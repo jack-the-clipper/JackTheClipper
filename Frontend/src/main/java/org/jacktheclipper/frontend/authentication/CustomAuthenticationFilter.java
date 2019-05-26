@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
  * A filter to produce a custom authentication token, so users can be identified with additional
  * fields from the login form and not just their email and password
  *
- * @author SBG
  */
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 

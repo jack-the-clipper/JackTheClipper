@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using JackTheClipperCommon.Configuration;
 using JackTheClipperCommon.Interfaces;
 using JackTheClipperData;
+using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace JackTheClipperDataTest
@@ -10,6 +13,15 @@ namespace JackTheClipperDataTest
     [TestClass]
     public class DatabaseAdapterFactoryTest
     {
+        [AssemblyInitialize]
+        public static void AssemblyInit(TestContext context)
+        {
+            var config = new ConfigurationBuilder()
+                .AddJsonFile(new FileInfo(@"..\..\..\..\JackTheClipperRequestHandler\appsettings.json").FullName, optional: false)
+                .Build();
+            AppConfiguration.RegisterConfig(config);
+        }
+
         [TestMethod]
         public void GetControllerTest()
         {

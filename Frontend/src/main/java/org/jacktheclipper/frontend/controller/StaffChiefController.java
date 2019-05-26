@@ -19,13 +19,16 @@ import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.thymeleaf.expression.Lists;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.jacktheclipper.frontend.utils.RedirectAttributesUtils.populateDefaultRedirectAttributes;
 
+/**
+ * Handles all request for {@link UserRole#StaffChief} exclusive functionality
+ */
 @PreAuthorize("hasRole('ROLE_STAFFCHIEF')")
 @Controller
 @RequestMapping("/{organization}")
@@ -65,11 +68,19 @@ public class StaffChiefController {
 
         UUID userId = AuthenticationUtils.getUserId(auth);
         List<OrganizationalUnit> units = ouservice.getOrganizationalUnits(userId);
+        List<OrganizationalUnit> pathToUnit = new ArrayList<>();
         OrganizationalUnit unit = null;
         if (unitId != null) {
-            unit = getUnitById(unitId, units);
+            pathToUnit = getUnitById(unitId, units);
         } else {
-            unit = units.get(0);
+            pathToUnit.add(units.get(0));
+        }
+        if (pathToUnit != null) {
+            unit = pathToUnit.get(0);
+            pathToUnit.remove(0);
+            Collections.reverse(pathToUnit);
+            model.addAttribute("pathToUnit", String.join(",", pathToUnit.stream()
+                    .map(x -> x.getId().toString()).collect(Collectors.toList())));
         }
         OrganizationalUnitSettings unitSettings = ouservice.getOuSettings(unit.getId(), userId);
         OrganizationalUnitSettings parentSettings = null;
@@ -303,16 +314,19 @@ public class StaffChiefController {
      *
      * @param unitId The id of the organization
      * @param units  The list of organizations
-     * @return The organization that matches the given id or null of no organization matches it
+     * @return A List containing the organization that matches the id and all of its parent units
      */
-    private OrganizationalUnit getUnitById(UUID unitId, List<OrganizationalUnit> units) {
+    private List<OrganizationalUnit> getUnitById(UUID unitId, List<OrganizationalUnit> units) {
 
         for (OrganizationalUnit unit : units) {
             if (unit.getId().equals(unitId)) {
-                return unit;
+                List<OrganizationalUnit> pathToUnit = new ArrayList<>();
+                pathToUnit.add(unit);
+                return pathToUnit;
             } else {
-                OrganizationalUnit result = getUnitById(unitId, unit.getChildren());
+                List<OrganizationalUnit> result = getUnitById(unitId, unit.getChildren());
                 if (result != null) {
+                    result.add(unit);
                     return result;
                 }
             }

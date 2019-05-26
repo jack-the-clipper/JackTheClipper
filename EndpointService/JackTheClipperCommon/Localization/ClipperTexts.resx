@@ -139,7 +139,7 @@ Jack the Clipper</value>
   <data name="MailChangedMailBody" xml:space="preserve">
     <value>... wurde geändert.
 
-Sollten Sie nicht die Änderung Ihrer E-Mailadresse veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten.
+Sollten Sie nicht die Änderung Ihrer E-Mailadresse veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten oder Systemadministrator.
 
 Mit freundlichen Grüßen,
 
@@ -147,6 +147,11 @@ Jack the Clipper</value>
   </data>
   <data name="MailChangedMailSubject" xml:space="preserve">
     <value>Ihre E-Mailadresse bei "Jack the Clipper"...</value>
+  </data>
+  <data name="NewlyGeneratedPasswordOnMailReset" xml:space="preserve">
+    <value>
+
+PS: In diesem Zuge wurde ihnen eines neues Passwort vergeben. Es lautet: {0}</value>
   </data>
   <data name="NewPendingUserMailBody" xml:space="preserve">
     <value>... beitreten.
@@ -162,7 +167,7 @@ Jack the Clipper</value>
   <data name="PasswordChangedMailBody" xml:space="preserve">
     <value>... wurde geändert.
 
-Sollten Sie nicht die Änderung Ihres Passworts veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten.
+Sollten Sie nicht die Änderung Ihres Passworts veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten oder Systemadministrator.
 
 Mit freundlichen Grüßen,
 
@@ -177,7 +182,7 @@ Jack the Clipper</value>
 Ihr neues Passwort lautet: {0}
 Dass Passwort muss beim nächsten Login geändert werden.
 
-Sollten Sie nicht die Änderung Ihres Passworts veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten.
+Sollten Sie nicht die Änderung Ihres Passworts veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten oder Systemadministrator.
 
 Mit freundlichen Grüßen,
 

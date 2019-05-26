@@ -1,13 +1,14 @@
 import enums.NotificationSetting;
 import enums.SuccessState;
 import enums.UserRole;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import java.util.ArrayList;
+import java.util.*;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.*;
@@ -20,14 +21,6 @@ import static org.junit.Assert.*;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class RegistrationAndLoginTest {
-
-
-    @BeforeClass
-    public static void setupRestAssured() {
-
-        Constants.init();
-    }
-
     @Test
     public void aGetStatusOfService() {
 
@@ -37,8 +30,6 @@ public class RegistrationAndLoginTest {
 
         MethodResult actual = response.as(MethodResult.class);
         MethodResult expected = new MethodResult(SuccessState.Successful, "Version: ");
-        //TODO will be invalid if version string format is changed. That should not really happen
-        // though
         assertEquals(expected.getState(), actual.getState());
         assertTrue(actual.getMessage().startsWith(expected.getMessage()));
     }
@@ -49,43 +40,55 @@ public class RegistrationAndLoginTest {
         Response response = given().relaxedHTTPSValidation().when().get("/clipper" +
                 "/getorganizationalunits?userId=" + Constants.sysAdminId.toString());
         assertEquals(200, response.statusCode());
-        OrganizationalUnit[] ous = response.as(OrganizationalUnit[].class);
-        assertNotNull(ous);
-        assertTrue(ous.length > 0);
-        Constants.unitId = ous[0].getId();
+        var json = response.jsonPath();
+        assertTrue(json.prettify().length() > 1000);
     }
 
     @Test
     public void cPutRegistration() {
-
-        //TODO remove when users can be deleted
-        //generate a unique username
-        String mail = System.currentTimeMillis() + "@example.com";
+        var t = given().relaxedHTTPSValidation().when().get("/clipper/" +
+                "login?userMailOrName=timroethel@web.de&userPassword=Passwort&principalUnit="
+                +Constants.unitId).jsonPath().get("UserId");
+        var millis = System.currentTimeMillis();
+        String mail = millis + "@example.com";
         System.out.println("The mail of the randomly added user is [" + mail + "]");
-        User toRegister = new User(null, UserRole.User, "restAssured", mail, "secure", "unused",
-                false);
-        String url = "/clipper/register?userMail=" + mail + "&password=secure" + "&userName" +
-                "=restAssured&role=User&unit=" + Constants.unitId.toString();
-        Response response = given().relaxedHTTPSValidation().when().put(url);
+        User toRegister = new User(UUID.randomUUID(), UserRole.User, millis+"", mail, "secure", "TimTest", false, false, null, Constants.unitId);
+        String url = "/clipper/register?password=secure&selectedUnit=" + Constants.unitId.toString();
+        Response response = given().relaxedHTTPSValidation().body(toRegister).contentType(ContentType.JSON).when().put(url);
 
         assertEquals(200, response.statusCode());
 
-        User actual = response.as(User.class);
+        var g = given().relaxedHTTPSValidation().get("/clipper/getmanageableusers?userId="+t.toString());
 
-        assertEquals(toRegister.getUserRole(), actual.getUserRole());
-        assertEquals(toRegister.getName(), actual.getName());
+        var users = g.as(User[].class);
 
-        toRegister.setUserId(actual.getUserId());
-        Constants.registeredUser = toRegister;
-        Constants.settings = new UserSettings(Constants.registeredUser.getUserId(), new ArrayList<Feed>(),
-                NotificationSetting.None, 60, 20);
+        var generated = Arrays.stream(users).filter(e -> e.getName().equalsIgnoreCase(String.valueOf(millis))).findFirst().get();
+
+        generated.setUnlocked(true);
+        generated.setPrincipalUnitId(Constants.unitId);
+        generated.setUserRole(UserRole.User);
+        generated.seteMail(mail);
+        generated.setOrganization("TimTes");
+
+        var modify = given().relaxedHTTPSValidation().body(
+                new UserUuidsTuple(generated, Collections.singletonList(Constants.unitId))).contentType(ContentType.JSON)
+                .when().put("/clipper/modifyuser?staffChiefId="+t);
+
+        assertEquals(200, modify.getStatusCode());
+
+        var delete = given().relaxedHTTPSValidation().when().delete("/clipper/deleteuser?staffChiefId="+ t + "&userId="+ generated.getUserId());
+
+        var result = delete.as(MethodResult.class);
+
+        assertEquals(SuccessState.Successful, result.getState());
     }
 
     @Test
     public void dGetAuthentication() {
 
-        String uri = "/clipper/login?userMail=" + Constants.registeredUser.geteMail() +
-                "&userPassword=" + Constants.registeredUser.getPassword();
+        String uri = "/clipper/login?userMailOrName=" + Constants.registeredUser.geteMail() +
+                "&userPassword=" + Constants.registeredUser.getPassword() +
+                "&principalUnit="+ Constants.unitId;
         Response response = given().relaxedHTTPSValidation().when().get(uri);
         assertEquals(200, response.getStatusCode());
         User actual = response.as(User.class);
@@ -97,8 +100,9 @@ public class RegistrationAndLoginTest {
     @Test
     public void eFailAuthenticationWrongMail() {
 
-        String uri = "/clipper/login?userMail=" + Constants.registeredUser.geteMail() + "haha" +
-                "&userPassword=" + Constants.registeredUser.getPassword();
+        String uri = "/clipper/login?userMailOrName=" + Constants.registeredUser.geteMail() + "haha" +
+                "&userPassword=" + Constants.registeredUser.getPassword() +
+                "&principalUnit="+ Constants.unitId;
         Response response = given().relaxedHTTPSValidation().when().get(uri);
         assertEquals(400, response.getStatusCode());
     }
@@ -106,19 +110,10 @@ public class RegistrationAndLoginTest {
     @Test
     public void fFailAuthenticationWrongPassword() {
 
-        String uri = "/clipper/login?userMail=" + Constants.registeredUser.geteMail() +
-                "&userPassword=12" + Constants.registeredUser.getPassword();
+        String uri = "/clipper/login?userMailOrName=" + Constants.registeredUser.geteMail() +
+                "&userPassword=12" + Constants.registeredUser.getPassword() +
+                "&principalUnit="+ Constants.unitId;
         Response response = given().relaxedHTTPSValidation().when().get(uri);
         assertEquals(400, response.getStatusCode());
-    }
-
-    @Test
-    public void gFailRegistration() {
-
-        String url = "/clipper/register?userMail=" + Constants.registeredUser.geteMail() +
-                "&password=secure" + "&userName" + "=restAssured&role=User&unit=" + Constants.unitId.toString();
-        Response response = given().relaxedHTTPSValidation().when().put(url);
-
-        assertEquals(204, response.statusCode());
     }
 }

@@ -273,8 +273,7 @@ public class OuService {
 
         String url = backendUrl + "/getprincipalunits?userId={userId}";
         try {
-            ResponseEntity<OrganizationalUnit[]> response = template.exchange(url, HttpMethod.PUT
-                    , RestTemplateUtils.prepareBasicHttpEntity(""), OrganizationalUnit[].class,
+            ResponseEntity<OrganizationalUnit[]> response = template.getForEntity(url, OrganizationalUnit[].class,
                     userId.toString());
             if (ResponseEntityUtils.successful(response)) {
                 log.debug("Successfully retrieved principalunits with all information");

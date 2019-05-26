@@ -27,7 +27,7 @@ namespace JackTheClipperData
         /// <summary>
         /// The uri of the elastic server.
         /// </summary>
-        private const string ElasticUri = "http://134.255.225.176:9200";
+        private static readonly string ElasticUri = AppConfiguration.ElasticUri;
 
         /// <summary>
         /// The connections settings

@@ -31,8 +31,6 @@ namespace JackTheClipperData.MariaDb
         //// would have been much better.
 
         private static readonly Guid SystemUnit = Guid.Parse("00000000-BEEF-BEEF-BEEF-000000000000");
-        private static Tuple<DateTime, Filter> superSetFeedCache;
-        private static readonly object LockObj = new object();
         private OrganizationalUnitManager cachedManager;
 
         #region GetUserById
@@ -79,22 +77,30 @@ namespace JackTheClipperData.MariaDb
         /// <returns>The user (if found)</returns>
         public User GetUserByCredentials(string mailOrName, string password, Guid principalUnit, bool updateLoginTimeStamp)
         {
-            var result = GetUsersAsync(MariaDbStatements.SelectUserByCredentials,
-                                       new MySqlParameter("hash", password.GetSHA256()),
-                                       new MySqlParameter("mail", mailOrName),
-                                       new MySqlParameter("unit", principalUnit.ToString())).Result;
-            if (result != null && result.Any())
+            try
             {
-                var user = result.First();
-                if (updateLoginTimeStamp && user != null && user.IsValid)
+                var result = GetUsersAsync(MariaDbStatements.SelectUserByCredentials,
+                                           new MySqlParameter("hash", password.GetSHA256()),
+                                           new MySqlParameter("mail", mailOrName),
+                                           new MySqlParameter("unit", principalUnit.ToString())).Result;
+                if (result != null && result.Any())
                 {
-                    UpdateLoginTimestampAsync(user.Id).GetAwaiter().GetResult();
+                    var user = result.First();
+                    if (updateLoginTimeStamp && user != null && user.IsValid)
+                    {
+                        UpdateLoginTimestampAsync(user.Id).GetAwaiter().GetResult();
+                    }
+
+                    return user;
                 }
 
-                return user;
+                return null;
             }
-
-            return null;
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
         }
         #endregion
 
@@ -109,26 +115,39 @@ namespace JackTheClipperData.MariaDb
         }
         #endregion
 
+        /// <summary>
+        /// Gets all notifiable user settings
+        /// ("notifiable" = only those which have set <see cref="UserSettings.NotificationSettings"/> != <see cref="NotificationSetting.None"/>).
+        /// </summary>
+        /// <returns>List of all notifiable user settings.</returns>
         public IReadOnlyCollection<NotifiableUserSettings> GetNotifiableUserSettings()
         {
-            async Task<NotifiableUserSettings> Function(User user)
+            try
             {
-                var settings = await GetUserSettingsAsync(false, MariaDbStatements.SelectUserSettingsById, new MySqlParameter("id", user.SettingsId));
-                return new NotifiableUserSettings(user.Id, user.UserMailAddress, user.UserName, settings, user.LastLoginTime, user.PrincipalUnitName);
-            }
-
-            var relevant = GetUsersAsync(MariaDbStatements.SelectNotifiableUsers).Result;
-            var tasks = new List<Task<NotifiableUserSettings>>(relevant.Count);
-            foreach (var user in relevant)
-            {
-                if (user.UserMailAddress.Contains('@'))
+                async Task<NotifiableUserSettings> Function(User user)
                 {
-                    tasks.Add(Function(user));
+                    var settings = await GetUserSettingsAsync(false, MariaDbStatements.SelectUserSettingsById, new MySqlParameter("id", user.SettingsId));
+                    return new NotifiableUserSettings(user.Id, user.UserMailAddress, user.UserName, settings, user.LastLoginTime, user.PrincipalUnitName);
                 }
-            }
 
-            Task.WaitAll(tasks.Cast<Task>().ToArray());
-            return tasks.Where(x => x != null).Select(x => x.Result).ToList();
+                var relevant = GetUsersAsync(MariaDbStatements.SelectNotifiableUsers).Result;
+                var tasks = new List<Task<NotifiableUserSettings>>(relevant.Count);
+                foreach (var user in relevant)
+                {
+                    if (user.UserMailAddress.Contains('@'))
+                    {
+                        tasks.Add(Function(user));
+                    }
+                }
+
+                Task.WaitAll(tasks.Cast<Task>().ToArray());
+                return tasks.Where(x => x != null).Select(x => x.Result).ToList();
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error);
+                return new List<NotifiableUserSettings>();
+            }
         }
 
         #region GetAvailableSources
@@ -140,20 +159,28 @@ namespace JackTheClipperData.MariaDb
         /// <returns>List of available sources.</returns>
         public IReadOnlyList<Source> GetAvailableSources(Guid userId)
         {
-            var result = new HashSet<Source>();
-            var units = GetOrganizationalUnits(userId);
-            if (units.Any(x => x.Id == SystemUnit))
+            try
             {
-                return GetSources();
-            }
+                var result = new HashSet<Source>();
+                var units = GetOrganizationalUnits(userId);
+                if (units.Any(x => x.Id == SystemUnit))
+                {
+                    return GetSources();
+                }
 
-            foreach (var organizationalUnit in units)
+                foreach (var organizationalUnit in units)
+                {
+                    var settings = GetOrganizationalUnitSettings(organizationalUnit.Id);
+                    result.UnionWith(settings.AvailableSources);
+                }
+
+                return result.ToList();
+            }
+            catch (Exception e)
             {
-                var settings = GetOrganizationalUnitSettings(organizationalUnit.Id);
-                result.UnionWith(settings.AvailableSources);
+                Console.WriteLine(e);
+                return null;
             }
-
-            return result.ToList();
         }
         #endregion
 
@@ -165,14 +192,22 @@ namespace JackTheClipperData.MariaDb
         /// <returns>List of available units.</returns>
         public IReadOnlyList<OrganizationalUnit> GetOrganizationalUnits(Guid userId)
         {
-            var manager = new OrganizationalUnitManager(ref this.cachedManager);
-            var userUnits = GetUserOrganizationalUnitsAsync(userId).Result;
-            if (userUnits.Contains(SystemUnit))
+            try
             {
-                return manager.GetAllOrganizationalUnits().ToList();
-            }
+                var manager = new OrganizationalUnitManager(ref this.cachedManager);
+                var userUnits = GetUserOrganizationalUnitsAsync(userId).Result;
+                if (userUnits.Contains(SystemUnit))
+                {
+                    return manager.GetAllOrganizationalUnits().ToList();
+                }
 
-            return userUnits.Select(uu => manager.GetOrganizationalUnit(uu)).ToList();
+                return userUnits.Select(uu => manager.GetOrganizationalUnit(uu)).ToList();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
         }
         #endregion
 
@@ -344,32 +379,37 @@ namespace JackTheClipperData.MariaDb
         /// <returns>The superset feed filter.</returns>
         public Filter GetSuperSetFeed()
         {
-            var lastResult = superSetFeedCache;
-            if(lastResult != null)
+            using (new PerfTracer(nameof(GetSuperSetFeed), 20))
             {
-                if(DateTime.UtcNow < lastResult.Item1)
+                try
                 {
-                    return lastResult.Item2;
-                }
-            }
-
-            lock (LockObj)
-            {
-                lastResult = superSetFeedCache;
-                if (lastResult != null)
-                {
-                    if (DateTime.UtcNow < lastResult.Item1)
+                    using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
                     {
-                        return lastResult.Item2;
+                        conn.Open();
+                        var superset = new HashSet<string>();
+                        using (var cmd = new MySqlCommand(MariaDbStatements.SelectSuperSetFeed, conn))
+                        {
+                            using (var reader = cmd.ExecuteReader())
+                            {
+                                while (reader != null && reader.Read())
+                                {
+                                    var keyWords = reader.GetStringFromNullable(0).ConvertToStringList();
+                                    var blackList = reader.GetStringFromNullable(1).ConvertToStringList();
+                                    superset.UnionWith(keyWords.Except(blackList));
+                                }
+                            }
+                        }
+
+                        return new Filter(Guid.Empty, superset, null, null);
                     }
                 }
-
-                var result = GetSuperSetFeedAsync().Result;
-                superSetFeedCache = new Tuple<DateTime, Filter>(DateTime.UtcNow.AddSeconds(10), result);
-                return result;
+                catch (Exception error)
+                {
+                    Console.WriteLine(error);
+                    return null;
+                }
             }
         }
-
         #endregion
 
         #region AddPrincipalUnit
@@ -424,8 +464,7 @@ namespace JackTheClipperData.MariaDb
         /// <returns>MethodResult indicating success.</returns>
         public MethodResult DeleteOrganizationalUnit(Guid unitId)
         {
-            DeleteUnitAsync(unitId).GetAwaiter().GetResult();
-            return new MethodResult();
+            return DeleteUnitAsync(unitId).GetAwaiter().GetResult();
         }
         #endregion
 
@@ -437,56 +476,64 @@ namespace JackTheClipperData.MariaDb
         /// <returns>MethodResult indicating success.</returns>
         public MethodResult SaveOrganizationalUnitSettings(OrganizationalUnitSettings changed)
         {
-            using (new PerfTracer(nameof(SaveOrganizationalUnitSettings)))
+            try
             {
-                var results = new List<Task<MethodResult>>();
-
-                void SetSources(Guid settingsId, IReadOnlyCollection<Source> availableSources)
+                using (new PerfTracer(nameof(SaveOrganizationalUnitSettings)))
                 {
-                    var currentSources = GetSourcesAsync(MariaDbStatements.SelectUnitSources,
-                                                         new MySqlParameter("unitSettingsId", settingsId.ToString()))
-                        .Result;
-                    var removed = currentSources.Select(x => x.Id).ToHashSet();
-                    removed.ExceptWith(availableSources.Select(x => x.Id));
-                    foreach (var guid in removed)
+                    var results = new List<Task<MethodResult>>();
+
+                    void SetSources(Guid settingsId, IReadOnlyCollection<Source> availableSources)
                     {
-                        results.Add(EnableOrDisableSourceForUnitAsync(settingsId, guid, true));
+                        var currentSources = GetSourcesAsync(MariaDbStatements.SelectUnitSources,
+                                                             new MySqlParameter("unitSettingsId", settingsId.ToString()))
+                            .Result;
+                        var removed = currentSources.Select(x => x.Id).ToHashSet();
+                        removed.ExceptWith(availableSources.Select(x => x.Id));
+                        foreach (var guid in removed)
+                        {
+                            results.Add(EnableOrDisableSourceForUnitAsync(settingsId, guid, true));
+                        }
+
+                        var added = availableSources.Select(x => x.Id).ToHashSet();
+                        added.ExceptWith(currentSources.Select(x => x.Id));
+                        foreach (var guid in added)
+                        {
+                            results.Add(EnableOrDisableSourceForUnitAsync(settingsId, guid, false));
+                        }
                     }
 
-                    var added = availableSources.Select(x => x.Id).ToHashSet();
-                    added.ExceptWith(currentSources.Select(x => x.Id));
-                    foreach (var guid in added)
+                    var manager = new OrganizationalUnitManager(ref this.cachedManager);
+                    var allUnits = manager.GetAllOrganizationalUnits();
+                    var currentUnit = allUnits.First(x => x.SettingsId == changed.Id);
+                    var affectedTree = manager.GetAllOrganizationalUnitsInTree(currentUnit.Id);
+                    var principalUnit = manager.GetPrincipalUnit(currentUnit.Id);
+                    var relevant = GetUsersAsync(MariaDbStatements.SelectUsersOfPrincipalUnit,
+                                                 new MySqlParameter("unit", principalUnit.Id)).Result;
+                    foreach (var unit in affectedTree)
                     {
-                        results.Add(EnableOrDisableSourceForUnitAsync(settingsId, guid, false));
+                        //Inheritance
+                        SetSources(unit.SettingsId, changed.AvailableSources);
+
+                        //No inheritance for settings according to agreement
+                        //results.Add(SaveUserSettingsAsync(unit.SettingsId, changed.NotificationCheckIntervalInMinutes,
+                        //                                  changed.NotificationSettings, changed.ArticlesPerPage));
+                        results.Add(SetOrganizationalUnitBlackListAsync(unit.SettingsId, changed.BlackList));
                     }
+
+                    foreach (var user in relevant)
+                    {
+                        PerformUserSourceInheritance(user.Id).GetAwaiter().GetResult();
+                    }
+
+                    Task.WaitAll(results.Cast<Task>().ToArray());
+                    var firstFailed = results.FirstOrDefault(x => !x.Result.IsSucceeded());
+                    return firstFailed == null ? new MethodResult() : firstFailed.Result;
                 }
-
-                var manager = new OrganizationalUnitManager(ref this.cachedManager);
-                var allUnits = manager.GetAllOrganizationalUnits();
-                var currentUnit = allUnits.First(x => x.SettingsId == changed.Id);
-                var affectedTree = manager.GetAllOrganizationalUnitsInTree(currentUnit.Id);
-                var principalUnit = manager.GetPrincipalUnit(currentUnit.Id);
-                var relevant = GetUsersAsync(MariaDbStatements.SelectUsersOfPrincipalUnit,
-                                             new MySqlParameter("unit", principalUnit.Id)).Result;
-                foreach (var unit in affectedTree)
-                {
-                    //Inheritance
-                    SetSources(unit.SettingsId, changed.AvailableSources);
-
-                    //No inheritance for settings according to agreement
-                    //results.Add(SaveUserSettingsAsync(unit.SettingsId, changed.NotificationCheckIntervalInMinutes,
-                    //                                  changed.NotificationSettings, changed.ArticlesPerPage));
-                    results.Add(SetOrganizationalUnitBlackListAsync(unit.SettingsId, changed.BlackList));
-                }
-
-                foreach (var user in relevant)
-                {
-                    PerformUserSourceInheritance(user.Id).GetAwaiter().GetResult();
-                }
-
-                Task.WaitAll(results.Cast<Task>().ToArray());
-                var firstFailed = results.FirstOrDefault(x => !x.Result.IsSucceeded());
-                return firstFailed == null ? new MethodResult() : firstFailed.Result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
             }
         }
         #endregion
@@ -498,23 +545,48 @@ namespace JackTheClipperData.MariaDb
         /// <returns>List of children of given principal unit.</returns>
         public IReadOnlyList<Tuple<string, Guid>> GetPrincipalUnitChildren(Guid principalUnitId)
         {
-            var manager = new OrganizationalUnitManager(ref this.cachedManager);
-            var allInTree = manager.GetAllOrganizationalUnitsInTree(principalUnitId)
-                                   .Select(delegate (OrganizationalUnit x)
-                                    {
-                                        var temp = manager.GetOrganizationalUnit(x.Id);
-                                        return new Tuple<string, Guid>(temp.Name, temp.Id);
-                                    }).ToList();
+            try
+            {
+                var manager = new OrganizationalUnitManager(ref this.cachedManager);
+                var allInTree = manager.GetAllOrganizationalUnitsInTree(principalUnitId)
+                    .Select(delegate (OrganizationalUnit x)
+                    {
+                        var temp = manager.GetOrganizationalUnit(x.Id);
+                        return new Tuple<string, Guid>(temp.Name, temp.Id);
+                    }).ToList();
 
-            return allInTree;
+                return allInTree;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
         }
 
+        /// <summary>
+        /// Gets all principal units.
+        /// </summary>
+        /// <returns>The principal units</returns>
         public IReadOnlyList<OrganizationalUnit> GetPrincipalUnits()
         {
-            var manager = new OrganizationalUnitManager(ref this.cachedManager);
-            return manager.GetAllOrganizationalUnits().Where(x => x.IsPrincipalUnit).ToList();
+            try
+            {
+                var manager = new OrganizationalUnitManager(ref this.cachedManager);
+                return manager.GetAllOrganizationalUnits().Where(x => x.IsPrincipalUnit).ToList();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
         }
 
+        /// <summary>
+        /// Gets the organizational unit settings.
+        /// </summary>
+        /// <param name="unitId">The organizational unit id.</param>
+        /// <returns>The requested settings.</returns>
         public OrganizationalUnitSettings GetOrganizationalUnitSettings(Guid unitId)
         {
             return (OrganizationalUnitSettings) GetUserSettingsAsync(true,
@@ -522,70 +594,135 @@ namespace JackTheClipperData.MariaDb
                                                                      new MySqlParameter("id", unitId)).Result;
         }
 
+        /// <summary>
+        /// Gets the user settings.
+        /// </summary>
+        /// <param name="userId">The settings id.</param>
+        /// <returns>The requested settings.</returns>
         public UserSettings GetUserSettingsByUserId(Guid userId)
         {
             return GetUserSettingsAsync(false, MariaDbStatements.SelectUserSettingsByUserId, new MySqlParameter("userId", userId)).Result;
         }
 
+        /// <summary>
+        /// Returns the basic information of the users the supplied user can manage
+        /// </summary>
+        /// <param name="userId">The id of the user requesting the information</param>
+        /// <returns>List of basic information like the id and username of the manageable users</returns>
         public IReadOnlyList<BasicUserInformation> GetManageableUsers(Guid userId)
         {
-            var userUnits = GetOrganizationalUnits(userId);
-            var manageableUnits = new StringBuilder();
-            foreach (var unit in userUnits)
+            try
             {
-                manageableUnits.Append(",")
-                               .Append(GuidToDatabaseUuid(unit.Id));
-                foreach (var child in unit.GetAllChildren())
+                var userUnits = GetOrganizationalUnits(userId);
+                var manageableUnits = new StringBuilder();
+                foreach (var unit in userUnits)
                 {
                     manageableUnits.Append(",")
-                                   .Append(GuidToDatabaseUuid(child.Id));
+                        .Append(GuidToDatabaseUuid(unit.Id));
+                    foreach (var child in unit.GetAllChildren())
+                    {
+                        manageableUnits.Append(",")
+                            .Append(GuidToDatabaseUuid(child.Id));
+                    }
                 }
-            }
 
-            manageableUnits.Remove(0, 1);
-            return GetBasicUserInfo(string.Format(MariaDbStatements.SelectBasicUserInfoForUsersInUnits, manageableUnits)).Result;
+                manageableUnits.Remove(0, 1);
+                return GetBasicUserInfo(string.Format(MariaDbStatements.SelectBasicUserInfoForUsersInUnits, manageableUnits)).Result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
         }
 
+        /// <summary>
+        /// Gets all the information on a requested user
+        /// </summary>
+        /// <param name="requested">The id of the user whose information is requested</param>
+        /// <returns>An <see cref="ExtendedUser"/> containing all the information</returns>
         public ExtendedUser GetUserInfo(Guid requested)
         {
-            var u = GetUserById(requested);
-            var userUnits = GetOrganizationalUnits(requested);
-            return new ExtendedUser(u.Id, u.MailAddress, u.Role, u.UserName, u.SettingsId, u.MustChangePassword, u.LastLoginTime, u.IsValid, u.PrincipalUnitName, u.PrincipalUnitId, userUnits);
+            try
+            {
+                var u = GetUserById(requested);
+                var userUnits = GetOrganizationalUnits(requested);
+                return new ExtendedUser(u.Id, u.MailAddress, u.Role, u.UserName, u.SettingsId, u.MustChangePassword, u.LastLoginTime, u.IsValid, u.PrincipalUnitName, u.PrincipalUnitId, userUnits);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
         }
 
+        /// <summary>
+        /// Prepares a request to see the articles of the given feed
+        /// </summary>
+        /// <param name="userId">The user owning the feed</param>
+        /// <param name="feedId">The id of the feed</param>
+        /// <returns>A tuple containing the fully instantiated <see cref="Feed"/>, the
+        /// last login time of the user and how many articles he wants to see on a single
+        /// page</returns>
         public Tuple<Feed, DateTime, int> GetFeedRequestData(Guid userId, Guid feedId)
         {
             return GetFeedRequestDataAsync(userId, feedId).Result;
         }
 
+        /// <summary>
+        /// Modifies a user
+        /// </summary>
+        /// <param name="userId">The id of the user to modify</param>
+        /// <param name="userName">The new username of the user</param>
+        /// <param name="role">The new role of the user</param>
+        /// <param name="valid">Whether the user is allowed to use the application</param>
+        /// <param name="userUnits">The <see cref="OrganizationalUnit"/>s the user should belong to</param>
+        /// <returns>A <see cref="MethodResult"/> indicating success</returns>
         public MethodResult ModifyUser(Guid userId, string userName, Role role, bool valid, IEnumerable<Guid> userUnits)
         {
             return ModifyUserAsync(userId, userName, role, valid, userUnits).Result;
         }
 
+        /// <summary>
+        /// Gets the blacklist that a user has by belonging to certain <see cref="OrganizationalUnit"/>s
+        /// </summary>
+        /// <param name="userId">The id of the user</param>
+        /// <returns>List of all blacklisted keywords for this user</returns>
         public IEnumerable<string> GetUnitInheritedBlackList(Guid userId)
         {
             return GetUnitInheritedBlackListAsync(userId).Result;
         }
 
+        /// <summary>
+        /// Gets the user that are allowed to manage the unit
+        /// </summary>
+        /// <param name="affectedUnit">The id of the unit</param>
+        /// <returns>List of users that can manage the unit</returns>
         public IEnumerable<User> GetEligibleStaffChiefs(Guid affectedUnit)
         {
             var result = new List<User>();
-            var manager = new OrganizationalUnitManager(ref cachedManager);
-            var principalUnit = manager.GetPrincipalUnit(affectedUnit);
-            var possible = GetUsersAsync(MariaDbStatements.SelectStaffChiefsOfPrincipalUnit, 
-                                         new MySqlParameter("principalunit", principalUnit.Id.ToString())).Result;
-            foreach (var user in possible)
+            try
             {
-                var userUnits = GetUserOrganizationalUnitsAsync(user.Id).Result;
-                foreach (var unit in userUnits)
+                var manager = new OrganizationalUnitManager(ref cachedManager);
+                var principalUnit = manager.GetPrincipalUnit(affectedUnit);
+                var possible = GetUsersAsync(MariaDbStatements.SelectStaffChiefsOfPrincipalUnit,
+                    new MySqlParameter("principalunit", principalUnit.Id.ToString())).Result;
+                foreach (var user in possible)
                 {
-                    if (manager.GetAllOrganizationalUnitsInTree(unit).Any(x => x.Id == affectedUnit))
+                    var userUnits = GetUserOrganizationalUnitsAsync(user.Id).Result;
+                    foreach (var unit in userUnits)
                     {
-                        result.Add(user);
-                        break;
+                        if (manager.GetAllOrganizationalUnitsInTree(unit).Any(x => x.Id == affectedUnit))
+                        {
+                            result.Add(user);
+                            break;
+                        }
                     }
                 }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error);
             }
 
             return result;
@@ -604,6 +741,12 @@ namespace JackTheClipperData.MariaDb
 
         #region SetUserOrganizationalUnits                
 
+        /// <summary>
+        /// Sets the organizational units of a user.
+        /// </summary>
+        /// <param name="userId">The user id of the changed user.</param>
+        /// <param name="units">The organizational units.</param>
+        /// <returns>MethodResult indicating success.</returns>
         public MethodResult SetUserOrganizationalUnits(Guid userId, IEnumerable<Guid> units)
         {
             return SetUserOrganizationalUnitsAsync(userId, units).Result;
@@ -1031,7 +1174,7 @@ namespace JackTheClipperData.MariaDb
         /// Deletes the given unit asynchronously.
         /// </summary>
         /// <param name="unitId">The unit identifier.</param>
-        private async Task DeleteUnitAsync(Guid unitId)
+        private async Task<MethodResult> DeleteUnitAsync(Guid unitId)
         {
             try
             {
@@ -1044,12 +1187,14 @@ namespace JackTheClipperData.MariaDb
                         cmd.Parameters.Add(new MySqlParameter("unitId", MySqlDbType.VarChar) { Value = unitId.ToString() });
                         await cmd.ExecuteNonQueryAsync();
                         this.cachedManager = null;
+                        return new MethodResult();
                     }
                 }
             }
             catch (Exception error)
             {
                 Console.WriteLine(error);
+                return new MethodResult(SuccessState.UnknownError, error.Message);
             }
         }
         #endregion
@@ -1589,7 +1734,7 @@ namespace JackTheClipperData.MariaDb
                         }
                     }
 
-                    return new Filter(Guid.Empty, superset, null, null);
+                    return new Filter(Guid.Empty, superset, new List<string>(), new List<string>());
                 }
             }
         }
@@ -1632,6 +1777,11 @@ namespace JackTheClipperData.MariaDb
         }
         #endregion
 
+        /// <summary>
+        /// Returns the basic information of users by executing the command
+        /// </summary>
+        /// <param name="command">SQL query to execute</param>
+        /// <returns>List of basic information like the id and username of the manageable users</returns>
         private static async Task<IReadOnlyList<BasicUserInformation>> GetBasicUserInfo(string command)
         {
             var result = new List<BasicUserInformation>();
@@ -1713,6 +1863,14 @@ namespace JackTheClipperData.MariaDb
             }
         }
 
+        /// <summary>
+        /// Prepares a request to see the articles of the given feed
+        /// </summary>
+        /// <param name="userId">The user owning the feed</param>
+        /// <param name="feedId">The id of the feed</param>
+        /// <returns>A tuple containing the fully instantiated <see cref="Feed"/>, the
+        /// last login time of the user and how many articles he wants to see on a single
+        /// page</returns>
         private static async Task<Tuple<Feed, DateTime, int>> GetFeedRequestDataAsync(Guid userId, Guid feedId)
         {
             try
@@ -1747,6 +1905,12 @@ namespace JackTheClipperData.MariaDb
             }
         }
 
+        /// <summary>
+        /// Sets the organizational units of a user.
+        /// </summary>
+        /// <param name="userId">The user id of the changed user.</param>
+        /// <param name="units">The organizational units the user should now belong to.</param>
+        /// <returns><see cref="MethodResult"/> indicating success.</returns>
         private static async Task<MethodResult> SetUserOrganizationalUnitsAsync(Guid userId, IEnumerable<Guid> units)
         {
             try
@@ -1794,6 +1958,15 @@ namespace JackTheClipperData.MariaDb
             return new MethodResult();
         }
 
+        /// <summary>
+        /// Modifies a user
+        /// </summary>
+        /// <param name="userId">The id of the user to modify</param>
+        /// <param name="userName">The new username of the user</param>
+        /// <param name="role">The new role of the user</param>
+        /// <param name="valid">Whether the user is allowed to use the application</param>
+        /// <param name="userUnits">The <see cref="OrganizationalUnit"/>s the user should belong to</param>
+        /// <returns>A <see cref="MethodResult"/> indicating success</returns>
         private async Task<MethodResult> ModifyUserAsync(Guid userId, string userName, Role role, bool valid, IEnumerable<Guid> userUnits)
         {
             try
@@ -1821,6 +1994,11 @@ namespace JackTheClipperData.MariaDb
             }
         }
 
+        /// <summary>
+        /// Gets the blacklist that a user has by belonging to certain <see cref="OrganizationalUnit"/>s
+        /// </summary>
+        /// <param name="userId">The id of the user</param>
+        /// <returns>List of all blacklisted keywords for this user</returns>
         public async Task<IEnumerable<string>> GetUnitInheritedBlackListAsync(Guid userId)
         {
             var result = new HashSet<string>();
@@ -1851,7 +2029,11 @@ namespace JackTheClipperData.MariaDb
             return result;
         }
 
-
+        /// <summary>
+        /// Maps a <see cref="Guid"/> to a value that MariaDB can understand
+        /// </summary>
+        /// <param name="guid">The guid to map</param>
+        /// <returns>The mapped version of the supplied guid</returns>
         private static string GuidToDatabaseUuid(Guid guid)
         {
             return $"UUID_TO_BIN('{guid}')";
@@ -1866,6 +2048,10 @@ namespace JackTheClipperData.MariaDb
             [NotNull]
             private IReadOnlyDictionary<Guid, OrganizationalUnit> allUnits;
 
+            /// <summary>
+            /// Initializes the <see cref="MariaDbAdapter.cachedManager"/>
+            /// </summary>
+            /// <param name="cachedManager">The <see cref="OrganizationalUnitManager"/> to initialize</param>
             public OrganizationalUnitManager(ref OrganizationalUnitManager cachedManager)
             {
                 if (cachedManager == null)
@@ -1887,17 +2073,31 @@ namespace JackTheClipperData.MariaDb
                 }
             }
 
+            /// <summary>
+            /// Gets a <see cref="OrganizationalUnit"/> by its id
+            /// </summary>
+            /// <param name="unitId">The id of the unit</param>
+            /// <returns><see cref="OrganizationalUnit"/> that matches the supplied Guid</returns>
             public OrganizationalUnit GetOrganizationalUnit(Guid unitId)
             {
                 return this.allUnits[unitId];
             }
 
+            /// <summary>
+            /// Gets all organizational units
+            /// </summary>
+            /// <returns>List with all organizational units</returns>
             [NotNull]
             public IEnumerable<OrganizationalUnit> GetAllOrganizationalUnits()
             {
                 return this.allUnits.Values;
             }
 
+            /// <summary>
+            /// Gets all <see cref="OrganizationalUnit"/>s that are lower in the hierarchy than the supplied unit
+            /// </summary>
+            /// <param name="startUnit">The id of the unit to start on</param>
+            /// <returns>List of all units below the supplied one</returns>
             public IReadOnlyList<OrganizationalUnit> GetAllOrganizationalUnitsInTree(Guid startUnit)
             {
                 var result = new List<OrganizationalUnit>();
@@ -1911,6 +2111,11 @@ namespace JackTheClipperData.MariaDb
                 return result;
             }
 
+            /// <summary>
+            /// Gets the client unit the unit belongs to
+            /// </summary>
+            /// <param name="startUnit">The id of the unit whose client is searched</param>
+            /// <returns>The client unit the supplied unit belongs to</returns>
             public OrganizationalUnit GetPrincipalUnit(Guid startUnit)
             {
                 OrganizationalUnit unit;

@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 using JackTheClipperCommon;
 using JackTheClipperCommon.BusinessObjects;
+using JackTheClipperCommon.Configuration;
 using JackTheClipperCommon.SharedClasses;
 using JetBrains.Annotations;
 
@@ -28,7 +29,7 @@ namespace JackTheClipperBusiness.CrawlerManagement
         /// <summary>
         /// Gets the observation interval
         /// </summary>
-        protected override int Interval => 120 * 1000;
+        protected override int Interval => AppConfiguration.WebsiteCrawlInterval * 1000;
         #endregion
 
         #region ctor
@@ -70,7 +71,7 @@ namespace JackTheClipperBusiness.CrawlerManagement
                     {
                         UsingCache = false,
                         UseCookies = true,
-                        UserAgent = "Mozilla/5.0"
+                        UserAgent = AppConfiguration.UserAgent
                     };
                     var doc = web.Load(Source.Uri);
                     if (web.StatusCode == HttpStatusCode.OK)

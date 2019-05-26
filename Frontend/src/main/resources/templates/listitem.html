@@ -6,15 +6,17 @@
                 <a href="#" onclick="showMore(event)">mehr anzeigen</a>
             </li>
             <li th:if="${count == -1}">
-                <span onclick="toggleChildren(event)" th:if="${unit.getChildren().size() > 0}" class="caret"></span>
+                <span onclick="toggleChildren(event)" th:if="${unit.getChildren().size() > 0}" class="caret" th:id="${unit.getId()}"></span>
                 <span th:unless="${unit.getChildren().size() > 0}" class="caret" style="visibility: hidden"></span>
-                <a class="break" th:text="${unit.getName()}" th:href="@{/{orga}/editorganizations?unitId={unitId}(orga=${orga}, unitId=${unit.getId()})}"></a>
+                <a class="break" th:text="${unit.getName()}" th:href="@{/{orga}/editorganizations?unitId={unitId}(orga=${orga},
+                unitId=${unit.getId()})}"></a>
                 <div th:replace="this :: listitem (units=${unit.getChildren()}, orga=${orga}, count=${count + 1})"></div>
             </li>
             <li th:unless="${count == -1}" class="nested">
-                <span onclick="toggleChildren(event)" th:if="${unit.getChildren().size() > 0}" class="caret"></span>
+                <span onclick="toggleChildren(event)" th:if="${unit.getChildren().size() > 0}" class="caret" th:id="${unit.getId()}"></span>
                 <span th:unless="${unit.getChildren().size() > 0}" class="caret" style="visibility: hidden"></span>
-                <a class="break" th:text="${unit.getName()}" th:href="@{/{orga}/editorganizations?unitId={unitId}(orga=${orga}, unitId=${unit.getId()})}"></a>
+                <a class="break" th:text="${unit.getName()}" th:href="@{/{orga}/editorganizations?unitId={unitId}(orga=${orga},
+                unitId=${unit.getId()})}"></a>
                 <div th:replace="this :: listitem (units=${unit.getChildren()}, orga=${orga}, count=${count + 1})"></div>
             </li>
         </ul>

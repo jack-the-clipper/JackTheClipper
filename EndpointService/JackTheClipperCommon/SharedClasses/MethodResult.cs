@@ -46,15 +46,32 @@ namespace JackTheClipperCommon.SharedClasses
         }
     }
 
+    /// <summary>
+    /// Used to return whether a method was successful or not. If successful the result of the method is included
+    /// </summary>
+    /// <typeparam name="T">The result of the method</typeparam>
     public class MethodResult<T> : MethodResult
     {
+        /// <summary>
+        /// The result of the method
+        /// </summary>
         public T Result { get; private set; }
 
+        /// <summary>
+        /// Instantiates a new instance of the <see cref="MethodResult{T}"/> class
+        /// </summary>
+        /// <param name="result">The result of the method</param>
         public MethodResult(T result)
         {
             Result = result;
         }
 
+        /// <summary>
+        /// Instantiates a new instance of the <see cref="MethodResult{T}"/> class
+        /// </summary>
+        /// <param name="status">The status</param>
+        /// <param name="userMessage">The user message</param>
+        /// <param name="result">The result of the method</param>
         public MethodResult(SuccessState status, string userMessage, T result) : base(status, userMessage)
         {
             Result = result;

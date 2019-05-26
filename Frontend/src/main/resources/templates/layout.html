@@ -18,7 +18,7 @@
             <nav class="navbar navbar-expand-sm navbar-light bg-light">
                 <div class="mr-auto">
                     <a sec:authorize="isAuthenticated()" class="navbar-brand"
-                       th:href="@{/{orga}/(orga=${#authentication.getPrincipal().getOrganization()})}">
+                       th:href="@{/{orga}/feed(orga=${#authentication.getPrincipal().getOrganization()})}">
                         <img th:src="@{/img/logo_40X38.jpg}"
                              alt="Logo von Jack the Clipper, eine Hand hält eine Schere hoch">
                     </a>

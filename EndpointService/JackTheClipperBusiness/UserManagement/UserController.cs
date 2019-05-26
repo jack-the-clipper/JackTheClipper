@@ -87,12 +87,11 @@ namespace JackTheClipperBusiness.UserManagement
         /// <returns>MethodResult indicating success.</returns>
         public MethodResult ResetPassword(string userMail)
         {
-
-            var newPassword = PasswordGenerator.GeneratePw();
-            var result = DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>().ResetPassword(userMail, newPassword);
+            var result = InnerResetPassword(userMail);
             if (result.IsSucceeded())
             {
-                QuerySendMailAsync(new Notifiable(userMail, userMail), ClipperTexts.PasswordResetMailSubject, string.Format(ClipperTexts.PasswordResetMailBody, newPassword));
+                QuerySendMailAsync(new Notifiable(userMail, userMail), ClipperTexts.PasswordResetMailSubject,
+                                   string.Format(ClipperTexts.PasswordResetMailBody, result.Result));
             }
 
             return result;
@@ -129,12 +128,26 @@ namespace JackTheClipperBusiness.UserManagement
         {
             if (string.IsNullOrWhiteSpace(newUserMail) || (newUserMail.Contains("@") == false))
             {
-                throw new InvalidDataException("Ihre Mail Adresse ist unzulässig. Sie kann nicht leer sein und muss ein @-Zeichen enthalten.");
+                throw new InvalidDataException("Invalid mail address.");
             }
+
+            var oldMail = user.MailAddress;
             var result = DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>().ChangeMailAddress(user, newUserMail);
             if (result.IsSucceeded())
             {
-                QuerySendMailAsync(user, ClipperTexts.MailChangedMailSubject, ClipperTexts.MailChangedMailBody);
+                string newPasswordAppender = null;
+                if (user.MustChangePassword)
+                {
+                    var innerResult = InnerResetPassword(newUserMail);
+                    if (innerResult.IsSucceeded())
+                    {
+                        newPasswordAppender =
+                            string.Format(ClipperTexts.NewlyGeneratedPasswordOnMailReset, innerResult.Result);
+                    }
+                }
+
+                QuerySendMailAsync(user, ClipperTexts.MailChangedMailSubject, ClipperTexts.MailChangedMailBody + newPasswordAppender);
+                QuerySendMailAsync(new Notifiable(oldMail, user.UserName), ClipperTexts.MailChangedMailSubject, ClipperTexts.MailChangedMailBody);
             }
 
             return result;
@@ -277,7 +290,7 @@ namespace JackTheClipperBusiness.UserManagement
             {
                 var newUser = controller.GetUserById(result.Result.Item2);
                 QuerySendMailAsync(newUser, "Ihr Account für die Organisation " + name + " wurde erstellt.",
-                    $"Willkommen bei Jack the Clipper!\nIhr Account wurde erfolgreich erstellt. \nSie können sich unter folgendem Link anmelden: {AppConfiguration.MailConfigurationFELoginLink}{name} \n Ihre Anmeldedaten lauten wie folgt: \nMail Adresse: {pbMail} (Alternativ können Sie auch Ihren Benutzernamen verwenden: {newUser.UserName} ) \nPasswort: {password}");
+                    $"Willkommen bei Jack the Clipper!\nIhr Account wurde erfolgreich erstellt. \n \nSie können sich unter folgendem Link anmelden: {AppConfiguration.MailConfigurationFELoginLink}{name.Replace(" ", "%20")} \n Ihre Anmeldedaten lauten wie folgt: \n\n Mail Adresse: {pbMail} (Alternativ können Sie auch Ihren Benutzernamen verwenden: {newUser.UserName} ) \nPasswort: {password} \n \n Viel Spaß wünscht Ihnen \n \n Jack the Clipper");
                 return new MethodResult();
             }
 
@@ -303,6 +316,12 @@ namespace JackTheClipperBusiness.UserManagement
             return Factory.GetControllerInstance<IClipperDatabase>().DeleteUser(userId);
         }
 
+        /// <summary>
+        /// Administratively adds a user.
+        /// </summary>
+        /// <param name="toAdd">The user to add.</param>
+        /// <param name="userUnits">The users units.</param>
+        /// <returns>MethodResult indicating success.</returns>
         public MethodResult AdministrativelyAddUser(User toAdd, IReadOnlyList<Guid> userUnits)
         {
             var password = PasswordGenerator.GeneratePw();
@@ -326,6 +345,12 @@ namespace JackTheClipperBusiness.UserManagement
             return innerResult;
         }
 
+        /// <summary>
+        /// Modifies the user.
+        /// </summary>
+        /// <param name="toModify">The user to modify.</param>
+        /// <param name="userUnits">The users units.</param>
+        /// <returns>MethodResult indicating success.</returns>
         public MethodResult ModifyUser(User toModify, IReadOnlyList<Guid> userUnits)
         {
             var adapter = DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>();
@@ -349,21 +374,57 @@ namespace JackTheClipperBusiness.UserManagement
             return new MethodResult();
         }
 
+        /// <summary>
+        /// Gets the minimal information of the users a staffchief can manage
+        /// </summary>
+        /// <param name="userId">The id of the staffchief</param>
+        /// <returns>A list of <see cref="BasicUserInformation"/> if the given id actually belonged to a staffchief</returns>
         public IReadOnlyList<BasicUserInformation> GetManageableUsers(Guid userId)
         {
             return DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>().GetManageableUsers(userId);
         }
 
+        /// <summary>
+        /// Gets all information on a user 
+        /// </summary>
+        /// <param name="requested">The id of the user whose information is requested</param>
+        /// <returns>All the information on a user like the <see cref="OrganizationalUnit"/>s he belongs to</returns>
         public ExtendedUser GetUserInfo(Guid requested)
         {
             return DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>().GetUserInfo(requested);
         }
 
+        /// <summary>
+        /// Resets a given users password
+        /// </summary>
+        /// <param name="userMail">The mail of the of which the pw should be reset.</param>
+        /// <returns>MethodResult containing generated password.</returns>
+        private static MethodResult<string> InnerResetPassword(string userMail)
+        {
+            var newPassword = PasswordGenerator.GeneratePw();
+            var result = DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>().ResetPassword(userMail, newPassword);
+            return result.IsSucceeded()
+                ? new MethodResult<string>(newPassword)
+                : new MethodResult<string>(result == null ? SuccessState.UnknownError : result.Status, result?.UserMessage, null);
+        }
+
         private class Notifiable : IMailNotifiable
         {
+            /// <summary>
+            /// The email address of the notifiable object
+            /// </summary>
             public string UserMailAddress { get; private set; }
+
+            /// <summary>
+            /// The name of the notifiable object
+            /// </summary>
             public string UserName { get; private set; }
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Notifiable"/> class.
+            /// </summary>
+            /// <param name="userMailAddress">The mail address</param>
+            /// <param name="userName">The username</param>
             public Notifiable(string userMailAddress, string userName)
             {
                 UserMailAddress = userMailAddress;

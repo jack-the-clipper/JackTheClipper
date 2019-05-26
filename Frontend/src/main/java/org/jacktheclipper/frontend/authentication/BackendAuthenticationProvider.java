@@ -17,7 +17,6 @@ import org.springframework.web.client.HttpClientErrorException;
 /**
  * Authenticates users with the backend.
  *
- * @author SBG
  */
 @Component
 public class BackendAuthenticationProvider implements AuthenticationProvider {

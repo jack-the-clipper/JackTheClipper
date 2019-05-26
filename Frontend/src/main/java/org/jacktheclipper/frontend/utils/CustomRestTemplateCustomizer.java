@@ -14,10 +14,10 @@ import org.springframework.web.client.RestTemplate;
  */
 public class CustomRestTemplateCustomizer implements RestTemplateCustomizer {
 
-    @Value("${requests.debug.requests}")
+    @Value("${requests.debug.requests:false}")
     private boolean debugRequests;
 
-    @Value("${requests.debug.responses}")
+    @Value("${requests.debug.responses:false}")
     private boolean debugResponses;
 
     /**

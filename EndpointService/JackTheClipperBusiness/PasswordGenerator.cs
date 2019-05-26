@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using JackTheClipperCommon.Configuration;
 
 namespace JackTheClipperBusiness
 {
@@ -10,7 +11,7 @@ namespace JackTheClipperBusiness
     public class PasswordGenerator
     {
         private static readonly Random rnd = new Random();
-        private static readonly int pwLength = 16;
+        private static readonly int pwLength = AppConfiguration.PasswordLength;
         
         /// <summary>
         /// Generates a random password with 16 characters length.

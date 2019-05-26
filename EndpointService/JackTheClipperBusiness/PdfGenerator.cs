@@ -12,17 +12,17 @@ using PdfSharpCore.Drawing.Layout;
 namespace JackTheClipperBusiness
 {
     /// <summary>
-    ///Generates an PDF file.
+    ///Generates a PDF file.
     /// </summary>
-    public static class PdfGeneratorBAD
+    public static class PdfGenerator
     {
 
         private static readonly object lockObj = new object();
-        static PdfGeneratorBAD()
+        static PdfGenerator()
         {
             GlobalFontSettings.FontResolver = new FontResolver();
         }
-        
+
         /// <summary>
         /// Generates a user specific PDF file with its name and the specific articles.
         /// </summary>
@@ -68,12 +68,12 @@ namespace JackTheClipperBusiness
                                 tf = new XTextFormatter(gfx);
                             }
 
-                            // Create header 
+                            // Create header
                             CreateWelcomeTitle(y, x, gfx, userName, titleFont, bigFont, format);
                             y += ((titleFont.Height) * 2);
                             x += 5;
 
-                            // Create each single article 
+                            // Create each single article
                             foreach (var shortArticle in content)
                             {
                                 // Check page size
@@ -167,7 +167,7 @@ namespace JackTheClipperBusiness
         /// </summary>
         /// <param name="usedPageHeight">The actual used page size.</param>
         /// <param name="page">Actual page.</param>
-        /// <returns>True if new page is needed, false else.</returns>
+        /// <returns>True if new page is needed, false otherwise.</returns>
         private static bool CheckIfNewPageIsNeeded(double usedPageHeight, PdfPage page)
         {
             if (usedPageHeight >= (page.Height - 200))
@@ -206,11 +206,11 @@ namespace JackTheClipperBusiness
     }
 
     //From https://github.com/ststeiger/PdfSharpCore
-    //TODO: Refacor (Performance)
     //This implementation is obviously not very good --> Though it should be enough for everyone to implement their own.
     public class FontResolver : IFontResolver
     {
         private static readonly object lockObj = new object();
+
         public byte[] GetFont(string faceName)
         {
             using (new PerfTracer(nameof(GetFont)))
@@ -219,10 +219,7 @@ namespace JackTheClipperBusiness
                 {
                     lock (lockObj)
                     {
-                        //var path =
-                        //    @"C:\Users\Selina\Documents\GitHub\JackTheClipper_DEV\implementation\release_v0.3\EndpointService\JackTheClipperRequestHandler\"; TODO: For Testing include.
-                        using (var fs = File.Open( //path +
-                                                   faceName, FileMode.Open))
+                        using (var fs = File.Open(faceName, FileMode.Open))
                         {
                             fs.CopyTo(ms);
                             ms.Position = 0;

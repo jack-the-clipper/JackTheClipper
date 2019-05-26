@@ -9,7 +9,11 @@
             var newObject = $(ev.target).parent().parent().parent().parent().clone();
             //newObject.children().children().children().removeClass("nested");
             newObject.children().first().toggleClass("caret-down");
-            newObject.children().children().children().first().remove();
+            newObject.children().children().children().children().each(function() {
+                if ($(this).text() == "mehr anzeigen") {
+                    $(this).remove();
+                }
+            });
             newObject.appendTo($("#sidebar").children().children());
             if (newObject.parent().children().first().text() != "zurück") {
                 var back = "<a href='#' onclick='goBack(event)'>zurück</a>";
@@ -42,6 +46,21 @@
             }
             $(ev.target).toggleClass("caret-down");
         }
+
+        $(document).ready(function() {
+           var pathToUnit = "[[${pathToUnit}]]";
+           if (pathToUnit != "") {
+               pathToUnit = pathToUnit.split(",");
+                for (var i = 0; i < pathToUnit.length; i++) {
+                    var treeElement = $("#sidebar").children().last().children().children().last().find("#" + pathToUnit[i]);
+                    treeElement.click();
+                    if (treeElement.siblings().last().children().children().children().first().text() == "mehr anzeigen") {
+                        treeElement.siblings().last().children().children().children().first().click();
+                        $("#sidebar").children().last().children().children().last().find("#" + pathToUnit[i]).click();
+                    }
+               }
+           }
+        });
     </script>
     <body class="h-100">
         <div class="modal fade" id="addUnitModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -103,8 +122,6 @@
                                     <div class="card">
                                         <div th:if="${unit.isPrincipalUnit() == true}" class="card-body">
                                             <h1 th:text="${#authentication.getPrincipal().getOrganization()}"></h1>
-                                            <button type="button" class="btn btn-primary"
-                                                    data-toggle="modal" data-target="#addUnitModal">Unterorganisation anlegen</button>
                                         </div>
                                         <div th:unless="${unit.isPrincipalUnit() == true}" class="card-body">
                                             <h1 th:text="${unit.getName()}"></h1>

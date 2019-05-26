@@ -10,7 +10,7 @@ using JackTheClipperCommon.Interfaces;
 namespace JackTheClipperBusiness
 {
     /// <summary>
-    /// Mails the users with new News if mail notification is wanted.
+    /// Mails the users with new news if mail notification is wanted.
     /// </summary>
     internal class MailController
     {
@@ -41,7 +41,7 @@ namespace JackTheClipperBusiness
                             EnableSsl = AppConfiguration.MailConfigurationSSL,
                             DeliveryMethod = SmtpDeliveryMethod.Network,
                             Credentials = new NetworkCredential(from.Address, AppConfiguration.MailConfigurationPassword),
-                            Timeout = 10000
+                            Timeout = AppConfiguration.MailConfigurationTimeout
                         })
                         {
                             using (var message = new MailMessage(from, to) { Subject = subject, Body = content })

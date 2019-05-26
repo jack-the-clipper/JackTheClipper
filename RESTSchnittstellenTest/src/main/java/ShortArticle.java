@@ -1,31 +1,43 @@
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
  * Represents a short version of an article. Thus the text of it is limited by the backend. This
  * is used to show the content of an user feed.
- *
- * @author SBG
  */
 public class ShortArticle {
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("ArticleId")
     private UUID id;
+    @JsonProperty("ArticleTitle")
     private String title;
+    @JsonProperty("ArticleShortText")
     private String shortText;
+    @JsonProperty("ArticleLink")
     private String link;
-    private Date published;
-    private Date indexed;
+    @JsonProperty("ArticlePublished")
+    private LocalDate published;
+    @JsonProperty("ArticleIndexed")
+    private LocalDate indexed;
+    @JsonProperty("IndexingSourceId")
     private UUID indexingSourceId;
+    @JsonProperty("ImageLink")
+    private String imageLink;
+    private static DateTimeFormatter formatter =
+            DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).withLocale(new Locale("de"));
 
     public ShortArticle() {
 
     }
 
-    public ShortArticle(UUID id, String title, String shortText, String link, Date published,
-                        Date indexed, UUID indexingSourceId) {
+    public ShortArticle(UUID id, String title, String shortText, String link, LocalDate published
+            , LocalDate indexed, UUID indexingSourceId, String imageLink) {
 
         this.id = id;
         this.title = title;
@@ -34,6 +46,7 @@ public class ShortArticle {
         this.published = published;
         this.indexed = indexed;
         this.indexingSourceId = indexingSourceId;
+        this.imageLink = imageLink;
     }
 
     public UUID getId() {
@@ -41,7 +54,6 @@ public class ShortArticle {
         return id;
     }
 
-    @JsonProperty("ArticleId")
     public void setId(UUID id) {
 
         this.id = id;
@@ -52,7 +64,6 @@ public class ShortArticle {
         return title;
     }
 
-    @JsonProperty("ArticleTitle")
     public void setTitle(String title) {
 
         this.title = title;
@@ -63,7 +74,6 @@ public class ShortArticle {
         return shortText;
     }
 
-    @JsonProperty("ArticleShortText")
     public void setShortText(String shortText) {
 
         this.shortText = shortText;
@@ -74,31 +84,28 @@ public class ShortArticle {
         return link;
     }
 
-    @JsonProperty("ArticleLink")
     public void setLink(String link) {
 
         this.link = link;
     }
 
-    public Date getPublished() {
+    public LocalDate getPublished() {
 
         return published;
     }
 
-    @JsonProperty("ArticlePublished")
-    public void setPublished(Date published) {
+    public void setPublished(LocalDate published) {
 
         this.published = published;
     }
 
 
-    public Date getIndexed() {
+    public LocalDate getIndexed() {
 
         return indexed;
     }
 
-    @JsonProperty("ArticleIndexed")
-    public void setIndexed(Date indexed) {
+    public void setIndexed(LocalDate indexed) {
 
         this.indexed = indexed;
     }
@@ -108,9 +115,30 @@ public class ShortArticle {
         return indexingSourceId;
     }
 
-    @JsonProperty("IndexingSourceId")
     public void setIndexingSourceId(UUID indexingSourceId) {
 
         this.indexingSourceId = indexingSourceId;
+    }
+
+    public String getImageLink() {
+
+        return imageLink;
+    }
+
+    public void setImageLink(String imageLink) {
+
+        this.imageLink = imageLink;
+    }
+
+    /**
+     * Formats the {@link #published} as a german date.
+     * This allows the feedOverview page to be displayed entirely in german.
+     *
+     * @return The {@link #published} field formatted as a german date. With the month written
+     * out. E. g. 'Mai' instead of '05'.
+     */
+    public String publishedAsGermanDate() {
+
+        return formatter.format(published);
     }
 }

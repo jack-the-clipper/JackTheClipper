@@ -56,6 +56,10 @@ namespace JackTheClipperCommon.SharedClasses
         [DataMember(Name = "SettingsId")]
         public Guid SettingsId { get; private set; }
 
+        /// <summary>
+        /// Flattens the tree hierarchy of an <see cref="OrganizationalUnit"/> and its <see cref="Children"/>
+        /// </summary>
+        /// <returns>List of all <see cref="OrganizationalUnit"/>s below this unit</returns>
         public IEnumerable<OrganizationalUnit> GetAllChildren()
         {
             return Children.Concat(Children.SelectMany(unit => unit.GetAllChildren()));
@@ -66,9 +70,10 @@ namespace JackTheClipperCommon.SharedClasses
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="name">The name.</param>
-        /// <param name="isPrincipalUnit">Flag, indicating whether mandant.</param>
-        /// <param name="parentOrganizationalUnit">The parent organizational unit.</param>
-        /// <param name="defaultSettings">The default settings.</param>
+        /// <param name="isPrincipalUnit">Flag, indicating whether this unit is a client or not.</param>
+        /// <param name="parentId">The id of the parent organizational unit.</param>
+        /// <param name="adminMailAddress">The email address of the staffchief for this unit</param>
+        /// <param name="settingsId">The id of default settings.</param>
         public OrganizationalUnit(Guid id, [NotNull] string name, bool isPrincipalUnit,
                                   string adminMailAddress, Guid parentId, Guid settingsId)
         {
@@ -80,6 +85,9 @@ namespace JackTheClipperCommon.SharedClasses
             SettingsId = settingsId;
         }
 
+        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.</returns>
         public bool Equals(OrganizationalUnit other)
         {
             if (ReferenceEquals(null, other)) return false;
@@ -87,6 +95,9 @@ namespace JackTheClipperCommon.SharedClasses
             return Id.Equals(other.Id);
         }
 
+        /// <summary>Determines whether the specified object is equal to the current object.</summary>
+        /// <param name="obj">The object to compare with the current object.</param>
+        /// <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -95,6 +106,8 @@ namespace JackTheClipperCommon.SharedClasses
             return Equals((OrganizationalUnit)obj);
         }
 
+        /// <summary>Serves as the default hash function.</summary>
+        /// <returns>A hash code for the current object.</returns>
         public override int GetHashCode()
         {
             return Id.GetHashCode();

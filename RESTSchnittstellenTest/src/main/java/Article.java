@@ -1,6 +1,6 @@
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.UUID;
 
 /**
@@ -9,16 +9,18 @@ import java.util.UUID;
  */
 public class Article extends ShortArticle {
 
+    @JsonProperty("ArticleLongText")
     private String longText;
 
-    public Article(){
+    public Article() {
+
         super();
     }
 
-    public Article(UUID id, String title, String shortText, String link, Date published,
-                   Date indexed, UUID indexingSourceId, String longText) {
+    public Article(UUID id, String title, String shortText, String link, LocalDate published,
+                   LocalDate indexed, UUID indexingSourceId, String longText, String imageLink) {
 
-        super(id, title, shortText, link, published, indexed, indexingSourceId);
+        super(id, title, shortText, link, published, indexed, indexingSourceId, imageLink);
         this.longText = longText;
     }
 
@@ -27,7 +29,6 @@ public class Article extends ShortArticle {
         return longText;
     }
 
-    @JsonProperty("ArticleLongText")
     public void setLongText(String longText) {
 
         this.longText = longText;

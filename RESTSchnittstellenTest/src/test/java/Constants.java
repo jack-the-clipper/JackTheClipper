@@ -1,5 +1,6 @@
 import enums.ContentType;
 import enums.NotificationSetting;
+import enums.UserRole;
 import io.restassured.RestAssured;
 import org.junit.Assert;
 
@@ -13,6 +14,7 @@ public class Constants {
     public static UUID unitId;
     public static User registeredUser;
     public static UUID articleId;
+    public static UUID resetId;
 
     public static Source existingSource = new Source(UUID.fromString("e6b4a44f-682a-11e9-8c47" +
             "-9615dc5f263c"), "http://feeds.feedburner.com/blogspot/rkEL", "Postillon",
@@ -27,9 +29,13 @@ public class Constants {
         try (InputStream is = new FileInputStream("application.properties")) {
             Properties prop = new Properties();
             prop.load(is);
-            RestAssured.baseURI = prop.getProperty("base.url");
-            sysAdminId = UUID.fromString(prop.getProperty("sysadmin.uuid"));
-            unitId = UUID.fromString(prop.getProperty("unit.uuid"));
+            RestAssured.baseURI = prop.getProperty("baseDebug.url");
+            sysAdminId = UUID.fromString(prop.getProperty("sysadminDebug.uuid"));
+            unitId = UUID.fromString(prop.getProperty("testunit.uuid"));
+            registeredUser = new User(UUID.fromString("58626322-7cae-11e9-910b-9615dc5f263c"), UserRole.User,
+                    "sticki", "timmaster121@web.de", "Passwort","TimTest",
+                    false, true, UUID.fromString("58626256-7cae-11e9-910b-9615dc5f263c"), unitId);
+            resetId = UUID.fromString("38dfe95b-7cae-11e9-910b-9615dc5f263c");
         } catch (Exception ex) {
             ex.printStackTrace();
             Assert.fail("Could not load properties, cannot do tests");

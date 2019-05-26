@@ -6,6 +6,7 @@ using System.Linq;
 using HtmlAgilityPack;
 using JackTheClipperCommon;
 using JackTheClipperCommon.BusinessObjects;
+using JackTheClipperCommon.Configuration;
 using JackTheClipperCommon.SharedClasses;
 using JetBrains.Annotations;
 
@@ -35,7 +36,7 @@ namespace JackTheClipperBusiness.CrawlerManagement
         /// <summary>
         /// Gets the observation interval
         /// </summary>
-        protected override int Interval => 45 * 1000;
+        protected override int Interval => AppConfiguration.RssCrawlInterval * 1000;
         #endregion
 
         #region ctor

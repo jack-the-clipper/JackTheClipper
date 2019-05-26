@@ -25,7 +25,7 @@ namespace JackTheClipperCommon.Extensions
         }
 
         /// <summary>
-        /// Tries the get an item by the given key or adds it if no item is present or null.
+        /// Tries to get an item by the given key or adds it if no item is present or null.
         /// </summary>
         /// <typeparam name="K">Type of key.</typeparam>
         /// <typeparam name="T">Tye of value</typeparam>

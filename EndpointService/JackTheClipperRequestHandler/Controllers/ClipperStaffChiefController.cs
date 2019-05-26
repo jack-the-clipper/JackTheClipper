@@ -167,7 +167,13 @@ namespace JackTheClipperRequestHandler.Controllers
         }
         #endregion
 
-
+        /// <summary>
+        /// Adds a user as an admin
+        /// </summary>
+        /// <param name="staffChiefId">The id of the staffchief adding the user</param>
+        /// <param name="toAdd">A tuple specifying the <see cref="User"/> to add and
+        /// a List of <see cref="OrganizationalUnit"/>s he should belong to</param>
+        /// <returns>MethodResult indicating success</returns>
         [HttpPut]
         [Route("adminadduser")]
         public ActionResult<MethodResult> AdministrativelyAddUser([FromQuery]Guid staffChiefId, [FromBody]Tuple<User, IReadOnlyList<Guid>> toAdd)
@@ -194,6 +200,12 @@ namespace JackTheClipperRequestHandler.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes a user
+        /// </summary>
+        /// <param name="staffChiefId">The id of the staffchief requesting the deletion</param>
+        /// <param name="userId">The id of the user that should be deleted</param>
+        /// <returns>MethodResult indicating success</returns>
         [HttpDelete]
         [Route("deleteuser")]
         public ActionResult<MethodResult> DeleteUser([FromQuery]Guid staffChiefId, [FromQuery]Guid userId)
@@ -215,7 +227,13 @@ namespace JackTheClipperRequestHandler.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Updates an existing user
+        /// </summary>
+        /// <param name="staffChiefId">The id of the staffchief adding the user</param>
+        /// <param name="toModify">A tuple holding the updated <see cref="User"/> and
+        /// a List of <see cref="OrganizationalUnit"/>s he should belong to</param>
+        /// <returns>MethodResult indicating success</returns>
         [HttpPut]
         [Route("modifyuser")]
         public ActionResult<MethodResult> ModifyUser([FromQuery]Guid staffChiefId, [FromBody]Tuple<User, IReadOnlyList<Guid>> toModify)

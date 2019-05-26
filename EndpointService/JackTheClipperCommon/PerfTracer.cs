@@ -20,18 +20,25 @@ namespace JackTheClipperCommon
         private readonly Stopwatch watch;
 
         /// <summary>
+        /// The minimum amount of milliseconds which must be exceeded before logging occurs (default:0)
+        /// </summary>
+        private readonly int minimumMillis;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="PerfTracer"/> class.
         /// </summary>
         /// <param name="name">The name.</param>
-        public PerfTracer(string name)
+        /// <param name="minimumMillis">The minimum amount of milliseconds which must be exceeded before logging occurs (default:0)</param>
+        public PerfTracer(string name, int minimumMillis = 0)
         {
             if (AppConfiguration.PerformanceTraceActive)
             {
                 this.name = name;
                 this.watch = Stopwatch.StartNew();
+                this.minimumMillis = minimumMillis;
             }
         }
-        
+
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
@@ -43,8 +50,11 @@ namespace JackTheClipperCommon
                 {
                     watch.Stop();
 
-                    Console.WriteLine(DateTime.UtcNow.ToLongTimeString() + " " + name + " took " +
-                                      this.watch.ElapsedMilliseconds);
+                    if (watch.ElapsedMilliseconds > this.minimumMillis)
+                    {
+                        Console.WriteLine(DateTime.UtcNow.ToLongTimeString() + " " + name + " took " +
+                                          this.watch.ElapsedMilliseconds);
+                    }
                 }
 
                 GC.SuppressFinalize(this);

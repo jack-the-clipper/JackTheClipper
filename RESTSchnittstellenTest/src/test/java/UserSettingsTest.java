@@ -6,21 +6,18 @@ import enums.SuccessState;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.*;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class UserSettingsTest {
-
     @Test
     public void aGetUserSettings() {
 
@@ -29,7 +26,7 @@ public class UserSettingsTest {
         assertEquals(200, response.getStatusCode());
         UserSettings actual = response.as(UserSettings.class);
         UserSettings expected = new UserSettings(null, Collections.EMPTY_LIST,
-                NotificationSetting.None, 60, 20);
+                NotificationSetting.None, 637699949, 99);
 
         assertNotNull(actual);
         assertNotNull(actual.getFeeds());
@@ -40,7 +37,6 @@ public class UserSettingsTest {
                 actual.getNotificationCheckInterval());
         assertEquals(expected.getNotificationSetting(), actual.getNotificationSetting());
         assertEquals(expected.getArticlesPerPage(),actual.getArticlesPerPage());
-        Constants.settings = actual; //need to cache usersettings so we can use them later on
     }
 
     @Test
@@ -52,62 +48,74 @@ public class UserSettingsTest {
         Source[] actual = response.as(Source[].class);
         Source[] expected = {Constants.existingSource};
         assertNotNull(actual);
-        assertTrue(actual.length > 0); //currently we have sources in the system
-        /*assertEquals(expected.length, actual.length);
-
-        for (int i = 0; i < actual.length; i++) {
-            compareSources(expected[i], actual[i]);
-        }*/
+        assertTrue(actual.length > 0);
     }
 
     @Test
     public void cPutUserSettings() {
-
-        Constants.settings.getFeeds().add(Constants.defaultFeed);
         Response response =
-                // @formatter:off
-                given().contentType("application/json").body(Constants.settings).relaxedHTTPSValidation()
-                        .when().put("/clipper/saveusersettings?userId=" +
-                        Constants.registeredUser.getUserId());
-                // @formatter:on
+                given().relaxedHTTPSValidation()
+                        .when().put("/clipper/saveusersettings?settingsId=" +
+                        Constants.registeredUser.getSettingsId()
+                        + "&notificationCheckInterval=637699949&notificationSetting="+ NotificationSetting.None+ "&articlesPerPage=99"
+                );
         assertEquals(200, response.getStatusCode());
-        MethodResult actual = response.as(MethodResult.class);
-        MethodResult expected = new MethodResult(SuccessState.Successful, null);
-        assertEquals(expected.getState(), actual.getState());
-        assertEquals(expected.getMessage(), actual.getMessage());
     }
 
     @Test
-    public void dCheckUpdatedSettings() {
-
-        Response response = given().relaxedHTTPSValidation().when().get("/clipper/getusersettings"
-                + "?userId=" + Constants.registeredUser.getUserId());
-        assertEquals(200, response.getStatusCode());
-        UserSettings actual = response.as(UserSettings.class);
-        //compareUserSettings(Constants.settings, actual);
-        assertNotNull(actual);
-        assertTrue(actual.getFeeds().stream()
-                // @formatter:off
-                .anyMatch(feed -> feed.getFeedSources().equals(Constants.defaultFeed.getFeedSources())
-                        && feed.getFilter().idIgnoringCompare(Constants.defaultFeed.getFilter())
-                        && feed.getName().equals(Constants.defaultFeed.getName())));
-                // @formatter:on
-    }
-
-    @Test
-    public void eGetFeeds() {
+    public void eFeedManagement() {
 
         Response response = given().relaxedHTTPSValidation().when().get("/clipper" +
                 "/getfeeddefinitions?userId=" + Constants.registeredUser.getUserId());
         assertEquals(200, response.getStatusCode());
         Feed[] actual = response.as(Feed[].class);
-        Feed[] expected = {Constants.defaultFeed};
-        //works since the default user does not have
-        //any feeds besides the one added during the tests
-        assertEquals(expected.length, actual.length);
-        for (int i = 0; i < expected.length; i++) {
-            compareFeeds(expected[i], actual[i]);
-        }
+        var feed = Arrays.stream(actual).filter(e -> e.getName().equalsIgnoreCase("Test1")).findFirst().get();
+        assertNotNull(feed);
+
+        var uuidOfFeed = UUID.randomUUID();
+        var toAdd = new Feed(uuidOfFeed, feed.getFeedSources(),
+                new Filter(UUID.randomUUID(), Collections.singletonList("Blub"), new ArrayList <>(), new ArrayList <>()),
+                "FeedManagementTest");
+
+        var add = given().relaxedHTTPSValidation().body(toAdd).contentType(io.restassured.http.ContentType.JSON)
+                .when().put("/clipper/addfeed?settingsId="+Constants.registeredUser.getSettingsId());
+
+        assertEquals(200, add.statusCode());
+
+        response = given().relaxedHTTPSValidation().when().get("/clipper" +
+                "/getfeeddefinitions?userId=" + Constants.registeredUser.getUserId());
+        assertEquals(200, response.getStatusCode());
+        actual = response.as(Feed[].class);
+        feed = Arrays.stream(actual).filter(e -> e.getName().equalsIgnoreCase("FeedManagementTest")).findFirst().get();
+        assertNotNull(feed);
+
+        compareFeeds(toAdd, feed);
+
+        var newFeed = new Feed(feed.getId(), feed.getFeedSources(),
+                new Filter(UUID.randomUUID(), Collections.singletonList("TOK"), new ArrayList <>(), new ArrayList <>()), "Feed");
+
+        var modify = given().relaxedHTTPSValidation().body(newFeed).contentType(io.restassured.http.ContentType.JSON)
+                .when().put("/clipper/modifyfeed?settingsId="+Constants.registeredUser.getSettingsId());
+
+        assertEquals(200, modify.statusCode());
+
+        response = given().relaxedHTTPSValidation().when().get("/clipper" +
+                "/getfeeddefinitions?userId=" + Constants.registeredUser.getUserId());
+        assertEquals(200, response.getStatusCode());
+        actual = response.as(Feed[].class);
+        feed = Arrays.stream(actual).filter(e -> e.getName().equalsIgnoreCase("Feed")).findFirst().get();
+        assertNotNull(feed);
+
+        var delete = given().relaxedHTTPSValidation().when().delete("/clipper/deletefeed?feedId="+feed.getId());
+
+        assertEquals(200, delete.statusCode());
+
+        response = given().relaxedHTTPSValidation().when().get("/clipper" +
+                "/getfeeddefinitions?userId=" + Constants.registeredUser.getUserId());
+        assertEquals(200, response.getStatusCode());
+        actual = response.as(Feed[].class);
+
+        assertEquals(1 , actual.length);
     }
 
 
@@ -117,7 +125,7 @@ public class UserSettingsTest {
         ObjectMapper om = new ObjectMapper();
         String tmp = om.writeValueAsString(source);
         Response response = given().contentType(io.restassured.http.ContentType.JSON).body(tmp).relaxedHTTPSValidation()
-                .when().put("/clipper" + "/addsource?userId=" + Constants.sysAdminId.toString());
+                .when().put("/clipper/addsource?userId=" + Constants.sysAdminId.toString());
 
         assertEquals(200, response.getStatusCode());
         MethodResult actual = response.as(MethodResult.class);
@@ -179,29 +187,26 @@ public class UserSettingsTest {
     @Test
     public void iResetPassword() {
         Response response = given().relaxedHTTPSValidation().when().put("/clipper" +
-                "/reset?userMail=" + Constants.registeredUser.geteMail());
+                "/reset?userMail=reset@reset.com");
 
         assertEquals(200, response.getStatusCode());
     }
     @Test
     public void jChangePassword() {
         Response response = given().relaxedHTTPSValidation().when().put("/clipper" +
-                "/changepassword?userId=" + Constants.registeredUser.getUserId() + "&newPassword=hallo123");
+                "/changepassword?userId=" + Constants.resetId + "&newPassword=hallo123");
 
         assertEquals(200, response.getStatusCode());
-
-        given().relaxedHTTPSValidation().when().put("/clipper" +
-                "/changepassword?userId=" + Constants.registeredUser.getUserId() + "&newPassword=" + Constants.registeredUser.getPassword());
     }
     @Test
     public void kChangeMailAddress() {
         Response response = given().relaxedHTTPSValidation().when().put("/clipper" +
-                "/changemailaddress?userId=" + Constants.registeredUser.getUserId() + "&newUserMail=jackxiss@example.com");
+                "/changemailaddress?userId=" + Constants.resetId + "&newUserMail=jackxiss@example.com");
 
         assertEquals(200, response.getStatusCode());
 
         given().relaxedHTTPSValidation().when().put("/clipper" +
-                "/changemailaddress?userId=" + Constants.registeredUser.getUserId() + "&newUserMail=" + Constants.registeredUser.geteMail());
+                "/changemailaddress?userId=" + Constants.resetId + "&newUserMail=reset@reset.com");
     }
 
     @Test
@@ -211,30 +216,76 @@ public class UserSettingsTest {
         assertEquals(200, response.getStatusCode());
         UserSettings actual = response.as(UserSettings.class);
         UUID feedId = actual.getFeeds().get(0).getId();
-        response = given().relaxedHTTPSValidation().when().get("/clipper/getfeed?userId=" + Constants.registeredUser.getUserId().toString()
-                                                                                         + "&feedId=" + feedId.toString()
+        response = given().relaxedHTTPSValidation().when().get("/clipper/getfeed?userId=" + Constants.registeredUser.getUserId()
+                                                                                         + "&feedId=" + feedId
                                                                                          + "&page=0"
                                                                                          + "&showArchived=true");
         assertEquals(200, response.statusCode());
-        assertNotNull(response.as(Article[].class));
-        Constants.articleId = response.as(Article[].class)[0].getId();
+        Constants.articleId = (UUID) ((HashMap)((((ArrayList)(response.jsonPath().get())).get(0)))).get(6);
+        ArrayList x = response.jsonPath().get();
+        HashMap t = (HashMap) x.get(0);
+        UUID f = UUID.fromString((String) t.get("ArticleId"));
+
+        Constants.articleId = f;
     }
 
     @Test
     public void mGetArticle() {
         Response response = given().relaxedHTTPSValidation().when().get("/clipper/getArticle?userId=" +
-                Constants.registeredUser.getUserId().toString() + "&articleId=" + Constants.articleId);
+                Constants.registeredUser.getUserId() + "&articleId="+Constants.articleId);
         assertEquals(200, response.statusCode());
-        assertNotNull(response.as(Article.class));
+        assertNotNull(response.jsonPath().get("ArticleLongText"));
     }
 
     @Test
     public void mGetOrganizationalUnitSettings() {
         Response response = given().relaxedHTTPSValidation().when().get("/clipper/getorganizationalunitsettings" +
-                "?userId=" + Constants.registeredUser.getUserId().toString() +
+                "?userId=6d64acf7-7cad-11e9-910b-9615dc5f263c"+
                 "&unitId=" + Constants.unitId.toString());
         assertEquals(200, response.statusCode());
         assertNotNull(response.as(OrganizationalUnitSettings.class));
+    }
+
+    @Test
+    public void nUnitMangementTest()
+    {
+        var response = given().relaxedHTTPSValidation().when().put("/clipper/getprincipalunits" +
+                "?userId="+Constants.sysAdminId);
+
+        assertEquals(200, response.statusCode());
+
+        var principals = response.as(OrganizationalUnit[].class);
+
+        var millis = System.currentTimeMillis();
+        var addunit = given().relaxedHTTPSValidation().when().put("/clipper/addprincipalunit?userId="+Constants.sysAdminId+
+                "&name="+millis+ "&principalUnitMail="+millis+"@example.com");
+
+        assertEquals(200, addunit.statusCode());
+
+        response = given().relaxedHTTPSValidation().when().put("/clipper/getprincipalunits?userId="+Constants.sysAdminId).then().statusCode(200).extract().response();
+
+        var principalsnew = response.as(OrganizationalUnit[].class);
+
+        assertEquals(principals.length +1, principalsnew.length);
+
+        var idtoDelete = Arrays.stream(principalsnew)
+                .filter(e->e.getName().equalsIgnoreCase(String.valueOf(millis))).findFirst().get().getId();
+        var delete = given().relaxedHTTPSValidation().when().delete("/clipper/deleteorganizationalunit?userId="
+                +Constants.sysAdminId+ "&unitId="+idtoDelete);
+
+        assertEquals(200, delete.statusCode());
+    }
+
+    @Test
+    public void oGetChildrenTest()
+    {
+        var response = given().relaxedHTTPSValidation().when().get("/clipper/getprincipalunitchildren?principalUnitId="+Constants.unitId);
+
+        assertEquals(200, response.statusCode());
+
+        var children = response.as(UuidStringTuple[].class);
+
+        assertEquals(2, children.length);
     }
 
     private void compareSources(Source expected, Source actual) {

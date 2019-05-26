@@ -20,7 +20,6 @@ import java.nio.charset.StandardCharsets;
  * {@link org.jacktheclipper.frontend.utils.CustomRestTemplateCustomizer} for more information on
  * how to set what should be traced.
  *
- * @author SBG
  */
 public class LoggingRequestInterceptor implements ClientHttpRequestInterceptor {
 
@@ -51,13 +50,13 @@ public class LoggingRequestInterceptor implements ClientHttpRequestInterceptor {
                                         ClientHttpRequestExecution execution)
             throws IOException {
 
-        Long start = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
         if (debugRequests) {
             traceRequest(request, body);
         }
         ClientHttpResponse response = execution.execute(request, body);
         if (debugResponses) {
-            traceResponse(response);
+                traceResponse(response);
         }
         log.info("Tracing of exchange took [{}] ms", System.currentTimeMillis() - start);
         return response;
@@ -95,22 +94,25 @@ public class LoggingRequestInterceptor implements ClientHttpRequestInterceptor {
             throws IOException {
 
         StringBuilder inputStringBuilder = new StringBuilder();
-        BufferedReader bufferedReader =
-                new BufferedReader(new InputStreamReader(response.getBody(),
-                        StandardCharsets.UTF_8));
-        String line = bufferedReader.readLine();
-        while (line != null) {
-            inputStringBuilder.append(line);
-            inputStringBuilder.append('\n');
-            line = bufferedReader.readLine();
+        try {
+            BufferedReader bufferedReader = new BufferedReader(
+                    new InputStreamReader(response.getBody(), StandardCharsets.UTF_8));
+            String line = bufferedReader.readLine();
+            while (line != null) {
+                inputStringBuilder.append(line);
+                inputStringBuilder.append('\n');
+                line = bufferedReader.readLine();
+            }
+        }catch (IOException io){
+            inputStringBuilder.append("No reason supplied");
         }
-        log.info("============================response " + "begin" +
+        log.info("============================response begin" +
                 "==========================================");
         log.info("Status code  : {}", response.getStatusCode());
         log.info("Status text  : {}", response.getStatusText());
         log.info("Headers      : {}", response.getHeaders());
         log.info("Response body: {}", inputStringBuilder.toString());
-        log.info("=======================response " + "end" +
+        log.info("=======================response end" +
                 "=================================================");
     }
 

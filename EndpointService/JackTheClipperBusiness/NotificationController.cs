@@ -36,14 +36,20 @@ namespace JackTheClipperBusiness
         /// <param name="timerState">The timer state.</param>
         private static void CheckForNotifications(object timerState)
         {
-            Scheduler.Change(Timeout.Infinite, Timeout.Infinite);
+            using(new PerfTracer(nameof(CheckForNotifications)))
             {
                 try
                 {
+                    Scheduler.Change(Timeout.Infinite, Timeout.Infinite);
                     var notifiableUserSettings = Factory.GetControllerInstance<IClipperDatabase>().GetNotifiableUserSettings();
-                    Parallel.ForEach(notifiableUserSettings, async (notifiable) =>
+                    var parallelOpts = new ParallelOptions
                     {
-                        if (notifiable != null && notifiable.Settings.NotificationSettings != NotificationSetting.None && 
+                        MaxDegreeOfParallelism = Convert.ToInt32(Math.Ceiling(Environment.ProcessorCount * 0.75))
+                    };
+                    Parallel.ForEach(notifiableUserSettings, parallelOpts, (notifiable) =>
+                    {
+                        if (notifiable != null && notifiable.Settings != null &&
+                            notifiable.Settings.NotificationSettings != NotificationSetting.None && 
                             notifiable.Settings.Feeds.Any())
                         {
                             var lastFetched = LastCheckTime.TryGetOrAddIfNotPresentOrNull(notifiable.UserId);
@@ -56,7 +62,7 @@ namespace JackTheClipperBusiness
                             {
                                 LastCheckTime[notifiable.UserId] = DateTime.UtcNow;
                                 var indexer = DatabaseAdapterFactory.GetControllerInstance<IIndexerService>();
-                                var feeds = await indexer.GetCompleteFeedAsync(notifiable.Settings, lastFetched);
+                                var feeds = indexer.GetCompleteFeedAsync(notifiable.Settings, lastFetched).GetAwaiter().GetResult();
 
                                 if (feeds.Any())
                                 {
@@ -74,7 +80,7 @@ namespace JackTheClipperBusiness
                                         var defText = "Visit " + AppConfiguration.MailConfigurationFELoginLink + notifiable.PrincipalUnitName;
                                         if (notifiable.Settings.NotificationSettings == NotificationSetting.PdfPerMail)
                                         {
-                                            var pdf = PdfGeneratorBAD.GeneratePdf(feeds, notifiable.UserName);
+                                            var pdf = PdfGenerator.GeneratePdf(feeds, notifiable.UserName);
                                             MailController.QuerySendMailAsync(notifiable, ClipperTexts.DefaultMailSubject, defText,
                                                                               pdf, "Clipper.pdf");
                                         }

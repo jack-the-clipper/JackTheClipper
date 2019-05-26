@@ -11,7 +11,7 @@ using JackTheClipperData;
 namespace JackTheClipperBusiness.OrganizationalUnitManagement
 {
     /// <summary>
-    /// Settings for the OragnizationalUnit
+    /// A class that encapsulates every request concerning the <see cref="OrganizationalUnit"/> class
     /// </summary>
     internal class OrganizationalUnitController : IClipperOrganizationalUnitAPI
     {
@@ -64,11 +64,21 @@ namespace JackTheClipperBusiness.OrganizationalUnitManagement
             return orga == Guid.Empty ? new MethodResult(SuccessState.UnknownError, "") : new MethodResult();
         }
 
+        /// <summary>
+        /// Deletes an organizational unit.
+        /// </summary>
+        /// <param name="unitId">The unit identifier.</param>
+        /// <returns>MethodResult indicating success.</returns>
         public MethodResult DeleteOrganizationalUnit(Guid unitId)
         {
             return Factory.GetControllerInstance<IClipperDatabase>().DeleteOrganizationalUnit(unitId);
         }
 
+        /// <summary>
+        /// Updates an existing organizational unit to the given values.
+        /// </summary>
+        /// <param name="updatedUnit">The updated unit.</param>
+        /// <returns>MethodResult indicating success.</returns>
         public MethodResult UpdateOrganizationalUnit(OrganizationalUnit updatedUnit)
         {
             var adapter = DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>();

@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace JackTheClipperRequestHandler.Controllers
 {
+    /// <summary>
+    /// Controller for services that require a <see cref="Role.SystemAdministrator"/>
+    /// </summary>
     [Route("clipper")]
     [ApiController]
     public class ClipperAdminController : Controller
@@ -122,7 +125,7 @@ namespace JackTheClipperRequestHandler.Controllers
         /// </summary>
         /// <param name="userId">The user identifier of the requesting admin.</param>
         /// <returns>List of principal units.</returns>
-        [HttpPut]
+        [HttpGet]
         [Route("getprincipalunits")]
         public ActionResult<IReadOnlyList<OrganizationalUnit>> GetPrincipalUnits([FromQuery]Guid userId)
         {

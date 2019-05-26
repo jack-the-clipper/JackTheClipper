@@ -21,7 +21,6 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
  * It is thus important for any and every thing concerning authentication and authorization. It
  * also enables method level security.
  *
- * @author SBG
  */
 @Configuration
 @EnableWebSecurity

@@ -15,8 +15,15 @@ using Microsoft.Extensions.Options;
 
 namespace JackTheClipperRequestHandler
 {
+    /// <summary>
+    /// Class responsible for initializing certain settings on application startup
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Startup"/> class
+        /// </summary>
+        /// <param name="configuration">The configuration to user</param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;

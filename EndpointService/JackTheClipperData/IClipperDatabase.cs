@@ -254,16 +254,53 @@ namespace JackTheClipperData
         /// <returns>The requested settings.</returns>
         UserSettings GetUserSettingsByUserId(Guid userId);
 
+        /// <summary>
+        /// Returns the basic information of the users the supplied user can manage
+        /// </summary>
+        /// <param name="userId">The id of the user requesting the information</param>
+        /// <returns>List of basic information like the id and username of the manageable users</returns>
         IReadOnlyList<BasicUserInformation> GetManageableUsers(Guid userId);
 
+        /// <summary>
+        /// Gets all the information on a requested user
+        /// </summary>
+        /// <param name="requested">The id of the user whose information is requested</param>
+        /// <returns>An <see cref="ExtendedUser"/> containing all the information</returns>
         ExtendedUser GetUserInfo(Guid requested);
 
+        /// <summary>
+        /// Prepares a request to see the articles of the given feed
+        /// </summary>
+        /// <param name="userId">The user owning the feed</param>
+        /// <param name="feedId">The id of the feed</param>
+        /// <returns>A tuple containing the fully instantiated <see cref="Feed"/>, the
+        /// last login time of the user and how many articles he wants to see on a single
+        /// page</returns>
         Tuple<Feed, DateTime, int> GetFeedRequestData(Guid userId, Guid feedId);
 
+        /// <summary>
+        /// Modifies a user
+        /// </summary>
+        /// <param name="userId">The id of the user to modify</param>
+        /// <param name="userName">The new username of the user</param>
+        /// <param name="role">The new role of the user</param>
+        /// <param name="valid">Whether the user is allowed to use the application</param>
+        /// <param name="userUnits">The <see cref="OrganizationalUnit"/>s the user should belong to</param>
+        /// <returns>A <see cref="MethodResult"/> indicating success</returns>
         MethodResult ModifyUser(Guid userId, string userName, Role role, bool valid, IEnumerable<Guid> userUnits);
 
+        /// <summary>
+        /// Gets the blacklist that a user has by belonging to certain <see cref="OrganizationalUnit"/>s
+        /// </summary>
+        /// <param name="userId">The id of the user</param>
+        /// <returns>List of all blacklisted keywords for this user</returns>
         IEnumerable<string> GetUnitInheritedBlackList(Guid userId);
 
+        /// <summary>
+        /// Gets the user that are allowed to manage the unit
+        /// </summary>
+        /// <param name="affectedUnit">The id of the unit</param>
+        /// <returns>List of users that can manage the unit</returns>
         IEnumerable<User> GetEligibleStaffChiefs(Guid affectedUnit);
     }
 }

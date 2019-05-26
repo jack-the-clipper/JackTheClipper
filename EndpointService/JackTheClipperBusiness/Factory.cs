@@ -20,7 +20,7 @@ namespace JackTheClipperBusiness
         /// <summary>
         /// Returns an instance of the requested interface.
         /// </summary>
-        /// <typeparam name="T">The type oof the requested interface.</typeparam>
+        /// <typeparam name="T">The type of the requested interface.</typeparam>
         /// <returns>An instance of the requested interface.</returns>
         [NotNull, Pure, DebuggerStepThrough]
         public static T GetControllerInstance<T>()

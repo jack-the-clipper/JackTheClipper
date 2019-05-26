@@ -116,7 +116,6 @@ public class RegistrationController {
             redirectAttributes.addFlashAttribute(user);
             return "redirect:/" + organization + "/register";
         }
-        //TODO show a nicer page after successful registration
         return "redirect:/" + organization + "/register";
     }
 

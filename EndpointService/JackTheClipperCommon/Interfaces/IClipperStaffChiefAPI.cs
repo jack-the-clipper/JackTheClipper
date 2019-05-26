@@ -10,8 +10,18 @@ namespace JackTheClipperCommon.Interfaces
     /// <seealso cref="JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI" />
     public interface IClipperStaffChiefAPI
     {
+        /// <summary>
+        /// Gets the minimal information of the users a staffchief can manage
+        /// </summary>
+        /// <param name="userId">The id of the staffchief</param>
+        /// <returns>A list of <see cref="BasicUserInformation"/> if the given id actually belonged to a staffchief</returns>
         IReadOnlyList<BasicUserInformation> GetManageableUsers(Guid userId);
 
+        /// <summary>
+        /// Gets all information on a user 
+        /// </summary>
+        /// <param name="requested">The id of the user whose information is requested</param>
+        /// <returns>All the information on a user like the <see cref="OrganizationalUnit"/>s he belongs to</returns>
         ExtendedUser GetUserInfo(Guid requested);
 
         /// <summary>

@@ -100,7 +100,7 @@ namespace JackTheClipperCommon.Localization {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die ... wurde geändert.
         ///
-        ///Sollten Sie nicht die Änderung Ihrer E-Mailadresse veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten.
+        ///Sollten Sie nicht die Änderung Ihrer E-Mailadresse veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten oder Systemadministrator.
         ///
         ///Mit freundlichen Grüßen,
         ///
@@ -118,6 +118,17 @@ namespace JackTheClipperCommon.Localization {
         public static string MailChangedMailSubject {
             get {
                 return ResourceManager.GetString("MailChangedMailSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die 
+        ///
+        ///PS: In diesem Zuge wurde ihnen eines neues Passwort vergeben. Es lautet: {0} ähnelt.
+        /// </summary>
+        public static string NewlyGeneratedPasswordOnMailReset {
+            get {
+                return ResourceManager.GetString("NewlyGeneratedPasswordOnMailReset", resourceCulture);
             }
         }
         
@@ -147,7 +158,7 @@ namespace JackTheClipperCommon.Localization {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die ... wurde geändert.
         ///
-        ///Sollten Sie nicht die Änderung Ihres Passworts veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten.
+        ///Sollten Sie nicht die Änderung Ihres Passworts veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten oder Systemadministrator.
         ///
         ///Mit freundlichen Grüßen,
         ///
@@ -174,7 +185,7 @@ namespace JackTheClipperCommon.Localization {
         ///Ihr neues Passwort lautet: {0}
         ///Dass Passwort muss beim nächsten Login geändert werden.
         ///
-        ///Sollten Sie nicht die Änderung Ihres Passworts veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten.
+        ///Sollten Sie nicht die Änderung Ihres Passworts veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten oder Systemadministrator.
         ///
         ///Mit freundlichen Grüßen,
         ///

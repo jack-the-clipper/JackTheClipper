@@ -121,6 +121,65 @@
   </table>
   
   
+  <a id="JackTheClipperData_IClipperDatabase_AddPrincipalUnit_" data-uid="JackTheClipperData.IClipperDatabase.AddPrincipalUnit*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_AddPrincipalUnit_System_String_System_String_System_String_" data-uid="JackTheClipperData.IClipperDatabase.AddPrincipalUnit(System.String,System.String,System.String)">AddPrincipalUnit(String, String, String)</h4>
+  <div class="markdown level1 summary"><p>Adds a principal unit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">MethodResult&lt;Tuple&lt;Guid, Guid&gt;&gt; AddPrincipalUnit(string unitName, string adminMailAddress, string adminPassword)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">unitName</span></td>
+        <td><p>Name of the unit.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">adminMailAddress</span></td>
+        <td><p>The admin mail address.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">adminPassword</span></td>
+        <td><p>The admin password.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult-1.html">MethodResult</a>&lt;<span class="xref">System.Tuple</span>&lt;<span class="xref">System.Guid</span>, <span class="xref">System.Guid</span>&gt;&gt;</td>
+        <td><p>Tuple of new values.
+<p>Item1 = Id of new principal unit.</p>
+<p>Item2 = Id of new <a class="xref" href="JackTheClipperCommon.Enums.Role.html#JackTheClipperCommon_Enums_Role_StaffChief">StaffChief</a>-user.</p></p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
   <a id="JackTheClipperData_IClipperDatabase_AddSource_" data-uid="JackTheClipperData.IClipperDatabase.AddSource*"></a>
   <h4 id="JackTheClipperData_IClipperDatabase_AddSource_JackTheClipperCommon_SharedClasses_Source_" data-uid="JackTheClipperData.IClipperDatabase.AddSource(JackTheClipperCommon.SharedClasses.Source)">AddSource(Source)</h4>
   <div class="markdown level1 summary"><p>Adds a source.</p>
@@ -166,14 +225,65 @@
   </table>
   
   
+  <a id="JackTheClipperData_IClipperDatabase_AddUnit_" data-uid="JackTheClipperData.IClipperDatabase.AddUnit*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_AddUnit_System_String_System_Guid_" data-uid="JackTheClipperData.IClipperDatabase.AddUnit(System.String,System.Guid)">AddUnit(String, Guid)</h4>
+  <div class="markdown level1 summary"><p>Adds a new unit unit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Guid AddUnit(string unitName, Guid parentUnit)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">unitName</span></td>
+        <td><p>Name of the unit.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">parentUnit</span></td>
+        <td><p>The id of the parent unit.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><p>The id of the new unit.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
   <a id="JackTheClipperData_IClipperDatabase_AddUser_" data-uid="JackTheClipperData.IClipperDatabase.AddUser*"></a>
-  <h4 id="JackTheClipperData_IClipperDatabase_AddUser_System_String_System_String_System_String_JackTheClipperCommon_Enums_Role_System_Guid_System_Boolean_System_Boolean_" data-uid="JackTheClipperData.IClipperDatabase.AddUser(System.String,System.String,System.String,JackTheClipperCommon.Enums.Role,System.Guid,System.Boolean,System.Boolean)">AddUser(String, String, String, Role, Guid, Boolean, Boolean)</h4>
+  <h4 id="JackTheClipperData_IClipperDatabase_AddUser_System_String_System_String_System_String_JackTheClipperCommon_Enums_Role_System_Guid_System_Guid_System_Boolean_System_Boolean_" data-uid="JackTheClipperData.IClipperDatabase.AddUser(System.String,System.String,System.String,JackTheClipperCommon.Enums.Role,System.Guid,System.Guid,System.Boolean,System.Boolean)">AddUser(String, String, String, Role, Guid, Guid, Boolean, Boolean)</h4>
   <div class="markdown level1 summary"><p>Adds a user.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">User AddUser(string userMail, string userName, string password, Role role, Guid principalUnit, bool mustChangePassword, bool valid)</code></pre>
+    <pre><code class="lang-csharp hljs">MethodResult&lt;Guid&gt; AddUser(string userMail, string userName, string password, Role role, Guid principalUnit, Guid initialUnit, bool mustChangePassword, bool valid)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -216,6 +326,12 @@
 </td>
       </tr>
       <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">initialUnit</span></td>
+        <td><p>The initial unit of the user.</p>
+</td>
+      </tr>
+      <tr>
         <td><span class="xref">System.Boolean</span></td>
         <td><span class="parametername">mustChangePassword</span></td>
         <td><p>A value indicating whether the user must change the pw.</p>
@@ -239,7 +355,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult-1.html">MethodResult</a>&lt;<span class="xref">System.Guid</span>&gt;</td>
         <td><p>The user object of the new user.</p>
 </td>
       </tr>
@@ -378,6 +494,51 @@
   </table>
   
   
+  <a id="JackTheClipperData_IClipperDatabase_DeleteOrganizationalUnit_" data-uid="JackTheClipperData.IClipperDatabase.DeleteOrganizationalUnit*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_DeleteOrganizationalUnit_System_Guid_" data-uid="JackTheClipperData.IClipperDatabase.DeleteOrganizationalUnit(System.Guid)">DeleteOrganizationalUnit(Guid)</h4>
+  <div class="markdown level1 summary"><p>Deletes an organizational unit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">MethodResult DeleteOrganizationalUnit(Guid unitId)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">unitId</span></td>
+        <td><p>The unit identifier.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
+        <td><p>MethodResult indicating success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
   <a id="JackTheClipperData_IClipperDatabase_DeleteSource_" data-uid="JackTheClipperData.IClipperDatabase.DeleteSource*"></a>
   <h4 id="JackTheClipperData_IClipperDatabase_DeleteSource_System_Guid_" data-uid="JackTheClipperData.IClipperDatabase.DeleteSource(System.Guid)">DeleteSource(Guid)</h4>
   <div class="markdown level1 summary"><p>Deletes the source.</p>
@@ -423,41 +584,14 @@
   </table>
   
   
-  <a id="JackTheClipperData_IClipperDatabase_GetAllUsers_" data-uid="JackTheClipperData.IClipperDatabase.GetAllUsers*"></a>
-  <h4 id="JackTheClipperData_IClipperDatabase_GetAllUsers" data-uid="JackTheClipperData.IClipperDatabase.GetAllUsers">GetAllUsers()</h4>
-  <div class="markdown level1 summary"><p>Gets all users.</p>
+  <a id="JackTheClipperData_IClipperDatabase_DeleteUser_" data-uid="JackTheClipperData.IClipperDatabase.DeleteUser*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_DeleteUser_System_Guid_" data-uid="JackTheClipperData.IClipperDatabase.DeleteUser(System.Guid)">DeleteUser(Guid)</h4>
+  <div class="markdown level1 summary"><p>Deletes the user.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">IReadOnlyCollection&lt;User&gt; GetAllUsers()</code></pre>
-  </div>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Collections.Generic.IReadOnlyCollection</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a>&gt;</td>
-        <td><p>List of all users.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  
-  
-  <a id="JackTheClipperData_IClipperDatabase_GetAvailableSources_" data-uid="JackTheClipperData.IClipperDatabase.GetAvailableSources*"></a>
-  <h4 id="JackTheClipperData_IClipperDatabase_GetAvailableSources_JackTheClipperCommon_SharedClasses_User_" data-uid="JackTheClipperData.IClipperDatabase.GetAvailableSources(JackTheClipperCommon.SharedClasses.User)">GetAvailableSources(User)</h4>
-  <div class="markdown level1 summary"><p>Gets the available sources.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">IReadOnlyList&lt;Source&gt; GetAvailableSources(User user)</code></pre>
+    <pre><code class="lang-csharp hljs">MethodResult DeleteUser(Guid userId)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -470,8 +604,53 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
-        <td><span class="parametername">user</span></td>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td><p>The user identifier.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
+        <td><p>MethodResult, indicates success</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_GetAvailableSources_" data-uid="JackTheClipperData.IClipperDatabase.GetAvailableSources*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetAvailableSources_System_Guid_" data-uid="JackTheClipperData.IClipperDatabase.GetAvailableSources(System.Guid)">GetAvailableSources(Guid)</h4>
+  <div class="markdown level1 summary"><p>Gets the available sources.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IReadOnlyList&lt;Source&gt; GetAvailableSources(Guid userId)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
         <td><p>The user.</p>
 </td>
       </tr>
@@ -489,6 +668,177 @@
       <tr>
         <td><span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.Source.html">Source</a>&gt;</td>
         <td><p>List of available sources.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_GetEligibleStaffChiefs_" data-uid="JackTheClipperData.IClipperDatabase.GetEligibleStaffChiefs*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetEligibleStaffChiefs_System_Guid_" data-uid="JackTheClipperData.IClipperDatabase.GetEligibleStaffChiefs(System.Guid)">GetEligibleStaffChiefs(Guid)</h4>
+  <div class="markdown level1 summary"><p>Gets the user that are allowed to manage the unit</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerable&lt;User&gt; GetEligibleStaffChiefs(Guid affectedUnit)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">affectedUnit</span></td>
+        <td><p>The id of the unit</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a>&gt;</td>
+        <td><p>List of users that can manage the unit</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_GetFeedRequestData_" data-uid="JackTheClipperData.IClipperDatabase.GetFeedRequestData*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetFeedRequestData_System_Guid_System_Guid_" data-uid="JackTheClipperData.IClipperDatabase.GetFeedRequestData(System.Guid,System.Guid)">GetFeedRequestData(Guid, Guid)</h4>
+  <div class="markdown level1 summary"><p>Prepares a request to see the articles of the given feed</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Tuple&lt;Feed, DateTime, int&gt; GetFeedRequestData(Guid userId, Guid feedId)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td><p>The user owning the feed</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">feedId</span></td>
+        <td><p>The id of the feed</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Tuple</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.Feed.html">Feed</a>, <span class="xref">System.DateTime</span>, <span class="xref">System.Int32</span>&gt;</td>
+        <td><p>A tuple containing the fully instantiated <a class="xref" href="JackTheClipperCommon.SharedClasses.Feed.html">Feed</a>, the
+last login time of the user and how many articles he wants to see on a single
+page</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_GetManageableUsers_" data-uid="JackTheClipperData.IClipperDatabase.GetManageableUsers*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetManageableUsers_System_Guid_" data-uid="JackTheClipperData.IClipperDatabase.GetManageableUsers(System.Guid)">GetManageableUsers(Guid)</h4>
+  <div class="markdown level1 summary"><p>Returns the basic information of the users the supplied user can manage</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IReadOnlyList&lt;BasicUserInformation&gt; GetManageableUsers(Guid userId)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td><p>The id of the user requesting the information</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.BasicUserInformation.html">BasicUserInformation</a>&gt;</td>
+        <td><p>List of basic information like the id and username of the manageable users</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_GetNotifiableUserSettings_" data-uid="JackTheClipperData.IClipperDatabase.GetNotifiableUserSettings*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetNotifiableUserSettings" data-uid="JackTheClipperData.IClipperDatabase.GetNotifiableUserSettings">GetNotifiableUserSettings()</h4>
+  <div class="markdown level1 summary"><p>Gets all notifiable user settings
+(&quot;notifiable&quot; = only those which have set <a class="xref" href="JackTheClipperCommon.SharedClasses.UserSettings.html#JackTheClipperCommon_SharedClasses_UserSettings_NotificationSettings">NotificationSettings</a> != <a class="xref" href="JackTheClipperCommon.Enums.NotificationSetting.html#JackTheClipperCommon_Enums_NotificationSetting_None">None</a>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IReadOnlyCollection&lt;NotifiableUserSettings&gt; GetNotifiableUserSettings()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IReadOnlyCollection</span>&lt;<a class="xref" href="JackTheClipperCommon.BusinessObjects.NotifiableUserSettings.html">NotifiableUserSettings</a>&gt;</td>
+        <td><p>List of all notifiable user settings.</p>
 </td>
       </tr>
     </tbody>
@@ -541,13 +891,13 @@
   
   
   <a id="JackTheClipperData_IClipperDatabase_GetOrganizationalUnits_" data-uid="JackTheClipperData.IClipperDatabase.GetOrganizationalUnits*"></a>
-  <h4 id="JackTheClipperData_IClipperDatabase_GetOrganizationalUnits_JackTheClipperCommon_SharedClasses_User_" data-uid="JackTheClipperData.IClipperDatabase.GetOrganizationalUnits(JackTheClipperCommon.SharedClasses.User)">GetOrganizationalUnits(User)</h4>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetOrganizationalUnits_System_Guid_" data-uid="JackTheClipperData.IClipperDatabase.GetOrganizationalUnits(System.Guid)">GetOrganizationalUnits(Guid)</h4>
   <div class="markdown level1 summary"><p>Gets the available organizational units.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">IReadOnlyList&lt;OrganizationalUnit&gt; GetOrganizationalUnits(User user)</code></pre>
+    <pre><code class="lang-csharp hljs">IReadOnlyList&lt;OrganizationalUnit&gt; GetOrganizationalUnits(Guid userId)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -560,9 +910,9 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
-        <td><span class="parametername">user</span></td>
-        <td><p>The user.</p>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td><p>The user id.</p>
 </td>
       </tr>
     </tbody>
@@ -585,14 +935,59 @@
   </table>
   
   
-  <a id="JackTheClipperData_IClipperDatabase_GetPrincipalUnits_" data-uid="JackTheClipperData.IClipperDatabase.GetPrincipalUnits*"></a>
-  <h4 id="JackTheClipperData_IClipperDatabase_GetPrincipalUnits" data-uid="JackTheClipperData.IClipperDatabase.GetPrincipalUnits">GetPrincipalUnits()</h4>
+  <a id="JackTheClipperData_IClipperDatabase_GetOrganizationalUnitSettings_" data-uid="JackTheClipperData.IClipperDatabase.GetOrganizationalUnitSettings*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetOrganizationalUnitSettings_System_Guid_" data-uid="JackTheClipperData.IClipperDatabase.GetOrganizationalUnitSettings(System.Guid)">GetOrganizationalUnitSettings(Guid)</h4>
+  <div class="markdown level1 summary"><p>Gets the organizational unit settings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">OrganizationalUnitSettings GetOrganizationalUnitSettings(Guid unitId)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">unitId</span></td>
+        <td><p>The organizational unit id.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings.html">OrganizationalUnitSettings</a></td>
+        <td><p>The requested settings.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_GetPrincipalUnitBasicInformation_" data-uid="JackTheClipperData.IClipperDatabase.GetPrincipalUnitBasicInformation*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetPrincipalUnitBasicInformation" data-uid="JackTheClipperData.IClipperDatabase.GetPrincipalUnitBasicInformation">GetPrincipalUnitBasicInformation()</h4>
   <div class="markdown level1 summary"><p>Gets the principal units.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">IReadOnlyList&lt;Tuple&lt;string, Guid&gt;&gt; GetPrincipalUnits()</code></pre>
+    <pre><code class="lang-csharp hljs">IReadOnlyList&lt;Tuple&lt;string, Guid&gt;&gt; GetPrincipalUnitBasicInformation()</code></pre>
   </div>
   <h5 class="returns">Returns</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -612,14 +1007,59 @@
   </table>
   
   
-  <a id="JackTheClipperData_IClipperDatabase_GetSources_" data-uid="JackTheClipperData.IClipperDatabase.GetSources*"></a>
-  <h4 id="JackTheClipperData_IClipperDatabase_GetSources" data-uid="JackTheClipperData.IClipperDatabase.GetSources">GetSources()</h4>
-  <div class="markdown level1 summary"><p>Gets all sources.</p>
+  <a id="JackTheClipperData_IClipperDatabase_GetPrincipalUnitChildren_" data-uid="JackTheClipperData.IClipperDatabase.GetPrincipalUnitChildren*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetPrincipalUnitChildren_System_Guid_" data-uid="JackTheClipperData.IClipperDatabase.GetPrincipalUnitChildren(System.Guid)">GetPrincipalUnitChildren(Guid)</h4>
+  <div class="markdown level1 summary"><p>Gets the children of a principal unit.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">IReadOnlyCollection&lt;Source&gt; GetSources()</code></pre>
+    <pre><code class="lang-csharp hljs">IReadOnlyList&lt;Tuple&lt;string, Guid&gt;&gt; GetPrincipalUnitChildren(Guid principalUnitId)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">principalUnitId</span></td>
+        <td><p>The principal unit identifier.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<span class="xref">System.Tuple</span>&lt;<span class="xref">System.String</span>, <span class="xref">System.Guid</span>&gt;&gt;</td>
+        <td><p>List of children of given principal unit.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_GetPrincipalUnits_" data-uid="JackTheClipperData.IClipperDatabase.GetPrincipalUnits*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetPrincipalUnits" data-uid="JackTheClipperData.IClipperDatabase.GetPrincipalUnits">GetPrincipalUnits()</h4>
+  <div class="markdown level1 summary"><p>Gets all principal units.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IReadOnlyList&lt;OrganizationalUnit&gt; GetPrincipalUnits()</code></pre>
   </div>
   <h5 class="returns">Returns</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -631,7 +1071,34 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Collections.Generic.IReadOnlyCollection</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.Source.html">Source</a>&gt;</td>
+        <td><span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a>&gt;</td>
+        <td><p>The principal units</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_GetSources_" data-uid="JackTheClipperData.IClipperDatabase.GetSources*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetSources" data-uid="JackTheClipperData.IClipperDatabase.GetSources">GetSources()</h4>
+  <div class="markdown level1 summary"><p>Gets all sources.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IReadOnlyList&lt;Source&gt; GetSources()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.Source.html">Source</a>&gt;</td>
         <td><p>List of all sources.</p>
 </td>
       </tr>
@@ -661,6 +1128,51 @@ This is a feed filter which contains all relevant keywords form any feed within 
       <tr>
         <td><a class="xref" href="JackTheClipperCommon.SharedClasses.Filter.html">Filter</a></td>
         <td><p>The superset feed filter.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_GetUnitInheritedBlackList_" data-uid="JackTheClipperData.IClipperDatabase.GetUnitInheritedBlackList*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetUnitInheritedBlackList_System_Guid_" data-uid="JackTheClipperData.IClipperDatabase.GetUnitInheritedBlackList(System.Guid)">GetUnitInheritedBlackList(Guid)</h4>
+  <div class="markdown level1 summary"><p>Gets the blacklist that a user has by belonging to certain <a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a>s</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerable&lt;string&gt; GetUnitInheritedBlackList(Guid userId)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td><p>The id of the user</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><p>List of all blacklisted keywords for this user</p>
 </td>
       </tr>
     </tbody>
@@ -775,6 +1287,141 @@ This is a feed filter which contains all relevant keywords form any feed within 
   </table>
   
   
+  <a id="JackTheClipperData_IClipperDatabase_GetUserByMailAddress_" data-uid="JackTheClipperData.IClipperDatabase.GetUserByMailAddress*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetUserByMailAddress_System_String_" data-uid="JackTheClipperData.IClipperDatabase.GetUserByMailAddress(System.String)">GetUserByMailAddress(String)</h4>
+  <div class="markdown level1 summary"><p>Gets the user by mail address.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">User GetUserByMailAddress(string mailAddress)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">mailAddress</span></td>
+        <td><p>The mail address.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
+        <td><p>The user (if found)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_GetUserInfo_" data-uid="JackTheClipperData.IClipperDatabase.GetUserInfo*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetUserInfo_System_Guid_" data-uid="JackTheClipperData.IClipperDatabase.GetUserInfo(System.Guid)">GetUserInfo(Guid)</h4>
+  <div class="markdown level1 summary"><p>Gets all the information on a requested user</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ExtendedUser GetUserInfo(Guid requested)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">requested</span></td>
+        <td><p>The id of the user whose information is requested</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.ExtendedUser.html">ExtendedUser</a></td>
+        <td><p>An <a class="xref" href="JackTheClipperCommon.SharedClasses.ExtendedUser.html">ExtendedUser</a> containing all the information</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_GetUserSettingsByUserId_" data-uid="JackTheClipperData.IClipperDatabase.GetUserSettingsByUserId*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_GetUserSettingsByUserId_System_Guid_" data-uid="JackTheClipperData.IClipperDatabase.GetUserSettingsByUserId(System.Guid)">GetUserSettingsByUserId(Guid)</h4>
+  <div class="markdown level1 summary"><p>Gets the user settings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">UserSettings GetUserSettingsByUserId(Guid userId)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td><p>The settings id.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.UserSettings.html">UserSettings</a></td>
+        <td><p>The requested settings.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
   <a id="JackTheClipperData_IClipperDatabase_ModifyFeed_" data-uid="JackTheClipperData.IClipperDatabase.ModifyFeed*"></a>
   <h4 id="JackTheClipperData_IClipperDatabase_ModifyFeed_System_Guid_JackTheClipperCommon_SharedClasses_Feed_" data-uid="JackTheClipperData.IClipperDatabase.ModifyFeed(System.Guid,JackTheClipperCommon.SharedClasses.Feed)">ModifyFeed(Guid, Feed)</h4>
   <div class="markdown level1 summary"><p>Modifies the feed.</p>
@@ -810,6 +1457,126 @@ This is a feed filter which contains all relevant keywords form any feed within 
   </table>
   
   
+  <a id="JackTheClipperData_IClipperDatabase_ModifyUser_" data-uid="JackTheClipperData.IClipperDatabase.ModifyUser*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_ModifyUser_System_Guid_System_String_JackTheClipperCommon_Enums_Role_System_Boolean_System_Collections_Generic_IEnumerable_System_Guid__" data-uid="JackTheClipperData.IClipperDatabase.ModifyUser(System.Guid,System.String,JackTheClipperCommon.Enums.Role,System.Boolean,System.Collections.Generic.IEnumerable{System.Guid})">ModifyUser(Guid, String, Role, Boolean, IEnumerable&lt;Guid&gt;)</h4>
+  <div class="markdown level1 summary"><p>Modifies a user</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">MethodResult ModifyUser(Guid userId, string userName, Role role, bool valid, IEnumerable&lt;Guid&gt; userUnits)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td><p>The id of the user to modify</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">userName</span></td>
+        <td><p>The new username of the user</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.Enums.Role.html">Role</a></td>
+        <td><span class="parametername">role</span></td>
+        <td><p>The new role of the user</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">valid</span></td>
+        <td><p>Whether the user is allowed to use the application</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.Guid</span>&gt;</td>
+        <td><span class="parametername">userUnits</span></td>
+        <td><p>The <a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a>s the user should belong to</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
+        <td><p>A <a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a> indicating success</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_RenameOrganizationalUnit_" data-uid="JackTheClipperData.IClipperDatabase.RenameOrganizationalUnit*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_RenameOrganizationalUnit_System_Guid_System_String_" data-uid="JackTheClipperData.IClipperDatabase.RenameOrganizationalUnit(System.Guid,System.String)">RenameOrganizationalUnit(Guid, String)</h4>
+  <div class="markdown level1 summary"><p>Renames an organizational unit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">MethodResult RenameOrganizationalUnit(Guid toChange, string name)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">toChange</span></td>
+        <td><p>The id of the unit to change.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The new name.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
+        <td><p>MethodResult indicating success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
   <a id="JackTheClipperData_IClipperDatabase_ResetPassword_" data-uid="JackTheClipperData.IClipperDatabase.ResetPassword*"></a>
   <h4 id="JackTheClipperData_IClipperDatabase_ResetPassword_System_String_System_String_" data-uid="JackTheClipperData.IClipperDatabase.ResetPassword(System.String,System.String)">ResetPassword(String, String)</h4>
   <div class="markdown level1 summary"><p>Resets the users password.</p>
@@ -838,6 +1605,51 @@ This is a feed filter which contains all relevant keywords form any feed within 
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">newPassword</span></td>
         <td><p>The new password to set.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
+        <td><p>MethodResult indicating success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_SaveOrganizationalUnitSettings_" data-uid="JackTheClipperData.IClipperDatabase.SaveOrganizationalUnitSettings*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_SaveOrganizationalUnitSettings_JackTheClipperCommon_SharedClasses_OrganizationalUnitSettings_" data-uid="JackTheClipperData.IClipperDatabase.SaveOrganizationalUnitSettings(JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings)">SaveOrganizationalUnitSettings(OrganizationalUnitSettings)</h4>
+  <div class="markdown level1 summary"><p>Changes the organizational unit settings to the given ones.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">MethodResult SaveOrganizationalUnitSettings(OrganizationalUnitSettings changed)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings.html">OrganizationalUnitSettings</a></td>
+        <td><span class="parametername">changed</span></td>
+        <td><p>The changed settings to persist.</p>
 </td>
       </tr>
     </tbody>
@@ -901,6 +1713,102 @@ This is a feed filter which contains all relevant keywords form any feed within 
         <td><span class="xref">System.Int32</span></td>
         <td><span class="parametername">articlesPerPage</span></td>
         <td><p>The articles per page.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_SetUserOrganizationalUnits_" data-uid="JackTheClipperData.IClipperDatabase.SetUserOrganizationalUnits*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_SetUserOrganizationalUnits_System_Guid_System_Collections_Generic_IEnumerable_System_Guid__" data-uid="JackTheClipperData.IClipperDatabase.SetUserOrganizationalUnits(System.Guid,System.Collections.Generic.IEnumerable{System.Guid})">SetUserOrganizationalUnits(Guid, IEnumerable&lt;Guid&gt;)</h4>
+  <div class="markdown level1 summary"><p>Sets the organizational units of a user.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">MethodResult SetUserOrganizationalUnits(Guid userId, IEnumerable&lt;Guid&gt; units)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td><p>The user id of the changed user.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.Guid</span>&gt;</td>
+        <td><span class="parametername">units</span></td>
+        <td><p>The organizational units.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
+        <td><p>MethodResult indicating success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperData_IClipperDatabase_UpdateSource_" data-uid="JackTheClipperData.IClipperDatabase.UpdateSource*"></a>
+  <h4 id="JackTheClipperData_IClipperDatabase_UpdateSource_JackTheClipperCommon_SharedClasses_Source_" data-uid="JackTheClipperData.IClipperDatabase.UpdateSource(JackTheClipperCommon.SharedClasses.Source)">UpdateSource(Source)</h4>
+  <div class="markdown level1 summary"><p>Updates the source.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">MethodResult UpdateSource(Source updatedSource)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.Source.html">Source</a></td>
+        <td><span class="parametername">updatedSource</span></td>
+        <td><p>The updated source.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
+        <td><p>MethodResult indicating success</p>
 </td>
       </tr>
     </tbody>

@@ -1,0 +1,597 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class ClipperStaffChiefController
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class ClipperStaffChiefController
+   ">
+    <meta name="generator" content="docfx 2.42.2.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController">
+  
+  
+  <h1 id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController" class="text-break">Class ClipperStaffChiefController
+  </h1>
+  <div class="markdown level0 summary"><p>Controller for the StaffChief</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">ClipperStaffChiefController</span></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="JackTheClipperRequestHandler.Controllers.html">JackTheClipperRequestHandler.Controllers</a></h6>
+  <h6><strong>Assembly</strong>: JackTheClipperRequestHandler.dll</h6>
+  <h5 id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class ClipperStaffChiefController : Controller</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  
+  
+  <a id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController__ctor_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.#ctor*"></a>
+  <h4 id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController__ctor" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.#ctor">ClipperStaffChiefController()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ClipperStaffChiefController()</code></pre>
+  </div>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController_AddOrganizationalUnit_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.AddOrganizationalUnit*"></a>
+  <h4 id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController_AddOrganizationalUnit_System_Guid_System_String_System_Guid_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.AddOrganizationalUnit(System.Guid,System.String,System.Guid)">AddOrganizationalUnit(Guid, String, Guid)</h4>
+  <div class="markdown level1 summary"><p>Adds a new unit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult&lt;MethodResult&gt; AddOrganizationalUnit(Guid userId, string name, Guid parentUnitId)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td><p>The user identifier.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name of the new unit.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">parentUnitId</span></td>
+        <td><p>The parent unit id.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a>&gt;</td>
+        <td><p>MethodResult indicating success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController_AdministrativelyAddUser_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.AdministrativelyAddUser*"></a>
+  <h4 id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController_AdministrativelyAddUser_System_Guid_System_Tuple_JackTheClipperCommon_SharedClasses_User_System_Collections_Generic_IReadOnlyList_System_Guid___" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.AdministrativelyAddUser(System.Guid,System.Tuple{JackTheClipperCommon.SharedClasses.User,System.Collections.Generic.IReadOnlyList{System.Guid}})">AdministrativelyAddUser(Guid, Tuple&lt;User, IReadOnlyList&lt;Guid&gt;&gt;)</h4>
+  <div class="markdown level1 summary"><p>Adds a user as an admin</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult&lt;MethodResult&gt; AdministrativelyAddUser(Guid staffChiefId, Tuple&lt;User, IReadOnlyList&lt;Guid&gt;&gt; toAdd)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">staffChiefId</span></td>
+        <td><p>The id of the staffchief adding the user</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Tuple</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a>, <span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<span class="xref">System.Guid</span>&gt;&gt;</td>
+        <td><span class="parametername">toAdd</span></td>
+        <td><p>A tuple specifying the <a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a> to add and
+a List of <a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a>s he should belong to</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a>&gt;</td>
+        <td><p>MethodResult indicating success</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController_DeleteOrganizationalUnit_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.DeleteOrganizationalUnit*"></a>
+  <h4 id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController_DeleteOrganizationalUnit_System_Guid_System_Guid_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.DeleteOrganizationalUnit(System.Guid,System.Guid)">DeleteOrganizationalUnit(Guid, Guid)</h4>
+  <div class="markdown level1 summary"><p>Deletes the principal unit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult&lt;MethodResult&gt; DeleteOrganizationalUnit(Guid userId, Guid unitId)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td><p>The user identifier.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">unitId</span></td>
+        <td><p>The unit identifier.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a>&gt;</td>
+        <td><p>MethodResult indicating success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController_DeleteUser_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.DeleteUser*"></a>
+  <h4 id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController_DeleteUser_System_Guid_System_Guid_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.DeleteUser(System.Guid,System.Guid)">DeleteUser(Guid, Guid)</h4>
+  <div class="markdown level1 summary"><p>Deletes a user</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult&lt;MethodResult&gt; DeleteUser(Guid staffChiefId, Guid userId)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">staffChiefId</span></td>
+        <td><p>The id of the staffchief requesting the deletion</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td><p>The id of the user that should be deleted</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a>&gt;</td>
+        <td><p>MethodResult indicating success</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController_GetManageableUsers_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.GetManageableUsers*"></a>
+  <h4 id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController_GetManageableUsers_System_Guid_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.GetManageableUsers(System.Guid)">GetManageableUsers(Guid)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult&lt;IReadOnlyList&lt;BasicUserInformation&gt;&gt; GetManageableUsers(Guid userId)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.BasicUserInformation.html">BasicUserInformation</a>&gt;&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController_GetUserInfo_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.GetUserInfo*"></a>
+  <h4 id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController_GetUserInfo_System_Guid_System_Guid_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.GetUserInfo(System.Guid,System.Guid)">GetUserInfo(Guid, Guid)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult&lt;ExtendedUser&gt; GetUserInfo(Guid userId, Guid requested)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">requested</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.ExtendedUser.html">ExtendedUser</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController_ModifyUser_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.ModifyUser*"></a>
+  <h4 id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController_ModifyUser_System_Guid_System_Tuple_JackTheClipperCommon_SharedClasses_User_System_Collections_Generic_IReadOnlyList_System_Guid___" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.ModifyUser(System.Guid,System.Tuple{JackTheClipperCommon.SharedClasses.User,System.Collections.Generic.IReadOnlyList{System.Guid}})">ModifyUser(Guid, Tuple&lt;User, IReadOnlyList&lt;Guid&gt;&gt;)</h4>
+  <div class="markdown level1 summary"><p>Updates an existing user</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult&lt;MethodResult&gt; ModifyUser(Guid staffChiefId, Tuple&lt;User, IReadOnlyList&lt;Guid&gt;&gt; toModify)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">staffChiefId</span></td>
+        <td><p>The id of the staffchief adding the user</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Tuple</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a>, <span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<span class="xref">System.Guid</span>&gt;&gt;</td>
+        <td><span class="parametername">toModify</span></td>
+        <td><p>A tuple holding the updated <a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a> and
+a List of <a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a>s he should belong to</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a>&gt;</td>
+        <td><p>MethodResult indicating success</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController_SetUserOrganizationalUnits_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.SetUserOrganizationalUnits*"></a>
+  <h4 id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController_SetUserOrganizationalUnits_System_Guid_System_Collections_Generic_IReadOnlyList_System_Guid__" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.SetUserOrganizationalUnits(System.Guid,System.Collections.Generic.IReadOnlyList{System.Guid})">SetUserOrganizationalUnits(Guid, IReadOnlyList&lt;Guid&gt;)</h4>
+  <div class="markdown level1 summary"><p>Sets the organizational units of a user.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult&lt;MethodResult&gt; SetUserOrganizationalUnits(Guid userId, IReadOnlyList&lt;Guid&gt; units)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td><p>The user identifier.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<span class="xref">System.Guid</span>&gt;</td>
+        <td><span class="parametername">units</span></td>
+        <td><p>The organizational units.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a>&gt;</td>
+        <td><p>MethodResult indicating success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController_UpdateOrganizationalUnit_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.UpdateOrganizationalUnit*"></a>
+  <h4 id="JackTheClipperRequestHandler_Controllers_ClipperStaffChiefController_UpdateOrganizationalUnit_System_Guid_JackTheClipperCommon_SharedClasses_OrganizationalUnit_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.UpdateOrganizationalUnit(System.Guid,JackTheClipperCommon.SharedClasses.OrganizationalUnit)">UpdateOrganizationalUnit(Guid, OrganizationalUnit)</h4>
+  <div class="markdown level1 summary"><p>Updates a unit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult&lt;MethodResult&gt; UpdateOrganizationalUnit(Guid userId, OrganizationalUnit updatedUnit)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td><p>The user identifier.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a></td>
+        <td><span class="parametername">updatedUnit</span></td>
+        <td><p>The updated unit.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a>&gt;</td>
+        <td><p>MethodResult indicating success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="seealso">See Also</h3>
+  <div class="seealso">
+      <div><span class="xref">Microsoft.AspNetCore.Mvc.Controller</span></div>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

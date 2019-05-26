@@ -76,30 +76,251 @@
   <div class="markdown level0 summary"><p>Interface of the API for a staff chief.</p>
 </div>
   <div class="markdown level0 conceptual"></div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
-    <div>
-      <a class="xref" href="JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.html#JackTheClipperCommon_Interfaces_IClipperOrganizationalUnitAPI_GetOrganizationalUnits_JackTheClipperCommon_SharedClasses_User_">IClipperOrganizationalUnitAPI.GetOrganizationalUnits(User)</a>
-    </div>
-    <div>
-      <a class="xref" href="JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.html#JackTheClipperCommon_Interfaces_IClipperOrganizationalUnitAPI_AddOrganizationalUnit_JackTheClipperCommon_SharedClasses_User_JackTheClipperCommon_SharedClasses_OrganizationalUnit_JackTheClipperCommon_SharedClasses_OrganizationalUnit_">IClipperOrganizationalUnitAPI.AddOrganizationalUnit(User, OrganizationalUnit, OrganizationalUnit)</a>
-    </div>
-    <div>
-      <a class="xref" href="JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.html#JackTheClipperCommon_Interfaces_IClipperOrganizationalUnitAPI_DeleteOrganizationalUnit_JackTheClipperCommon_SharedClasses_User_JackTheClipperCommon_SharedClasses_OrganizationalUnit_">IClipperOrganizationalUnitAPI.DeleteOrganizationalUnit(User, OrganizationalUnit)</a>
-    </div>
-    <div>
-      <a class="xref" href="JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.html#JackTheClipperCommon_Interfaces_IClipperOrganizationalUnitAPI_GetOrganizationalUnitSettings_JackTheClipperCommon_SharedClasses_User_JackTheClipperCommon_SharedClasses_OrganizationalUnit_">IClipperOrganizationalUnitAPI.GetOrganizationalUnitSettings(User, OrganizationalUnit)</a>
-    </div>
-    <div>
-      <a class="xref" href="JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.html#JackTheClipperCommon_Interfaces_IClipperOrganizationalUnitAPI_SaveOrganizationalUnitSettings_JackTheClipperCommon_SharedClasses_OrganizationalUnitSettings_">IClipperOrganizationalUnitAPI.SaveOrganizationalUnitSettings(OrganizationalUnitSettings)</a>
-    </div>
-  </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="JackTheClipperCommon.Interfaces.html">JackTheClipperCommon.Interfaces</a></h6>
   <h6><strong>Assembly</strong>: JackTheClipperCommon.dll</h6>
   <h5 id="JackTheClipperCommon_Interfaces_IClipperStaffChiefAPI_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public interface IClipperStaffChiefAPI : IClipperOrganizationalUnitAPI</code></pre>
+    <pre><code class="lang-csharp hljs">public interface IClipperStaffChiefAPI</code></pre>
   </div>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="JackTheClipperCommon_Interfaces_IClipperStaffChiefAPI_AdministrativelyAddUser_" data-uid="JackTheClipperCommon.Interfaces.IClipperStaffChiefAPI.AdministrativelyAddUser*"></a>
+  <h4 id="JackTheClipperCommon_Interfaces_IClipperStaffChiefAPI_AdministrativelyAddUser_JackTheClipperCommon_SharedClasses_User_System_Collections_Generic_IReadOnlyList_System_Guid__" data-uid="JackTheClipperCommon.Interfaces.IClipperStaffChiefAPI.AdministrativelyAddUser(JackTheClipperCommon.SharedClasses.User,System.Collections.Generic.IReadOnlyList{System.Guid})">AdministrativelyAddUser(User, IReadOnlyList&lt;Guid&gt;)</h4>
+  <div class="markdown level1 summary"><p>Administratively adds a user.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">MethodResult AdministrativelyAddUser(User toAdd, IReadOnlyList&lt;Guid&gt; userUnits)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
+        <td><span class="parametername">toAdd</span></td>
+        <td><p>The user to add.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<span class="xref">System.Guid</span>&gt;</td>
+        <td><span class="parametername">userUnits</span></td>
+        <td><p>The users units.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
+        <td><p>MethodResult indicating success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_Interfaces_IClipperStaffChiefAPI_DeleteUser_" data-uid="JackTheClipperCommon.Interfaces.IClipperStaffChiefAPI.DeleteUser*"></a>
+  <h4 id="JackTheClipperCommon_Interfaces_IClipperStaffChiefAPI_DeleteUser_System_Guid_" data-uid="JackTheClipperCommon.Interfaces.IClipperStaffChiefAPI.DeleteUser(System.Guid)">DeleteUser(Guid)</h4>
+  <div class="markdown level1 summary"><p>Deletes the user.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">MethodResult DeleteUser(Guid userId)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td><p>The user identifier.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
+        <td><p>MethodResult indicating success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_Interfaces_IClipperStaffChiefAPI_GetManageableUsers_" data-uid="JackTheClipperCommon.Interfaces.IClipperStaffChiefAPI.GetManageableUsers*"></a>
+  <h4 id="JackTheClipperCommon_Interfaces_IClipperStaffChiefAPI_GetManageableUsers_System_Guid_" data-uid="JackTheClipperCommon.Interfaces.IClipperStaffChiefAPI.GetManageableUsers(System.Guid)">GetManageableUsers(Guid)</h4>
+  <div class="markdown level1 summary"><p>Gets the minimal information of the users a staffchief can manage</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IReadOnlyList&lt;BasicUserInformation&gt; GetManageableUsers(Guid userId)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td><p>The id of the staffchief</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.BasicUserInformation.html">BasicUserInformation</a>&gt;</td>
+        <td><p>A list of <a class="xref" href="JackTheClipperCommon.SharedClasses.BasicUserInformation.html">BasicUserInformation</a> if the given id actually belonged to a staffchief</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_Interfaces_IClipperStaffChiefAPI_GetUserInfo_" data-uid="JackTheClipperCommon.Interfaces.IClipperStaffChiefAPI.GetUserInfo*"></a>
+  <h4 id="JackTheClipperCommon_Interfaces_IClipperStaffChiefAPI_GetUserInfo_System_Guid_" data-uid="JackTheClipperCommon.Interfaces.IClipperStaffChiefAPI.GetUserInfo(System.Guid)">GetUserInfo(Guid)</h4>
+  <div class="markdown level1 summary"><p>Gets all information on a user </p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ExtendedUser GetUserInfo(Guid requested)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">requested</span></td>
+        <td><p>The id of the user whose information is requested</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.ExtendedUser.html">ExtendedUser</a></td>
+        <td><p>All the information on a user like the <a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a>s he belongs to</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_Interfaces_IClipperStaffChiefAPI_ModifyUser_" data-uid="JackTheClipperCommon.Interfaces.IClipperStaffChiefAPI.ModifyUser*"></a>
+  <h4 id="JackTheClipperCommon_Interfaces_IClipperStaffChiefAPI_ModifyUser_JackTheClipperCommon_SharedClasses_User_System_Collections_Generic_IReadOnlyList_System_Guid__" data-uid="JackTheClipperCommon.Interfaces.IClipperStaffChiefAPI.ModifyUser(JackTheClipperCommon.SharedClasses.User,System.Collections.Generic.IReadOnlyList{System.Guid})">ModifyUser(User, IReadOnlyList&lt;Guid&gt;)</h4>
+  <div class="markdown level1 summary"><p>Modifies the user.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">MethodResult ModifyUser(User toModify, IReadOnlyList&lt;Guid&gt; userUnits)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
+        <td><span class="parametername">toModify</span></td>
+        <td><p>The user to modify.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<span class="xref">System.Guid</span>&gt;</td>
+        <td><span class="parametername">userUnits</span></td>
+        <td><p>The users units.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
+        <td><p>MethodResult indicating success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
   <h3 id="seealso">See Also</h3>
   <div class="seealso">
       <div><a class="xref" href="JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.html">IClipperOrganizationalUnitAPI</a></div>

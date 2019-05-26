@@ -73,7 +73,8 @@
   
   <h1 id="JackTheClipperRequestHandler_Controllers_ClipperUserController" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController" class="text-break">Class ClipperUserController
   </h1>
-  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 summary"><p>Controller for services that any user can access</p>
+</div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
@@ -153,12 +154,13 @@
   
   
   <a id="JackTheClipperRequestHandler_Controllers_ClipperUserController_AddUser_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.AddUser*"></a>
-  <h4 id="JackTheClipperRequestHandler_Controllers_ClipperUserController_AddUser_System_String_System_String_System_String_System_String_System_Guid_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.AddUser(System.String,System.String,System.String,System.String,System.Guid)">AddUser(String, String, String, String, Guid)</h4>
-  <div class="markdown level1 summary"></div>
+  <h4 id="JackTheClipperRequestHandler_Controllers_ClipperUserController_AddUser_JackTheClipperCommon_SharedClasses_User_System_String_System_Guid_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.AddUser(JackTheClipperCommon.SharedClasses.User,System.String,System.Guid)">AddUser(User, String, Guid)</h4>
+  <div class="markdown level1 summary"><p>Registers a user</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ActionResult&lt;User&gt; AddUser(string userMail, string userName, string password, string role, Guid principalUnit)</code></pre>
+    <pre><code class="lang-csharp hljs">public ActionResult&lt;MethodResult&gt; AddUser(User toAdd, string password, Guid selectedUnit)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -171,29 +173,23 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><span class="parametername">userMail</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><span class="parametername">userName</span></td>
-        <td></td>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
+        <td><span class="parametername">toAdd</span></td>
+        <td><p>The user to register</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">password</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><span class="parametername">role</span></td>
-        <td></td>
+        <td><p>The password of the user</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.Guid</span></td>
-        <td><span class="parametername">principalUnit</span></td>
-        <td></td>
+        <td><span class="parametername">selectedUnit</span></td>
+        <td><p>The id of the <a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a> the user wants to belong
+to</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -207,8 +203,9 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a>&gt;</td>
-        <td></td>
+        <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a>&gt;</td>
+        <td><p>MethodResult indicating success</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -216,7 +213,8 @@
   
   <a id="JackTheClipperRequestHandler_Controllers_ClipperUserController_ChangeMailAddress_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.ChangeMailAddress*"></a>
   <h4 id="JackTheClipperRequestHandler_Controllers_ClipperUserController_ChangeMailAddress_System_Guid_System_String_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.ChangeMailAddress(System.Guid,System.String)">ChangeMailAddress(Guid, String)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Changes the mail address of a user.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -235,12 +233,14 @@
       <tr>
         <td><span class="xref">System.Guid</span></td>
         <td><span class="parametername">userId</span></td>
-        <td></td>
+        <td><p>The id of the user wanting to change his password </p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">newUserMail</span></td>
-        <td></td>
+        <td><p>The new mail address the user wants</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -255,7 +255,8 @@
     <tbody>
       <tr>
         <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span></td>
-        <td></td>
+        <td><p><span class="xref">Microsoft.AspNetCore.Mvc.OkResult</span> if successful, <span class="xref">Microsoft.AspNetCore.Mvc.BadRequestResult</span> otherwise</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -263,7 +264,8 @@
   
   <a id="JackTheClipperRequestHandler_Controllers_ClipperUserController_ChangePassword_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.ChangePassword*"></a>
   <h4 id="JackTheClipperRequestHandler_Controllers_ClipperUserController_ChangePassword_System_Guid_System_String_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.ChangePassword(System.Guid,System.String)">ChangePassword(Guid, String)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Changes the password of a user.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -282,12 +284,14 @@
       <tr>
         <td><span class="xref">System.Guid</span></td>
         <td><span class="parametername">userId</span></td>
-        <td></td>
+        <td><p>The id of the user wanting to change his password </p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">newPassword</span></td>
-        <td></td>
+        <td><p>The new password the user wants</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -302,7 +306,8 @@
     <tbody>
       <tr>
         <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span></td>
-        <td></td>
+        <td><p><span class="xref">Microsoft.AspNetCore.Mvc.OkResult</span> if successful, <span class="xref">Microsoft.AspNetCore.Mvc.BadRequestResult</span> otherwise</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -354,7 +359,8 @@
   
   <a id="JackTheClipperRequestHandler_Controllers_ClipperUserController_GetArticle_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.GetArticle*"></a>
   <h4 id="JackTheClipperRequestHandler_Controllers_ClipperUserController_GetArticle_System_Guid_System_Guid_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.GetArticle(System.Guid,System.Guid)">GetArticle(Guid, Guid)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets a single article</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -373,12 +379,14 @@
       <tr>
         <td><span class="xref">System.Guid</span></td>
         <td><span class="parametername">userId</span></td>
-        <td></td>
+        <td><p>The user requesting the article</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.Guid</span></td>
         <td><span class="parametername">articleId</span></td>
-        <td></td>
+        <td><p>The id of the requested article</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -393,7 +401,9 @@
     <tbody>
       <tr>
         <td><a class="xref" href="JackTheClipperCommon.SharedClasses.Article.html">Article</a></td>
-        <td></td>
+        <td><p>The requested article, it is a <a class="xref" href="JackTheClipperCommon.SharedClasses.Article.html">Article</a> unlike <a class="xref" href="JackTheClipperRequestHandler.Controllers.ClipperUserController.html#JackTheClipperRequestHandler_Controllers_ClipperUserController_GetFeed_System_Guid_System_Guid_System_Int32_System_Boolean_">GetFeed(Guid, Guid, Int32, Boolean)</a> which
+only returns <a class="xref" href="JackTheClipperCommon.SharedClasses.ShortArticle.html">ShortArticle</a>s</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -401,7 +411,8 @@
   
   <a id="JackTheClipperRequestHandler_Controllers_ClipperUserController_GetAvailableSources_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.GetAvailableSources*"></a>
   <h4 id="JackTheClipperRequestHandler_Controllers_ClipperUserController_GetAvailableSources_System_Guid_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.GetAvailableSources(System.Guid)">GetAvailableSources(Guid)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The <a class="xref" href="JackTheClipperCommon.SharedClasses.Source.html">Source</a>s available to an user</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -420,7 +431,8 @@
       <tr>
         <td><span class="xref">System.Guid</span></td>
         <td><span class="parametername">userId</span></td>
-        <td></td>
+        <td><p>The user requesting the sources available to him</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -435,7 +447,8 @@
     <tbody>
       <tr>
         <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.Source.html">Source</a>&gt;&gt;</td>
-        <td></td>
+        <td><p>List of all <a class="xref" href="JackTheClipperCommon.SharedClasses.Source.html">Source</a>s available to the user</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -443,7 +456,8 @@
   
   <a id="JackTheClipperRequestHandler_Controllers_ClipperUserController_GetFeed_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.GetFeed*"></a>
   <h4 id="JackTheClipperRequestHandler_Controllers_ClipperUserController_GetFeed_System_Guid_System_Guid_System_Int32_System_Boolean_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.GetFeed(System.Guid,System.Guid,System.Int32,System.Boolean)">GetFeed(Guid, Guid, Int32, Boolean)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the articles belonging to a feed of an user</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -462,22 +476,28 @@
       <tr>
         <td><span class="xref">System.Guid</span></td>
         <td><span class="parametername">userId</span></td>
-        <td></td>
+        <td><p>The user wanting to see the articles</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.Guid</span></td>
         <td><span class="parametername">feedId</span></td>
-        <td></td>
+        <td><p>The feed that is requested</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.Int32</span></td>
         <td><span class="parametername">page</span></td>
-        <td></td>
+        <td><p>The index of the page that should be returned. The size of the page is set
+in the user&apos;s <a class="xref" href="JackTheClipperCommon.SharedClasses.UserSettings.html#JackTheClipperCommon_SharedClasses_UserSettings_ArticlesPerPage">ArticlesPerPage</a></p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.Boolean</span></td>
         <td><span class="parametername">showArchived</span></td>
-        <td></td>
+        <td><p>Whether to consider all articles matching the feed criteria or only
+those indexed after the user&apos;s last login</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -492,7 +512,9 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Collections.Generic.IReadOnlyCollection</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.ShortArticle.html">ShortArticle</a>&gt;</td>
-        <td></td>
+        <td><p>List of <a class="xref" href="JackTheClipperCommon.SharedClasses.ShortArticle.html">ShortArticle</a> matching the supplied feeds criteria. The size of the
+list is less than or equal to <a class="xref" href="JackTheClipperCommon.SharedClasses.UserSettings.html#JackTheClipperCommon_SharedClasses_UserSettings_ArticlesPerPage">ArticlesPerPage</a></p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -500,7 +522,8 @@
   
   <a id="JackTheClipperRequestHandler_Controllers_ClipperUserController_GetFeedDefinitions_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.GetFeedDefinitions*"></a>
   <h4 id="JackTheClipperRequestHandler_Controllers_ClipperUserController_GetFeedDefinitions_System_Guid_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.GetFeedDefinitions(System.Guid)">GetFeedDefinitions(Guid)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the feeds a user has</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -519,7 +542,8 @@
       <tr>
         <td><span class="xref">System.Guid</span></td>
         <td><span class="parametername">userId</span></td>
-        <td></td>
+        <td><p>The user whose feeds are queried</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -534,7 +558,8 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Collections.Generic.IReadOnlyCollection</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.Feed.html">Feed</a>&gt;</td>
-        <td></td>
+        <td><p>List of <a class="xref" href="JackTheClipperCommon.SharedClasses.Feed.html">Feed</a>s belonging to the user</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -542,7 +567,8 @@
   
   <a id="JackTheClipperRequestHandler_Controllers_ClipperUserController_GetUserSettings_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.GetUserSettings*"></a>
   <h4 id="JackTheClipperRequestHandler_Controllers_ClipperUserController_GetUserSettings_System_Guid_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.GetUserSettings(System.Guid)">GetUserSettings(Guid)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the UserSettings of the requesting user</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -561,7 +587,8 @@
       <tr>
         <td><span class="xref">System.Guid</span></td>
         <td><span class="parametername">userId</span></td>
-        <td></td>
+        <td><p>The id of the user requesting his settings</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -576,7 +603,8 @@
     <tbody>
       <tr>
         <td><a class="xref" href="JackTheClipperCommon.SharedClasses.UserSettings.html">UserSettings</a></td>
-        <td></td>
+        <td><p><a class="xref" href="JackTheClipperCommon.SharedClasses.UserSettings.html">UserSettings</a> belonging to the user</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -634,7 +662,8 @@
   
   <a id="JackTheClipperRequestHandler_Controllers_ClipperUserController_ResetPassword_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.ResetPassword*"></a>
   <h4 id="JackTheClipperRequestHandler_Controllers_ClipperUserController_ResetPassword_System_String_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.ResetPassword(System.String)">ResetPassword(String)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Resets the password of the user</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -653,7 +682,8 @@
       <tr>
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">userMail</span></td>
-        <td></td>
+        <td><p>The mail belonging to the user whose password will be reset</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -668,7 +698,8 @@
     <tbody>
       <tr>
         <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span></td>
-        <td></td>
+        <td><p><span class="xref">Microsoft.AspNetCore.Mvc.OkResult</span> if successful, <span class="xref">Microsoft.AspNetCore.Mvc.BadRequestResult</span> otherwise</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -738,7 +769,8 @@
   
   <a id="JackTheClipperRequestHandler_Controllers_ClipperUserController_TryAuthenticateUser_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.TryAuthenticateUser*"></a>
   <h4 id="JackTheClipperRequestHandler_Controllers_ClipperUserController_TryAuthenticateUser_System_String_System_String_System_Guid_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperUserController.TryAuthenticateUser(System.String,System.String,System.Guid)">TryAuthenticateUser(String, String, Guid)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Authenticates a user</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -757,17 +789,21 @@
       <tr>
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">userMailOrName</span></td>
-        <td></td>
+        <td><p>user name or email by which the user to authenticate can be identified</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">userPassword</span></td>
-        <td></td>
+        <td><p>The password trying to authenticate the user</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.Guid</span></td>
         <td><span class="parametername">principalUnit</span></td>
-        <td></td>
+        <td><p>The id of the principal unit the user should belong to.
+This is needed since a username need only be unique within one principal unit</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -782,7 +818,8 @@
     <tbody>
       <tr>
         <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a>&gt;</td>
-        <td></td>
+        <td><p>The authenticated user or <span class="xref">Microsoft.AspNetCore.Mvc.BadRequestResult</span> if the authentication failed</p>
+</td>
       </tr>
     </tbody>
   </table>

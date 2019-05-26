@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class NotificationControllerBAD
+    <title>Class PdfGenerator
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class NotificationControllerBAD
+    <meta name="title" content="Class PdfGenerator
    ">
     <meta name="generator" content="docfx 2.42.2.0">
     
@@ -68,37 +68,78 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="JackTheClipperBusiness.NotificationControllerBAD">
+            <article class="content wrap" id="_content" data-uid="JackTheClipperBusiness.PdfGenerator">
   
   
-  <h1 id="JackTheClipperBusiness_NotificationControllerBAD" data-uid="JackTheClipperBusiness.NotificationControllerBAD" class="text-break">Class NotificationControllerBAD
+  <h1 id="JackTheClipperBusiness_PdfGenerator" data-uid="JackTheClipperBusiness.PdfGenerator" class="text-break">Class PdfGenerator
   </h1>
-  <div class="markdown level0 summary"><p>Check if Notification is wanted/necessary</p>
+  <div class="markdown level0 summary"><p>Generates a PDF file.</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
     <div class="level0"><span class="xref">System.Object</span></div>
-    <div class="level1"><span class="xref">NotificationControllerBAD</span></div>
+    <div class="level1"><span class="xref">PdfGenerator</span></div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="JackTheClipperBusiness.html">JackTheClipperBusiness</a></h6>
   <h6><strong>Assembly</strong>: JackTheClipperBusiness.dll</h6>
-  <h5 id="JackTheClipperBusiness_NotificationControllerBAD_syntax">Syntax</h5>
+  <h5 id="JackTheClipperBusiness_PdfGenerator_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class NotificationControllerBAD : Object</code></pre>
+    <pre><code class="lang-csharp hljs">public static class PdfGenerator : Object</code></pre>
   </div>
   <h3 id="methods">Methods
   </h3>
   
   
-  <a id="JackTheClipperBusiness_NotificationControllerBAD_Start_" data-uid="JackTheClipperBusiness.NotificationControllerBAD.Start*"></a>
-  <h4 id="JackTheClipperBusiness_NotificationControllerBAD_Start" data-uid="JackTheClipperBusiness.NotificationControllerBAD.Start">Start()</h4>
-  <div class="markdown level1 summary"></div>
+  <a id="JackTheClipperBusiness_PdfGenerator_GeneratePdf_" data-uid="JackTheClipperBusiness.PdfGenerator.GeneratePdf*"></a>
+  <h4 id="JackTheClipperBusiness_PdfGenerator_GeneratePdf_System_Collections_Generic_IEnumerable_JackTheClipperCommon_SharedClasses_ShortArticle__System_String_" data-uid="JackTheClipperBusiness.PdfGenerator.GeneratePdf(System.Collections.Generic.IEnumerable{JackTheClipperCommon.SharedClasses.ShortArticle},System.String)">GeneratePdf(IEnumerable&lt;ShortArticle&gt;, String)</h4>
+  <div class="markdown level1 summary"><p>Generates a user specific PDF file with its name and the specific articles.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static void Start()</code></pre>
+    <pre><code class="lang-csharp hljs">public static MemoryStream GeneratePdf(IEnumerable&lt;ShortArticle&gt; content, string userName)</code></pre>
   </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.ShortArticle.html">ShortArticle</a>&gt;</td>
+        <td><span class="parametername">content</span></td>
+        <td><p>The user specific articles.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">userName</span></td>
+        <td><p>The users full name.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.IO.MemoryStream</span></td>
+        <td><p>A (memory) stream build out of the PDF file.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
 </article>
           </div>
           

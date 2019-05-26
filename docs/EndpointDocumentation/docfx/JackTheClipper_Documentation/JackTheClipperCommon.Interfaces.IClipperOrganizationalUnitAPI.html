@@ -87,13 +87,13 @@
   
   
   <a id="JackTheClipperCommon_Interfaces_IClipperOrganizationalUnitAPI_AddOrganizationalUnit_" data-uid="JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.AddOrganizationalUnit*"></a>
-  <h4 id="JackTheClipperCommon_Interfaces_IClipperOrganizationalUnitAPI_AddOrganizationalUnit_JackTheClipperCommon_SharedClasses_User_JackTheClipperCommon_SharedClasses_OrganizationalUnit_JackTheClipperCommon_SharedClasses_OrganizationalUnit_" data-uid="JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.AddOrganizationalUnit(JackTheClipperCommon.SharedClasses.User,JackTheClipperCommon.SharedClasses.OrganizationalUnit,JackTheClipperCommon.SharedClasses.OrganizationalUnit)">AddOrganizationalUnit(User, OrganizationalUnit, OrganizationalUnit)</h4>
-  <div class="markdown level1 summary"><p>Adds a given organizational unit.</p>
+  <h4 id="JackTheClipperCommon_Interfaces_IClipperOrganizationalUnitAPI_AddOrganizationalUnit_System_String_System_Guid_" data-uid="JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.AddOrganizationalUnit(System.String,System.Guid)">AddOrganizationalUnit(String, Guid)</h4>
+  <div class="markdown level1 summary"><p>Adds a new unit.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">MethodResult AddOrganizationalUnit(User user, OrganizationalUnit parent, OrganizationalUnit toAdd)</code></pre>
+    <pre><code class="lang-csharp hljs">MethodResult AddOrganizationalUnit(string name, Guid parentUnitId)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -106,21 +106,15 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
-        <td><span class="parametername">user</span></td>
-        <td><p>The user who requests the addition.</p>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name.</p>
 </td>
       </tr>
       <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a></td>
-        <td><span class="parametername">parent</span></td>
-        <td><p>The parent of the new organizational unit.</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a></td>
-        <td><span class="parametername">toAdd</span></td>
-        <td><p>To unit add.</p>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">parentUnitId</span></td>
+        <td><p>The parent unit id.</p>
 </td>
       </tr>
     </tbody>
@@ -136,7 +130,7 @@
     <tbody>
       <tr>
         <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
-        <td><p>MethodResult indicating success</p>
+        <td><p>MethodResult indicating success.</p>
 </td>
       </tr>
     </tbody>
@@ -144,13 +138,13 @@
   
   
   <a id="JackTheClipperCommon_Interfaces_IClipperOrganizationalUnitAPI_DeleteOrganizationalUnit_" data-uid="JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.DeleteOrganizationalUnit*"></a>
-  <h4 id="JackTheClipperCommon_Interfaces_IClipperOrganizationalUnitAPI_DeleteOrganizationalUnit_JackTheClipperCommon_SharedClasses_User_JackTheClipperCommon_SharedClasses_OrganizationalUnit_" data-uid="JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.DeleteOrganizationalUnit(JackTheClipperCommon.SharedClasses.User,JackTheClipperCommon.SharedClasses.OrganizationalUnit)">DeleteOrganizationalUnit(User, OrganizationalUnit)</h4>
-  <div class="markdown level1 summary"><p>Deletes the organizational unit.</p>
+  <h4 id="JackTheClipperCommon_Interfaces_IClipperOrganizationalUnitAPI_DeleteOrganizationalUnit_System_Guid_" data-uid="JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.DeleteOrganizationalUnit(System.Guid)">DeleteOrganizationalUnit(Guid)</h4>
+  <div class="markdown level1 summary"><p>Deletes an organizational unit.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">MethodResult DeleteOrganizationalUnit(User user, OrganizationalUnit toDelete)</code></pre>
+    <pre><code class="lang-csharp hljs">MethodResult DeleteOrganizationalUnit(Guid unitId)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -163,15 +157,9 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
-        <td><span class="parametername">user</span></td>
-        <td><p>The user who requests the deletion.</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a></td>
-        <td><span class="parametername">toDelete</span></td>
-        <td><p>The unit to delete.</p>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">unitId</span></td>
+        <td><p>The unit identifier.</p>
 </td>
       </tr>
     </tbody>
@@ -187,7 +175,7 @@
     <tbody>
       <tr>
         <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
-        <td><p>MethodResult indicating success</p>
+        <td><p>MethodResult indicating success.</p>
 </td>
       </tr>
     </tbody>
@@ -240,13 +228,13 @@
   
   
   <a id="JackTheClipperCommon_Interfaces_IClipperOrganizationalUnitAPI_GetOrganizationalUnitSettings_" data-uid="JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.GetOrganizationalUnitSettings*"></a>
-  <h4 id="JackTheClipperCommon_Interfaces_IClipperOrganizationalUnitAPI_GetOrganizationalUnitSettings_JackTheClipperCommon_SharedClasses_User_JackTheClipperCommon_SharedClasses_OrganizationalUnit_" data-uid="JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.GetOrganizationalUnitSettings(JackTheClipperCommon.SharedClasses.User,JackTheClipperCommon.SharedClasses.OrganizationalUnit)">GetOrganizationalUnitSettings(User, OrganizationalUnit)</h4>
+  <h4 id="JackTheClipperCommon_Interfaces_IClipperOrganizationalUnitAPI_GetOrganizationalUnitSettings_System_Guid_" data-uid="JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.GetOrganizationalUnitSettings(System.Guid)">GetOrganizationalUnitSettings(Guid)</h4>
   <div class="markdown level1 summary"><p>Gets the organizational unit settings.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">OrganizationalUnitSettings GetOrganizationalUnitSettings(User user, OrganizationalUnit unit)</code></pre>
+    <pre><code class="lang-csharp hljs">OrganizationalUnitSettings GetOrganizationalUnitSettings(Guid unitId)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -259,15 +247,9 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
-        <td><span class="parametername">user</span></td>
-        <td><p>The user who requests the settings.</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a></td>
-        <td><span class="parametername">unit</span></td>
-        <td><p>The unit.</p>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">unitId</span></td>
+        <td><p>The organizational unit id.</p>
 </td>
       </tr>
     </tbody>
@@ -329,6 +311,102 @@
       <tr>
         <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
         <td><p>MethodResult indicating success</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_Interfaces_IClipperOrganizationalUnitAPI_SetUserOrganizationalUnits_" data-uid="JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.SetUserOrganizationalUnits*"></a>
+  <h4 id="JackTheClipperCommon_Interfaces_IClipperOrganizationalUnitAPI_SetUserOrganizationalUnits_JackTheClipperCommon_SharedClasses_User_System_Collections_Generic_IReadOnlyList_System_Guid__" data-uid="JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.SetUserOrganizationalUnits(JackTheClipperCommon.SharedClasses.User,System.Collections.Generic.IReadOnlyList{System.Guid})">SetUserOrganizationalUnits(User, IReadOnlyList&lt;Guid&gt;)</h4>
+  <div class="markdown level1 summary"><p>Sets the organizational units of a user.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">MethodResult SetUserOrganizationalUnits(User user, IReadOnlyList&lt;Guid&gt; units)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
+        <td><span class="parametername">user</span></td>
+        <td><p>The user to be changed.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<span class="xref">System.Guid</span>&gt;</td>
+        <td><span class="parametername">units</span></td>
+        <td><p>The organizational units.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
+        <td><p>MethodResult indicating success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_Interfaces_IClipperOrganizationalUnitAPI_UpdateOrganizationalUnit_" data-uid="JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.UpdateOrganizationalUnit*"></a>
+  <h4 id="JackTheClipperCommon_Interfaces_IClipperOrganizationalUnitAPI_UpdateOrganizationalUnit_JackTheClipperCommon_SharedClasses_OrganizationalUnit_" data-uid="JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.UpdateOrganizationalUnit(JackTheClipperCommon.SharedClasses.OrganizationalUnit)">UpdateOrganizationalUnit(OrganizationalUnit)</h4>
+  <div class="markdown level1 summary"><p>Updates an existing organizational unit to the given values.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">MethodResult UpdateOrganizationalUnit(OrganizationalUnit updatedUnit)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a></td>
+        <td><span class="parametername">updatedUnit</span></td>
+        <td><p>The updated unit.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
+        <td><p>MethodResult indicating success.</p>
 </td>
       </tr>
     </tbody>

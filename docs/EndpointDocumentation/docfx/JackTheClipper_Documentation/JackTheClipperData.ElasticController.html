@@ -166,13 +166,13 @@ Proceed with Caution</p>
   
   
   <a id="JackTheClipperData_ElasticController_GetCompleteFeedAsync_" data-uid="JackTheClipperData.ElasticController.GetCompleteFeedAsync*"></a>
-  <h4 id="JackTheClipperData_ElasticController_GetCompleteFeedAsync_JackTheClipperCommon_SharedClasses_User_System_DateTime_" data-uid="JackTheClipperData.ElasticController.GetCompleteFeedAsync(JackTheClipperCommon.SharedClasses.User,System.DateTime)">GetCompleteFeedAsync(User, DateTime)</h4>
-  <div class="markdown level1 summary"><p>Gets the complete feed (= all relevant articles in any feed) of a given user.</p>
+  <h4 id="JackTheClipperData_ElasticController_GetCompleteFeedAsync_JackTheClipperCommon_SharedClasses_UserSettings_System_DateTime_" data-uid="JackTheClipperData.ElasticController.GetCompleteFeedAsync(JackTheClipperCommon.SharedClasses.UserSettings,System.DateTime)">GetCompleteFeedAsync(UserSettings, DateTime)</h4>
+  <div class="markdown level1 summary"><p>Gets the complete feed (= all relevant articles in any feed) of a given user setting.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyCollection&lt;ShortArticle&gt;&gt; GetCompleteFeedAsync(User user, DateTime since)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyCollection&lt;ShortArticle&gt;&gt; GetCompleteFeedAsync(UserSettings userSettings, DateTime since)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -185,9 +185,9 @@ Proceed with Caution</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
-        <td><span class="parametername">user</span></td>
-        <td><p>The User for which the complete feed is requested</p>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.UserSettings.html">UserSettings</a></td>
+        <td><span class="parametername">userSettings</span></td>
+        <td><p>The user settings for which the complete feed is requested</p>
 </td>
       </tr>
       <tr>
@@ -217,13 +217,13 @@ Proceed with Caution</p>
   
   
   <a id="JackTheClipperData_ElasticController_GetFeedAsync_" data-uid="JackTheClipperData.ElasticController.GetFeedAsync*"></a>
-  <h4 id="JackTheClipperData_ElasticController_GetFeedAsync_JackTheClipperCommon_SharedClasses_User_System_Guid_System_DateTime_System_Int32_" data-uid="JackTheClipperData.ElasticController.GetFeedAsync(JackTheClipperCommon.SharedClasses.User,System.Guid,System.DateTime,System.Int32)">GetFeedAsync(User, Guid, DateTime, Int32)</h4>
+  <h4 id="JackTheClipperData_ElasticController_GetFeedAsync_JackTheClipperCommon_SharedClasses_Feed_System_DateTime_System_Int32_System_Int32_System_Collections_Generic_IEnumerable_System_String__" data-uid="JackTheClipperData.ElasticController.GetFeedAsync(JackTheClipperCommon.SharedClasses.Feed,System.DateTime,System.Int32,System.Int32,System.Collections.Generic.IEnumerable{System.String})">GetFeedAsync(Feed, DateTime, Int32, Int32, IEnumerable&lt;String&gt;)</h4>
   <div class="markdown level1 summary"><p>Gets the requested feed</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyCollection&lt;ShortArticle&gt;&gt; GetFeedAsync(User user, Guid feedId, DateTime since, int page)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyCollection&lt;ShortArticle&gt;&gt; GetFeedAsync(Feed feed, DateTime since, int articlesPerPage, int page, IEnumerable&lt;string&gt; unitBlackList)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -236,15 +236,9 @@ Proceed with Caution</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
-        <td><span class="parametername">user</span></td>
-        <td><p>The User for which the feed is requested.</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.Guid</span></td>
-        <td><span class="parametername">feedId</span></td>
-        <td><p>The Id to the feed which should be generated.</p>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.Feed.html">Feed</a></td>
+        <td><span class="parametername">feed</span></td>
+        <td><p>The requested feed.</p>
 </td>
       </tr>
       <tr>
@@ -255,8 +249,20 @@ Proceed with Caution</p>
       </tr>
       <tr>
         <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">articlesPerPage</span></td>
+        <td><p>The amount of articles per page.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
         <td><span class="parametername">page</span></td>
         <td><p>The requested page.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td><span class="parametername">unitBlackList</span></td>
+        <td><p>The unit black list.</p>
 </td>
       </tr>
     </tbody>

@@ -82,24 +82,28 @@ Contains an Id, a name, Parent Organization</p>
     <div class="level0"><span class="xref">System.Object</span></div>
     <div class="level1"><span class="xref">OrganizationalUnit</span></div>
   </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><span class="xref">System.IEquatable</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a>&gt;</div>
+  </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="JackTheClipperCommon.SharedClasses.html">JackTheClipperCommon.SharedClasses</a></h6>
   <h6><strong>Assembly</strong>: JackTheClipperCommon.dll</h6>
   <h5 id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class OrganizationalUnit : Object</code></pre>
+    <pre><code class="lang-csharp hljs">public class OrganizationalUnit : Object, IEquatable&lt;OrganizationalUnit&gt;</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
   
   
   <a id="JackTheClipperCommon_SharedClasses_OrganizationalUnit__ctor_" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.#ctor*"></a>
-  <h4 id="JackTheClipperCommon_SharedClasses_OrganizationalUnit__ctor_System_Guid_System_String_System_Boolean_JackTheClipperCommon_SharedClasses_OrganizationalUnitSettings_System_String_" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.#ctor(System.Guid,System.String,System.Boolean,JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings,System.String)">OrganizationalUnit(Guid, String, Boolean, OrganizationalUnitSettings, String)</h4>
+  <h4 id="JackTheClipperCommon_SharedClasses_OrganizationalUnit__ctor_System_Guid_System_String_System_Boolean_System_String_System_Guid_System_Guid_" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.#ctor(System.Guid,System.String,System.Boolean,System.String,System.Guid,System.Guid)">OrganizationalUnit(Guid, String, Boolean, String, Guid, Guid)</h4>
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a> class.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public OrganizationalUnit(Guid id, string name, bool customerRoot, OrganizationalUnitSettings defaultSettings, string adminMailAddress)</code></pre>
+    <pre><code class="lang-csharp hljs">public OrganizationalUnit(Guid id, string name, bool isPrincipalUnit, string adminMailAddress, Guid parentId, Guid settingsId)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -125,20 +129,27 @@ Contains an Id, a name, Parent Organization</p>
       </tr>
       <tr>
         <td><span class="xref">System.Boolean</span></td>
-        <td><span class="parametername">customerRoot</span></td>
-        <td><p>Flag, indicating whether mandant.</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings.html">OrganizationalUnitSettings</a></td>
-        <td><span class="parametername">defaultSettings</span></td>
-        <td><p>The default settings.</p>
+        <td><span class="parametername">isPrincipalUnit</span></td>
+        <td><p>Flag, indicating whether this unit is a client or not.</p>
 </td>
       </tr>
       <tr>
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">adminMailAddress</span></td>
-        <td></td>
+        <td><p>The email address of the staffchief for this unit</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">parentId</span></td>
+        <td><p>The id of the parent organizational unit.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">settingsId</span></td>
+        <td><p>The id of default settings.</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -172,14 +183,14 @@ Contains an Id, a name, Parent Organization</p>
   </table>
   
   
-  <a id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_CustomerRoot_" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.CustomerRoot*"></a>
-  <h4 id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_CustomerRoot" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.CustomerRoot">CustomerRoot</h4>
-  <div class="markdown level1 summary"><p>Gets a value indicating whether this unit is a customer root (=&quot;mandant&quot;) unit.</p>
+  <a id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_Children_" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.Children*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_Children" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.Children">Children</h4>
+  <div class="markdown level1 summary"><p>Gets or sets the children.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool CustomerRoot { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IReadOnlyCollection&lt;OrganizationalUnit&gt; Children { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -191,33 +202,7 @@ Contains an Id, a name, Parent Organization</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Boolean</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  
-  
-  <a id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_DefaultSettings_" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.DefaultSettings*"></a>
-  <h4 id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_DefaultSettings" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.DefaultSettings">DefaultSettings</h4>
-  <div class="markdown level1 summary"><p>Gets the default settings of the unit.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public OrganizationalUnitSettings DefaultSettings { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings.html">OrganizationalUnitSettings</a></td>
+        <td><span class="xref">System.Collections.Generic.IReadOnlyCollection</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -250,6 +235,32 @@ Contains an Id, a name, Parent Organization</p>
   </table>
   
   
+  <a id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_IsPrincipalUnit_" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.IsPrincipalUnit*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_IsPrincipalUnit" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.IsPrincipalUnit">IsPrincipalUnit</h4>
+  <div class="markdown level1 summary"><p>Gets a value indicating whether this unit is a principal (=&quot;mandant&quot;) unit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsPrincipalUnit { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
   <a id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_Name_" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.Name*"></a>
   <h4 id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_Name" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.Name">Name</h4>
   <div class="markdown level1 summary"><p>Gets the name.</p>
@@ -274,6 +285,208 @@ Contains an Id, a name, Parent Organization</p>
       </tr>
     </tbody>
   </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_ParentId_" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.ParentId*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_ParentId" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.ParentId">ParentId</h4>
+  <div class="markdown level1 summary"><p>Gets the parent unit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid ParentId { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_SettingsId_" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.SettingsId*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_SettingsId" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.SettingsId">SettingsId</h4>
+  <div class="markdown level1 summary"><p>Gets the identifier of the belonging <a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings.html">OrganizationalUnitSettings</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid SettingsId { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_Equals_" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.Equals*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_Equals_JackTheClipperCommon_SharedClasses_OrganizationalUnit_" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.Equals(JackTheClipperCommon.SharedClasses.OrganizationalUnit)">Equals(OrganizationalUnit)</h4>
+  <div class="markdown level1 summary"><p>Indicates whether the current object is equal to another object of the same type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(OrganizationalUnit other)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a></td>
+        <td><span class="parametername">other</span></td>
+        <td><p>An object to compare with this object.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>true if the current object is equal to the <code data-dev-comment-type="paramref" class="paramref">other</code> parameter; otherwise, false.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_Equals_" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.Equals*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_Equals_System_Object_" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.Equals(System.Object)">Equals(Object)</h4>
+  <div class="markdown level1 summary"><p>Determines whether the specified object is equal to the current object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object obj)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">obj</span></td>
+        <td><p>The object to compare with the current object.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>true if the specified object  is equal to the current object; otherwise, false.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_GetAllChildren_" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.GetAllChildren*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_GetAllChildren" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.GetAllChildren">GetAllChildren()</h4>
+  <div class="markdown level1 summary"><p>Flattens the tree hierarchy of an <a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a> and its <a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html#JackTheClipperCommon_SharedClasses_OrganizationalUnit_Children">Children</a></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;OrganizationalUnit&gt; GetAllChildren()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a>&gt;</td>
+        <td><p>List of all <a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a>s below this unit</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_GetHashCode_" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.GetHashCode*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_OrganizationalUnit_GetHashCode" data-uid="JackTheClipperCommon.SharedClasses.OrganizationalUnit.GetHashCode">GetHashCode()</h4>
+  <div class="markdown level1 summary"><p>Serves as the default hash function.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><p>A hash code for the current object.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <span class="xref">System.IEquatable&lt;&gt;</span>
+  </div>
 </article>
           </div>
           

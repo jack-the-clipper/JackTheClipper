@@ -81,26 +81,44 @@ It also has a reference to its UserSettings</p>
   <div class="inheritance">
     <h5>Inheritance</h5>
     <div class="level0"><span class="xref">System.Object</span></div>
-    <div class="level1"><span class="xref">User</span></div>
+    <div class="level1"><a class="xref" href="JackTheClipperCommon.SharedClasses.BasicUserInformation.html">BasicUserInformation</a></div>
+    <div class="level2"><span class="xref">User</span></div>
+      <div class="level3"><a class="xref" href="JackTheClipperCommon.SharedClasses.ExtendedUser.html">ExtendedUser</a></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="JackTheClipperCommon.Interfaces.IMailNotifiable.html">IMailNotifiable</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="JackTheClipperCommon.SharedClasses.BasicUserInformation.html#JackTheClipperCommon_SharedClasses_BasicUserInformation_Id">BasicUserInformation.Id</a>
+    </div>
+    <div>
+      <a class="xref" href="JackTheClipperCommon.SharedClasses.BasicUserInformation.html#JackTheClipperCommon_SharedClasses_BasicUserInformation_UserName">BasicUserInformation.UserName</a>
+    </div>
+    <div>
+      <a class="xref" href="JackTheClipperCommon.SharedClasses.BasicUserInformation.html#JackTheClipperCommon_SharedClasses_BasicUserInformation_IsValid">BasicUserInformation.IsValid</a>
+    </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="JackTheClipperCommon.SharedClasses.html">JackTheClipperCommon.SharedClasses</a></h6>
   <h6><strong>Assembly</strong>: JackTheClipperCommon.dll</h6>
   <h5 id="JackTheClipperCommon_SharedClasses_User_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class User : Object</code></pre>
+    <pre><code class="lang-csharp hljs">public class User : BasicUserInformation, IMailNotifiable</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
   
   
   <a id="JackTheClipperCommon_SharedClasses_User__ctor_" data-uid="JackTheClipperCommon.SharedClasses.User.#ctor*"></a>
-  <h4 id="JackTheClipperCommon_SharedClasses_User__ctor_System_Guid_System_String_JackTheClipperCommon_Enums_Role_System_String_JackTheClipperCommon_SharedClasses_UserSettings_System_Boolean_System_DateTime_System_Boolean_System_String_System_Guid_" data-uid="JackTheClipperCommon.SharedClasses.User.#ctor(System.Guid,System.String,JackTheClipperCommon.Enums.Role,System.String,JackTheClipperCommon.SharedClasses.UserSettings,System.Boolean,System.DateTime,System.Boolean,System.String,System.Guid)">User(Guid, String, Role, String, UserSettings, Boolean, DateTime, Boolean, String, Guid)</h4>
+  <h4 id="JackTheClipperCommon_SharedClasses_User__ctor_System_Guid_System_String_JackTheClipperCommon_Enums_Role_System_String_System_Guid_System_Boolean_System_DateTime_System_Boolean_System_String_System_Guid_" data-uid="JackTheClipperCommon.SharedClasses.User.#ctor(System.Guid,System.String,JackTheClipperCommon.Enums.Role,System.String,System.Guid,System.Boolean,System.DateTime,System.Boolean,System.String,System.Guid)">User(Guid, String, Role, String, Guid, Boolean, DateTime, Boolean, String, Guid)</h4>
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a> class.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public User(Guid id, string mailAddress, Role role, string name, UserSettings settings, bool mustChangePassword, DateTime lastLoginTime, bool isValid, string principalUnitName, Guid principalUnitId)</code></pre>
+    <pre><code class="lang-csharp hljs">public User(Guid id, string mailAddress, Role role, string name, Guid settingsId, bool mustChangePassword, DateTime lastLoginTime, bool isValid, string principalUnitName, Guid principalUnitId)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -137,9 +155,9 @@ It also has a reference to its UserSettings</p>
 </td>
       </tr>
       <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.UserSettings.html">UserSettings</a></td>
-        <td><span class="parametername">settings</span></td>
-        <td><p>The users settings.</p>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">settingsId</span></td>
+        <td><p>The users settings id.</p>
 </td>
       </tr>
       <tr>
@@ -192,58 +210,6 @@ It also has a reference to its UserSettings</p>
   </table>
   <h3 id="properties">Properties
   </h3>
-  
-  
-  <a id="JackTheClipperCommon_SharedClasses_User_Id_" data-uid="JackTheClipperCommon.SharedClasses.User.Id*"></a>
-  <h4 id="JackTheClipperCommon_SharedClasses_User_Id" data-uid="JackTheClipperCommon.SharedClasses.User.Id">Id</h4>
-  <div class="markdown level1 summary"><p>Gets the identifier.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Guid Id { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Guid</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  
-  
-  <a id="JackTheClipperCommon_SharedClasses_User_IsValid_" data-uid="JackTheClipperCommon.SharedClasses.User.IsValid*"></a>
-  <h4 id="JackTheClipperCommon_SharedClasses_User_IsValid" data-uid="JackTheClipperCommon.SharedClasses.User.IsValid">IsValid</h4>
-  <div class="markdown level1 summary"><p>Gets a value indicating whether the user is valid or not.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool IsValid { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Boolean</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
   
   
   <a id="JackTheClipperCommon_SharedClasses_User_LastLoginTime_" data-uid="JackTheClipperCommon.SharedClasses.User.LastLoginTime*"></a>
@@ -305,7 +271,7 @@ It also has a reference to its UserSettings</p>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool MustChangePassword { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public bool MustChangePassword { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -428,14 +394,14 @@ It also has a reference to its UserSettings</p>
   </table>
   
   
-  <a id="JackTheClipperCommon_SharedClasses_User_Settings_" data-uid="JackTheClipperCommon.SharedClasses.User.Settings*"></a>
-  <h4 id="JackTheClipperCommon_SharedClasses_User_Settings" data-uid="JackTheClipperCommon.SharedClasses.User.Settings">Settings</h4>
-  <div class="markdown level1 summary"><p>Gets or sets the settings.</p>
+  <a id="JackTheClipperCommon_SharedClasses_User_SettingsId_" data-uid="JackTheClipperCommon.SharedClasses.User.SettingsId*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_User_SettingsId" data-uid="JackTheClipperCommon.SharedClasses.User.SettingsId">SettingsId</h4>
+  <div class="markdown level1 summary"><p>Gets the settings id.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UserSettings Settings { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public Guid SettingsId { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -447,21 +413,20 @@ It also has a reference to its UserSettings</p>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.UserSettings.html">UserSettings</a></td>
+        <td><span class="xref">System.Guid</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
   
   
-  <a id="JackTheClipperCommon_SharedClasses_User_UserName_" data-uid="JackTheClipperCommon.SharedClasses.User.UserName*"></a>
-  <h4 id="JackTheClipperCommon_SharedClasses_User_UserName" data-uid="JackTheClipperCommon.SharedClasses.User.UserName">UserName</h4>
-  <div class="markdown level1 summary"><p>Gets the name of the user.</p>
-</div>
+  <a id="JackTheClipperCommon_SharedClasses_User_UserMailAddress_" data-uid="JackTheClipperCommon.SharedClasses.User.UserMailAddress*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_User_UserMailAddress" data-uid="JackTheClipperCommon.SharedClasses.User.UserMailAddress">UserMailAddress</h4>
+  <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string UserName { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public string UserMailAddress { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -478,53 +443,10 @@ It also has a reference to its UserSettings</p>
       </tr>
     </tbody>
   </table>
-  <h3 id="methods">Methods
-  </h3>
-  
-  
-  <a id="JackTheClipperCommon_SharedClasses_User_GetFeed_" data-uid="JackTheClipperCommon.SharedClasses.User.GetFeed*"></a>
-  <h4 id="JackTheClipperCommon_SharedClasses_User_GetFeed_System_Guid_" data-uid="JackTheClipperCommon.SharedClasses.User.GetFeed(System.Guid)">GetFeed(Guid)</h4>
-  <div class="markdown level1 summary"><p>Gets the feed by id.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Feed GetFeed(Guid id)</code></pre>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="JackTheClipperCommon.Interfaces.IMailNotifiable.html">IMailNotifiable</a>
   </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Guid</span></td>
-        <td><span class="parametername">id</span></td>
-        <td><p>The identifier.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.Feed.html">Feed</a></td>
-        <td><p>The feed.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
 </article>
           </div>
           

@@ -105,7 +105,8 @@
   
   <a id="JackTheClipperCommon_Configuration_AppConfiguration_AllowedHosts_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.AllowedHosts*"></a>
   <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_AllowedHosts" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.AllowedHosts">AllowedHosts</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Which hosts are allowed to access this application</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -130,7 +131,9 @@
   
   <a id="JackTheClipperCommon_Configuration_AppConfiguration_ElasticClearIndex_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.ElasticClearIndex*"></a>
   <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_ElasticClearIndex" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.ElasticClearIndex">ElasticClearIndex</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Whether to clear existing indexes of ElasticSearch on application start.
+Default is false</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -155,7 +158,8 @@
   
   <a id="JackTheClipperCommon_Configuration_AppConfiguration_ElasticPermanentIndexName_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.ElasticPermanentIndexName*"></a>
   <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_ElasticPermanentIndexName" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.ElasticPermanentIndexName">ElasticPermanentIndexName</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The name of the permanent index. This is where all articles are saved in</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -180,7 +184,9 @@
   
   <a id="JackTheClipperCommon_Configuration_AppConfiguration_ElasticRssSpeedIndexName_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.ElasticRssSpeedIndexName*"></a>
   <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_ElasticRssSpeedIndexName" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.ElasticRssSpeedIndexName">ElasticRssSpeedIndexName</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The name of the index to compare rss articles. This is a different one that allows for better
+performance since articles can be compared by something else than their entire content</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -205,11 +211,40 @@
   
   <a id="JackTheClipperCommon_Configuration_AppConfiguration_ElasticTemporaryIndexName_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.ElasticTemporaryIndexName*"></a>
   <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_ElasticTemporaryIndexName" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.ElasticTemporaryIndexName">ElasticTemporaryIndexName</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The name of the temporary index. Articles are only saved for a short amount of time in here.
+They are either discarded if deemed uninteresting for all users of the application or saved to
+permanent index otherwise</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public static string ElasticTemporaryIndexName { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_Configuration_AppConfiguration_ElasticUri_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.ElasticUri*"></a>
+  <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_ElasticUri" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.ElasticUri">ElasticUri</h4>
+  <div class="markdown level1 summary"><p>Uri to communicate with the Elastic Search Server</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ElasticUri { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -255,7 +290,8 @@
   
   <a id="JackTheClipperCommon_Configuration_AppConfiguration_LoggingLogLevelDefault_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.LoggingLogLevelDefault*"></a>
   <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_LoggingLogLevelDefault" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.LoggingLogLevelDefault">LoggingLogLevelDefault</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The logging level to use for the application</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -280,7 +316,8 @@
   
   <a id="JackTheClipperCommon_Configuration_AppConfiguration_MailConfigurationFELoginLink_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationFELoginLink*"></a>
   <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_MailConfigurationFELoginLink" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationFELoginLink">MailConfigurationFELoginLink</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The login link of the frontend</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -305,7 +342,8 @@
   
   <a id="JackTheClipperCommon_Configuration_AppConfiguration_MailConfigurationFrom_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationFrom*"></a>
   <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_MailConfigurationFrom" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationFrom">MailConfigurationFrom</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The name of the user the mails are sent from</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -330,7 +368,8 @@
   
   <a id="JackTheClipperCommon_Configuration_AppConfiguration_MailConfigurationHost_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationHost*"></a>
   <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_MailConfigurationHost" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationHost">MailConfigurationHost</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Host of the mail server</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -355,7 +394,8 @@
   
   <a id="JackTheClipperCommon_Configuration_AppConfiguration_MailConfigurationPassword_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationPassword*"></a>
   <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_MailConfigurationPassword" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationPassword">MailConfigurationPassword</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The password to access the mail server</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -380,7 +420,8 @@
   
   <a id="JackTheClipperCommon_Configuration_AppConfiguration_MailConfigurationPort_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationPort*"></a>
   <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_MailConfigurationPort" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationPort">MailConfigurationPort</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Port of the mail server</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -405,7 +446,8 @@
   
   <a id="JackTheClipperCommon_Configuration_AppConfiguration_MailConfigurationSSL_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationSSL*"></a>
   <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_MailConfigurationSSL" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationSSL">MailConfigurationSSL</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Whether the mail server uses Https</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -428,9 +470,146 @@
   </table>
   
   
+  <a id="JackTheClipperCommon_Configuration_AppConfiguration_MailConfigurationTimeout_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationTimeout*"></a>
+  <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_MailConfigurationTimeout" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationTimeout">MailConfigurationTimeout</h4>
+  <div class="markdown level1 summary"><p>Timeout for the mail server. Default is 10000. This is in Milliseconds</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int MailConfigurationTimeout { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_Configuration_AppConfiguration_PasswordLength_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.PasswordLength*"></a>
+  <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_PasswordLength" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.PasswordLength">PasswordLength</h4>
+  <div class="markdown level1 summary"><p>How long the autogenerated passwords should be. Must be greater than</p>
+<ol>
+<li>Default value is 8</li>
+</ol>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int PasswordLength { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_Configuration_AppConfiguration_PerformanceTraceActive_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.PerformanceTraceActive*"></a>
+  <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_PerformanceTraceActive" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.PerformanceTraceActive">PerformanceTraceActive</h4>
+  <div class="markdown level1 summary"><p>Whether performance should be traced for this application.
+Default is false</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool PerformanceTraceActive { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_Configuration_AppConfiguration_RssCrawlInterval_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.RssCrawlInterval*"></a>
+  <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_RssCrawlInterval" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.RssCrawlInterval">RssCrawlInterval</h4>
+  <div class="markdown level1 summary"><p>In which intervals rss feeds should be crawled. This is in seconds.
+Minimum value is 10. Default is 45</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int RssCrawlInterval { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_Configuration_AppConfiguration_ShortTextLength_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.ShortTextLength*"></a>
+  <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_ShortTextLength" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.ShortTextLength">ShortTextLength</h4>
+  <div class="markdown level1 summary"><p>How long the short text of a ShortArticle is. Minimum value of 3.
+Default is 200</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int ShortTextLength { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
   <a id="JackTheClipperCommon_Configuration_AppConfiguration_SiteConfigIP_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.SiteConfigIP*"></a>
   <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_SiteConfigIP" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.SiteConfigIP">SiteConfigIP</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The ip address the application should bind to</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -455,7 +634,8 @@
   
   <a id="JackTheClipperCommon_Configuration_AppConfiguration_SiteConfigPort_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.SiteConfigPort*"></a>
   <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_SiteConfigPort" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.SiteConfigPort">SiteConfigPort</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The port the application should bind to</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -480,7 +660,8 @@
   
   <a id="JackTheClipperCommon_Configuration_AppConfiguration_SiteConfigSSL_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.SiteConfigSSL*"></a>
   <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_SiteConfigSSL" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.SiteConfigSSL">SiteConfigSSL</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Whether the application should use Https over Http</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -505,7 +686,8 @@
   
   <a id="JackTheClipperCommon_Configuration_AppConfiguration_SqlServerConnectionString_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.SqlServerConnectionString*"></a>
   <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_SqlServerConnectionString" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.SqlServerConnectionString">SqlServerConnectionString</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The url of the SQL server</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -522,6 +704,60 @@
     <tbody>
       <tr>
         <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_Configuration_AppConfiguration_UserAgent_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.UserAgent*"></a>
+  <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_UserAgent" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.UserAgent">UserAgent</h4>
+  <div class="markdown level1 summary"><p>Which user agent to use when crawling website. Some sites deliver
+their content based on the user agent. Defaults to Mozilla/5.0</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string UserAgent { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_Configuration_AppConfiguration_WebsiteCrawlInterval_" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.WebsiteCrawlInterval*"></a>
+  <h4 id="JackTheClipperCommon_Configuration_AppConfiguration_WebsiteCrawlInterval" data-uid="JackTheClipperCommon.Configuration.AppConfiguration.WebsiteCrawlInterval">WebsiteCrawlInterval</h4>
+  <div class="markdown level1 summary"><p>In which intervals websites should be crawled. This is in seconds.
+Minimum value is 10. Default is 120</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int WebsiteCrawlInterval { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
         <td></td>
       </tr>
     </tbody>

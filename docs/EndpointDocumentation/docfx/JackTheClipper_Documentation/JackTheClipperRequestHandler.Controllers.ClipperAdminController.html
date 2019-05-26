@@ -73,7 +73,8 @@
   
   <h1 id="JackTheClipperRequestHandler_Controllers_ClipperAdminController" data-uid="JackTheClipperRequestHandler.Controllers.ClipperAdminController" class="text-break">Class ClipperAdminController
   </h1>
-  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 summary"><p>Controller for services that require a <a class="xref" href="JackTheClipperCommon.Enums.Role.html#JackTheClipperCommon_Enums_Role_SystemAdministrator">SystemAdministrator</a></p>
+</div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
@@ -102,9 +103,67 @@
   </h3>
   
   
+  <a id="JackTheClipperRequestHandler_Controllers_ClipperAdminController_AddPrincipalUnit_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperAdminController.AddPrincipalUnit*"></a>
+  <h4 id="JackTheClipperRequestHandler_Controllers_ClipperAdminController_AddPrincipalUnit_System_Guid_System_String_System_String_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperAdminController.AddPrincipalUnit(System.Guid,System.String,System.String)">AddPrincipalUnit(Guid, String, String)</h4>
+  <div class="markdown level1 summary"><p>Adds a new principal unit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult&lt;MethodResult&gt; AddPrincipalUnit(Guid userId, string name, string principalUnitMail)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td><p>The user identifier of the user which calls the api.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name of the new principal unit.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">principalUnitMail</span></td>
+        <td><p>The mail of the principal unit.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a>&gt;</td>
+        <td><p>MethodResult indicating success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
   <a id="JackTheClipperRequestHandler_Controllers_ClipperAdminController_AddSource_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperAdminController.AddSource*"></a>
   <h4 id="JackTheClipperRequestHandler_Controllers_ClipperAdminController_AddSource_System_Guid_JackTheClipperCommon_SharedClasses_Source_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperAdminController.AddSource(System.Guid,JackTheClipperCommon.SharedClasses.Source)">AddSource(Guid, Source)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds a new source.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -123,12 +182,14 @@
       <tr>
         <td><span class="xref">System.Guid</span></td>
         <td><span class="parametername">userId</span></td>
-        <td></td>
+        <td><p>The user identifier.</p>
+</td>
       </tr>
       <tr>
         <td><a class="xref" href="JackTheClipperCommon.SharedClasses.Source.html">Source</a></td>
         <td><span class="parametername">toAdd</span></td>
-        <td></td>
+        <td><p>The source to add.</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -143,20 +204,21 @@
     <tbody>
       <tr>
         <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a>&gt;</td>
-        <td></td>
+        <td><p>MethodResult indicating success.</p>
+</td>
       </tr>
     </tbody>
   </table>
   
   
   <a id="JackTheClipperRequestHandler_Controllers_ClipperAdminController_ChangeSource_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperAdminController.ChangeSource*"></a>
-  <h4 id="JackTheClipperRequestHandler_Controllers_ClipperAdminController_ChangeSource_System_Guid_System_Guid_JackTheClipperCommon_SharedClasses_Source_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperAdminController.ChangeSource(System.Guid,System.Guid,JackTheClipperCommon.SharedClasses.Source)">ChangeSource(Guid, Guid, Source)</h4>
-  <div class="markdown level1 summary"><p>Endpoint to Change the Source</p>
+  <h4 id="JackTheClipperRequestHandler_Controllers_ClipperAdminController_ChangeSource_System_Guid_JackTheClipperCommon_SharedClasses_Source_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperAdminController.ChangeSource(System.Guid,JackTheClipperCommon.SharedClasses.Source)">ChangeSource(Guid, Source)</h4>
+  <div class="markdown level1 summary"><p>Changes the source.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ActionResult&lt;MethodResult&gt; ChangeSource(Guid userId, Guid tochange, Source newsource)</code></pre>
+    <pre><code class="lang-csharp hljs">public ActionResult&lt;MethodResult&gt; ChangeSource(Guid userId, Source updatedSource)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -175,15 +237,9 @@
 </td>
       </tr>
       <tr>
-        <td><span class="xref">System.Guid</span></td>
-        <td><span class="parametername">tochange</span></td>
-        <td><p>The source to change.</p>
-</td>
-      </tr>
-      <tr>
         <td><a class="xref" href="JackTheClipperCommon.SharedClasses.Source.html">Source</a></td>
-        <td><span class="parametername">newsource</span></td>
-        <td><p>New Source</p>
+        <td><span class="parametername">updatedSource</span></td>
+        <td><p>The updated source.</p>
 </td>
       </tr>
     </tbody>
@@ -199,7 +255,7 @@
     <tbody>
       <tr>
         <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a>&gt;</td>
-        <td><p>200 if succesfull, BadRequest if not</p>
+        <td><p>MethodResult indicating success.</p>
 </td>
       </tr>
     </tbody>
@@ -250,7 +306,52 @@
     <tbody>
       <tr>
         <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a>&gt;</td>
-        <td><p>200 if succesfull, BadRequest if not</p>
+        <td><p>MethodResult indicating success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperRequestHandler_Controllers_ClipperAdminController_GetPrincipalUnits_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperAdminController.GetPrincipalUnits*"></a>
+  <h4 id="JackTheClipperRequestHandler_Controllers_ClipperAdminController_GetPrincipalUnits_System_Guid_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperAdminController.GetPrincipalUnits(System.Guid)">GetPrincipalUnits(Guid)</h4>
+  <div class="markdown level1 summary"><p>Gets all principal units.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult&lt;IReadOnlyList&lt;OrganizationalUnit&gt;&gt; GetPrincipalUnits(Guid userId)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td><p>The user identifier of the requesting admin.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a>&gt;&gt;</td>
+        <td><p>List of principal units.</p>
 </td>
       </tr>
     </tbody>

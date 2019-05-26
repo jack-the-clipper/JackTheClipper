@@ -73,7 +73,8 @@
   
   <h1 id="JackTheClipperRequestHandler_Controllers_ClipperOrganizationalUnitController" data-uid="JackTheClipperRequestHandler.Controllers.ClipperOrganizationalUnitController" class="text-break">Class ClipperOrganizationalUnitController
   </h1>
-  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 summary"><p>Controller for services concerning <a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a>s</p>
+</div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
@@ -104,7 +105,8 @@
   
   <a id="JackTheClipperRequestHandler_Controllers_ClipperOrganizationalUnitController_GetOrganizationalUnits_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperOrganizationalUnitController.GetOrganizationalUnits*"></a>
   <h4 id="JackTheClipperRequestHandler_Controllers_ClipperOrganizationalUnitController_GetOrganizationalUnits_System_Guid_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperOrganizationalUnitController.GetOrganizationalUnits(System.Guid)">GetOrganizationalUnits(Guid)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the organizational units a user is allowed to see</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -123,7 +125,8 @@
       <tr>
         <td><span class="xref">System.Guid</span></td>
         <td><span class="parametername">userId</span></td>
-        <td></td>
+        <td><p>The id of the requesting user</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -138,7 +141,8 @@
     <tbody>
       <tr>
         <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a>&gt;&gt;</td>
-        <td></td>
+        <td><p>List of <a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a> that the user is allowed to see</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -146,7 +150,8 @@
   
   <a id="JackTheClipperRequestHandler_Controllers_ClipperOrganizationalUnitController_GetOrganizationalUnitSettings_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperOrganizationalUnitController.GetOrganizationalUnitSettings*"></a>
   <h4 id="JackTheClipperRequestHandler_Controllers_ClipperOrganizationalUnitController_GetOrganizationalUnitSettings_System_Guid_System_Guid_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperOrganizationalUnitController.GetOrganizationalUnitSettings(System.Guid,System.Guid)">GetOrganizationalUnitSettings(Guid, Guid)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the settings of an <a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a></p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -165,12 +170,14 @@
       <tr>
         <td><span class="xref">System.Guid</span></td>
         <td><span class="parametername">userId</span></td>
-        <td></td>
+        <td><p>The id of the user requesting the settings</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.Guid</span></td>
         <td><span class="parametername">unitId</span></td>
-        <td></td>
+        <td><p>The id of the unit whose settings are requested</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -185,7 +192,59 @@
     <tbody>
       <tr>
         <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings.html">OrganizationalUnitSettings</a>&gt;</td>
-        <td></td>
+        <td><p>The <a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings.html">OrganizationalUnitSettings</a> of the specified unit</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperRequestHandler_Controllers_ClipperOrganizationalUnitController_SaveOrganizationalUnitSettings_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperOrganizationalUnitController.SaveOrganizationalUnitSettings*"></a>
+  <h4 id="JackTheClipperRequestHandler_Controllers_ClipperOrganizationalUnitController_SaveOrganizationalUnitSettings_System_Guid_JackTheClipperCommon_SharedClasses_OrganizationalUnitSettings_" data-uid="JackTheClipperRequestHandler.Controllers.ClipperOrganizationalUnitController.SaveOrganizationalUnitSettings(System.Guid,JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings)">SaveOrganizationalUnitSettings(Guid, OrganizationalUnitSettings)</h4>
+  <div class="markdown level1 summary"><p>Saves the <a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings.html">OrganizationalUnitSettings</a> </p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActionResult&lt;MethodResult&gt; SaveOrganizationalUnitSettings(Guid userId, OrganizationalUnitSettings unitSettings)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td><p>The user requesting this action</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings.html">OrganizationalUnitSettings</a></td>
+        <td><span class="parametername">unitSettings</span></td>
+        <td><p>The updated version of already existing settings</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Microsoft.AspNetCore.Mvc.ActionResult</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a>&gt;</td>
+        <td><p>MethodResult indicating success</p>
+</td>
       </tr>
     </tbody>
   </table>

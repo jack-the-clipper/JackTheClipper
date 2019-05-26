@@ -86,6 +86,63 @@
   </h3>
   
   
+  <a id="JackTheClipperCommon_Interfaces_IClipperSystemAdministratorAPI_AddPrincipalUnit_" data-uid="JackTheClipperCommon.Interfaces.IClipperSystemAdministratorAPI.AddPrincipalUnit*"></a>
+  <h4 id="JackTheClipperCommon_Interfaces_IClipperSystemAdministratorAPI_AddPrincipalUnit_JackTheClipperCommon_SharedClasses_User_System_String_System_String_" data-uid="JackTheClipperCommon.Interfaces.IClipperSystemAdministratorAPI.AddPrincipalUnit(JackTheClipperCommon.SharedClasses.User,System.String,System.String)">AddPrincipalUnit(User, String, String)</h4>
+  <div class="markdown level1 summary"><p>Adds the client.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">MethodResult AddPrincipalUnit(User user, string name, string pbMail)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
+        <td><span class="parametername">user</span></td>
+        <td><p>The user.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td><p>The name.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">pbMail</span></td>
+        <td><p>The pb mail.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
+        <td><p>MethodResult indicating success.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
   <a id="JackTheClipperCommon_Interfaces_IClipperSystemAdministratorAPI_AddSource_" data-uid="JackTheClipperCommon.Interfaces.IClipperSystemAdministratorAPI.AddSource*"></a>
   <h4 id="JackTheClipperCommon_Interfaces_IClipperSystemAdministratorAPI_AddSource_JackTheClipperCommon_SharedClasses_User_JackTheClipperCommon_SharedClasses_Source_" data-uid="JackTheClipperCommon.Interfaces.IClipperSystemAdministratorAPI.AddSource(JackTheClipperCommon.SharedClasses.User,JackTheClipperCommon.SharedClasses.Source)">AddSource(User, Source)</h4>
   <div class="markdown level1 summary"><p>Adds the given source.</p>
@@ -138,13 +195,13 @@
   
   
   <a id="JackTheClipperCommon_Interfaces_IClipperSystemAdministratorAPI_ChangeSource_" data-uid="JackTheClipperCommon.Interfaces.IClipperSystemAdministratorAPI.ChangeSource*"></a>
-  <h4 id="JackTheClipperCommon_Interfaces_IClipperSystemAdministratorAPI_ChangeSource_JackTheClipperCommon_SharedClasses_User_System_Guid_JackTheClipperCommon_SharedClasses_Source_" data-uid="JackTheClipperCommon.Interfaces.IClipperSystemAdministratorAPI.ChangeSource(JackTheClipperCommon.SharedClasses.User,System.Guid,JackTheClipperCommon.SharedClasses.Source)">ChangeSource(User, Guid, Source)</h4>
+  <h4 id="JackTheClipperCommon_Interfaces_IClipperSystemAdministratorAPI_ChangeSource_JackTheClipperCommon_SharedClasses_User_JackTheClipperCommon_SharedClasses_Source_" data-uid="JackTheClipperCommon.Interfaces.IClipperSystemAdministratorAPI.ChangeSource(JackTheClipperCommon.SharedClasses.User,JackTheClipperCommon.SharedClasses.Source)">ChangeSource(User, Source)</h4>
   <div class="markdown level1 summary"><p>Changes the source.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">MethodResult ChangeSource(User user, Guid toChange, Source newSource)</code></pre>
+    <pre><code class="lang-csharp hljs">MethodResult ChangeSource(User user, Source updatedSource)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -163,15 +220,9 @@
 </td>
       </tr>
       <tr>
-        <td><span class="xref">System.Guid</span></td>
-        <td><span class="parametername">toChange</span></td>
-        <td><p>Id of the source, which should be changed</p>
-</td>
-      </tr>
-      <tr>
         <td><a class="xref" href="JackTheClipperCommon.SharedClasses.Source.html">Source</a></td>
-        <td><span class="parametername">newSource</span></td>
-        <td><p>The new source.</p>
+        <td><span class="parametername">updatedSource</span></td>
+        <td><p>The updated source.</p>
 </td>
       </tr>
     </tbody>
@@ -239,6 +290,33 @@
       <tr>
         <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
         <td><p>MethodResult indicating success</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_Interfaces_IClipperSystemAdministratorAPI_GetPrincipalUnits_" data-uid="JackTheClipperCommon.Interfaces.IClipperSystemAdministratorAPI.GetPrincipalUnits*"></a>
+  <h4 id="JackTheClipperCommon_Interfaces_IClipperSystemAdministratorAPI_GetPrincipalUnits" data-uid="JackTheClipperCommon.Interfaces.IClipperSystemAdministratorAPI.GetPrincipalUnits">GetPrincipalUnits()</h4>
+  <div class="markdown level1 summary"><p>Gets all principal units.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IReadOnlyList&lt;OrganizationalUnit&gt; GetPrincipalUnits()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<a class="xref" href="JackTheClipperCommon.SharedClasses.OrganizationalUnit.html">OrganizationalUnit</a>&gt;</td>
+        <td><p>The principal units</p>
 </td>
       </tr>
     </tbody>

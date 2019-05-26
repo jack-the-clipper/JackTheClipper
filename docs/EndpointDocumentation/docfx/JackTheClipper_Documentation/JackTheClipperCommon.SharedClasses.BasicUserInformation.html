@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Interface IClipperService
+    <title>Class BasicUserInformation
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Interface IClipperService
+    <meta name="title" content="Class BasicUserInformation
    ">
     <meta name="generator" content="docfx 2.42.2.0">
     
@@ -68,59 +68,38 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="JackTheClipperCommon.Interfaces.IClipperService">
+            <article class="content wrap" id="_content" data-uid="JackTheClipperCommon.SharedClasses.BasicUserInformation">
   
   
-  <h1 id="JackTheClipperCommon_Interfaces_IClipperService" data-uid="JackTheClipperCommon.Interfaces.IClipperService" class="text-break">Interface IClipperService
+  <h1 id="JackTheClipperCommon_SharedClasses_BasicUserInformation" data-uid="JackTheClipperCommon.SharedClasses.BasicUserInformation" class="text-break">Class BasicUserInformation
   </h1>
-  <div class="markdown level0 summary"><p>Interface for basic clipper services</p>
+  <div class="markdown level0 summary"><p>Basic user information</p>
 </div>
   <div class="markdown level0 conceptual"></div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="JackTheClipperCommon.Interfaces.html">JackTheClipperCommon.Interfaces</a></h6>
-  <h6><strong>Assembly</strong>: JackTheClipperCommon.dll</h6>
-  <h5 id="JackTheClipperCommon_Interfaces_IClipperService_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public interface IClipperService</code></pre>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">BasicUserInformation</span></div>
+      <div class="level2"><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></div>
   </div>
-  <h3 id="methods">Methods
+  <h6><strong>Namespace</strong>: <a class="xref" href="JackTheClipperCommon.SharedClasses.html">JackTheClipperCommon.SharedClasses</a></h6>
+  <h6><strong>Assembly</strong>: JackTheClipperCommon.dll</h6>
+  <h5 id="JackTheClipperCommon_SharedClasses_BasicUserInformation_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class BasicUserInformation : Object</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
   </h3>
   
   
-  <a id="JackTheClipperCommon_Interfaces_IClipperService_GetPrincipalUnitBasicInformation_" data-uid="JackTheClipperCommon.Interfaces.IClipperService.GetPrincipalUnitBasicInformation*"></a>
-  <h4 id="JackTheClipperCommon_Interfaces_IClipperService_GetPrincipalUnitBasicInformation" data-uid="JackTheClipperCommon.Interfaces.IClipperService.GetPrincipalUnitBasicInformation">GetPrincipalUnitBasicInformation()</h4>
-  <div class="markdown level1 summary"><p>Gets the principal units.</p>
+  <a id="JackTheClipperCommon_SharedClasses_BasicUserInformation__ctor_" data-uid="JackTheClipperCommon.SharedClasses.BasicUserInformation.#ctor*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_BasicUserInformation__ctor_System_Guid_System_String_System_Boolean_" data-uid="JackTheClipperCommon.SharedClasses.BasicUserInformation.#ctor(System.Guid,System.String,System.Boolean)">BasicUserInformation(Guid, String, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="JackTheClipperCommon.SharedClasses.BasicUserInformation.html">BasicUserInformation</a> class.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">IReadOnlyList&lt;Tuple&lt;string, Guid&gt;&gt; GetPrincipalUnitBasicInformation()</code></pre>
-  </div>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<span class="xref">System.Tuple</span>&lt;<span class="xref">System.String</span>, <span class="xref">System.Guid</span>&gt;&gt;</td>
-        <td><p>List of principal units.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  
-  
-  <a id="JackTheClipperCommon_Interfaces_IClipperService_GetPrincipalUnitChildren_" data-uid="JackTheClipperCommon.Interfaces.IClipperService.GetPrincipalUnitChildren*"></a>
-  <h4 id="JackTheClipperCommon_Interfaces_IClipperService_GetPrincipalUnitChildren_System_Guid_" data-uid="JackTheClipperCommon.Interfaces.IClipperService.GetPrincipalUnitChildren(System.Guid)">GetPrincipalUnitChildren(Guid)</h4>
-  <div class="markdown level1 summary"><p>Gets the children of a principal unit.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">IReadOnlyList&lt;Tuple&lt;string, Guid&gt;&gt; GetPrincipalUnitChildren(Guid principalUnitId)</code></pre>
+    <pre><code class="lang-csharp hljs">public BasicUserInformation(Guid id, string userName, bool isValid)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -134,40 +113,38 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Guid</span></td>
-        <td><span class="parametername">principalUnitId</span></td>
-        <td><p>The principal unit identifier.</p>
+        <td><span class="parametername">id</span></td>
+        <td><p>The identifier.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">userName</span></td>
+        <td><p>Name of the user.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isValid</span></td>
+        <td><p>if set to <code>true</code> the user is valid.</p>
 </td>
       </tr>
     </tbody>
   </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Collections.Generic.IReadOnlyList</span>&lt;<span class="xref">System.Tuple</span>&lt;<span class="xref">System.String</span>, <span class="xref">System.Guid</span>&gt;&gt;</td>
-        <td><p>List of children of principal units.</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
+  <h3 id="properties">Properties
+  </h3>
   
   
-  <a id="JackTheClipperCommon_Interfaces_IClipperService_GetStatus_" data-uid="JackTheClipperCommon.Interfaces.IClipperService.GetStatus*"></a>
-  <h4 id="JackTheClipperCommon_Interfaces_IClipperService_GetStatus" data-uid="JackTheClipperCommon.Interfaces.IClipperService.GetStatus">GetStatus()</h4>
-  <div class="markdown level1 summary"><p>Gets the status.</p>
+  <a id="JackTheClipperCommon_SharedClasses_BasicUserInformation_Id_" data-uid="JackTheClipperCommon.SharedClasses.BasicUserInformation.Id*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_BasicUserInformation_Id" data-uid="JackTheClipperCommon.SharedClasses.BasicUserInformation.Id">Id</h4>
+  <div class="markdown level1 summary"><p>Gets the identifier.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">MethodResult GetStatus()</code></pre>
+    <pre><code class="lang-csharp hljs">public Guid Id { get; }</code></pre>
   </div>
-  <h5 class="returns">Returns</h5>
+  <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
@@ -177,9 +154,60 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
-        <td><p>MethodResult indicating the status.</p>
-</td>
+        <td><span class="xref">System.Guid</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_BasicUserInformation_IsValid_" data-uid="JackTheClipperCommon.SharedClasses.BasicUserInformation.IsValid*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_BasicUserInformation_IsValid" data-uid="JackTheClipperCommon.SharedClasses.BasicUserInformation.IsValid">IsValid</h4>
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the user is valid or not.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsValid { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="JackTheClipperCommon_SharedClasses_BasicUserInformation_UserName_" data-uid="JackTheClipperCommon.SharedClasses.BasicUserInformation.UserName*"></a>
+  <h4 id="JackTheClipperCommon_SharedClasses_BasicUserInformation_UserName" data-uid="JackTheClipperCommon.SharedClasses.BasicUserInformation.UserName">UserName</h4>
+  <div class="markdown level1 summary"><p>Gets the name of the user.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string UserName { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
       </tr>
     </tbody>
   </table>

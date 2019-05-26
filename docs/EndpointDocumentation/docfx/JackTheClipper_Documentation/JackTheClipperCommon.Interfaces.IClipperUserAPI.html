@@ -122,13 +122,13 @@
   
   
   <a id="JackTheClipperCommon_Interfaces_IClipperUserAPI_AddUser_" data-uid="JackTheClipperCommon.Interfaces.IClipperUserAPI.AddUser*"></a>
-  <h4 id="JackTheClipperCommon_Interfaces_IClipperUserAPI_AddUser_System_String_System_String_System_String_JackTheClipperCommon_Enums_Role_System_Guid_System_Boolean_System_Boolean_" data-uid="JackTheClipperCommon.Interfaces.IClipperUserAPI.AddUser(System.String,System.String,System.String,JackTheClipperCommon.Enums.Role,System.Guid,System.Boolean,System.Boolean)">AddUser(String, String, String, Role, Guid, Boolean, Boolean)</h4>
+  <h4 id="JackTheClipperCommon_Interfaces_IClipperUserAPI_AddUser_JackTheClipperCommon_SharedClasses_User_System_String_System_Guid_" data-uid="JackTheClipperCommon.Interfaces.IClipperUserAPI.AddUser(JackTheClipperCommon.SharedClasses.User,System.String,System.Guid)">AddUser(User, String, Guid)</h4>
   <div class="markdown level1 summary"><p>Adds a user.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">User AddUser(string userMail, string username, string password, Role role, Guid principalUnit, bool mustChangePassword, bool valid)</code></pre>
+    <pre><code class="lang-csharp hljs">MethodResult AddUser(User toAdd, string password, Guid selectedUnit)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -141,45 +141,21 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><span class="parametername">userMail</span></td>
-        <td><p>The new users mail.</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><span class="parametername">username</span></td>
-        <td><p>The new users username.</p>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
+        <td><span class="parametername">toAdd</span></td>
+        <td><p>The new user to add.</p>
 </td>
       </tr>
       <tr>
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">password</span></td>
-        <td><p>The new users password.</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="JackTheClipperCommon.Enums.Role.html">Role</a></td>
-        <td><span class="parametername">role</span></td>
-        <td><p>The new users role.</p>
+        <td><p>The password.</p>
 </td>
       </tr>
       <tr>
         <td><span class="xref">System.Guid</span></td>
-        <td><span class="parametername">principalUnit</span></td>
-        <td><p>The new users principal unit.</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.Boolean</span></td>
-        <td><span class="parametername">mustChangePassword</span></td>
-        <td><p>A value indicating whether the user must change the pw.</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.Boolean</span></td>
-        <td><span class="parametername">valid</span></td>
-        <td><p>A value whether the user is valid or not.</p>
+        <td><span class="parametername">selectedUnit</span></td>
+        <td><p>The selected requested unit.</p>
 </td>
       </tr>
     </tbody>
@@ -194,8 +170,8 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
-        <td><p>The new users <a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a>object</p>
+        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.MethodResult.html">MethodResult</a></td>
+        <td><p>MethodResult indicating success.</p>
 </td>
       </tr>
     </tbody>
@@ -379,13 +355,13 @@
   
   
   <a id="JackTheClipperCommon_Interfaces_IClipperUserAPI_GetAvailableSources_" data-uid="JackTheClipperCommon.Interfaces.IClipperUserAPI.GetAvailableSources*"></a>
-  <h4 id="JackTheClipperCommon_Interfaces_IClipperUserAPI_GetAvailableSources_JackTheClipperCommon_SharedClasses_User_" data-uid="JackTheClipperCommon.Interfaces.IClipperUserAPI.GetAvailableSources(JackTheClipperCommon.SharedClasses.User)">GetAvailableSources(User)</h4>
+  <h4 id="JackTheClipperCommon_Interfaces_IClipperUserAPI_GetAvailableSources_System_Guid_" data-uid="JackTheClipperCommon.Interfaces.IClipperUserAPI.GetAvailableSources(System.Guid)">GetAvailableSources(Guid)</h4>
   <div class="markdown level1 summary"><p>Gets the available sources for a given user.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">IReadOnlyList&lt;Source&gt; GetAvailableSources(User user)</code></pre>
+    <pre><code class="lang-csharp hljs">IReadOnlyList&lt;Source&gt; GetAvailableSources(Guid user)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -398,7 +374,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
+        <td><span class="xref">System.Guid</span></td>
         <td><span class="parametername">user</span></td>
         <td><p>The user.</p>
 </td>
@@ -424,13 +400,13 @@
   
   
   <a id="JackTheClipperCommon_Interfaces_IClipperUserAPI_GetFeed_" data-uid="JackTheClipperCommon.Interfaces.IClipperUserAPI.GetFeed*"></a>
-  <h4 id="JackTheClipperCommon_Interfaces_IClipperUserAPI_GetFeed_JackTheClipperCommon_SharedClasses_User_JackTheClipperCommon_SharedClasses_Feed_System_Int32_System_Boolean_" data-uid="JackTheClipperCommon.Interfaces.IClipperUserAPI.GetFeed(JackTheClipperCommon.SharedClasses.User,JackTheClipperCommon.SharedClasses.Feed,System.Int32,System.Boolean)">GetFeed(User, Feed, Int32, Boolean)</h4>
+  <h4 id="JackTheClipperCommon_Interfaces_IClipperUserAPI_GetFeed_System_Guid_System_Guid_System_Int32_System_Boolean_" data-uid="JackTheClipperCommon.Interfaces.IClipperUserAPI.GetFeed(System.Guid,System.Guid,System.Int32,System.Boolean)">GetFeed(Guid, Guid, Int32, Boolean)</h4>
   <div class="markdown level1 summary"><p>Gets the feed data.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">IReadOnlyCollection&lt;ShortArticle&gt; GetFeed(User user, Feed feed, int page, bool showArchived)</code></pre>
+    <pre><code class="lang-csharp hljs">IReadOnlyCollection&lt;ShortArticle&gt; GetFeed(Guid userId, Guid feedId, int page, bool showArchived)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -443,15 +419,15 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
-        <td><span class="parametername">user</span></td>
-        <td><p>The user.</p>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td><p>The user id.</p>
 </td>
       </tr>
       <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.Feed.html">Feed</a></td>
-        <td><span class="parametername">feed</span></td>
-        <td><p>The feed.</p>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">feedId</span></td>
+        <td><p>The feed id.</p>
 </td>
       </tr>
       <tr>
@@ -532,13 +508,13 @@
   
   
   <a id="JackTheClipperCommon_Interfaces_IClipperUserAPI_GetUserSettings_" data-uid="JackTheClipperCommon.Interfaces.IClipperUserAPI.GetUserSettings*"></a>
-  <h4 id="JackTheClipperCommon_Interfaces_IClipperUserAPI_GetUserSettings_JackTheClipperCommon_SharedClasses_User_" data-uid="JackTheClipperCommon.Interfaces.IClipperUserAPI.GetUserSettings(JackTheClipperCommon.SharedClasses.User)">GetUserSettings(User)</h4>
+  <h4 id="JackTheClipperCommon_Interfaces_IClipperUserAPI_GetUserSettings_System_Guid_" data-uid="JackTheClipperCommon.Interfaces.IClipperUserAPI.GetUserSettings(System.Guid)">GetUserSettings(Guid)</h4>
   <div class="markdown level1 summary"><p>Gets the user settings.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">UserSettings GetUserSettings(User user)</code></pre>
+    <pre><code class="lang-csharp hljs">UserSettings GetUserSettings(Guid userId)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -551,9 +527,9 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
-        <td><span class="parametername">user</span></td>
-        <td><p>The user.</p>
+        <td><span class="xref">System.Guid</span></td>
+        <td><span class="parametername">userId</span></td>
+        <td><p>The user id.</p>
 </td>
       </tr>
     </tbody>
@@ -753,7 +729,7 @@
     <tbody>
       <tr>
         <td><a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a></td>
-        <td><p>The <a class="xref" href="JackTheClipperCommon.SharedClasses.User.html">User</a>; if authenticated successfully</p>
+        <td><p>The user (if existing).</p>
 </td>
       </tr>
     </tbody>

@@ -96,13 +96,13 @@
   
   
   <a id="JackTheClipperCommon_PerfTracer__ctor_" data-uid="JackTheClipperCommon.PerfTracer.#ctor*"></a>
-  <h4 id="JackTheClipperCommon_PerfTracer__ctor_System_String_" data-uid="JackTheClipperCommon.PerfTracer.#ctor(System.String)">PerfTracer(String)</h4>
+  <h4 id="JackTheClipperCommon_PerfTracer__ctor_System_String_System_Int32_" data-uid="JackTheClipperCommon.PerfTracer.#ctor(System.String,System.Int32)">PerfTracer(String, Int32)</h4>
   <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="JackTheClipperCommon.PerfTracer.html">PerfTracer</a> class.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public PerfTracer(string name)</code></pre>
+    <pre><code class="lang-csharp hljs">public PerfTracer(string name, int minimumMillis = 0)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -118,6 +118,12 @@
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">name</span></td>
         <td><p>The name.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">minimumMillis</span></td>
+        <td><p>The minimum amount of milliseconds which must be exceeded before logging occurs (default:0)</p>
 </td>
       </tr>
     </tbody>

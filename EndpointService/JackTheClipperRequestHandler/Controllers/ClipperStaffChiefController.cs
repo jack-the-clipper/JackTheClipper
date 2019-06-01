@@ -123,7 +123,12 @@ namespace JackTheClipperRequestHandler.Controllers
         }
         #endregion
 
-        #region GetManageableUsers                       
+        #region GetManageableUsers              
+        /// <summary>
+        /// Gets the manageable users.
+        /// </summary>
+        /// <param name="userId">The user identifier ot he current admin or staff chief.</param>
+        /// <returns>List of manageable users.</returns>
         [HttpGet]
         [Route("getmanageableusers")]
         public ActionResult<IReadOnlyList<BasicUserInformation>> GetManageableUsers([FromQuery] Guid userId)
@@ -145,7 +150,13 @@ namespace JackTheClipperRequestHandler.Controllers
         }
         #endregion
 
-        #region GetUserInfo                       
+        #region GetUserInfo                      
+        /// <summary>
+        /// Gets the user information.
+        /// </summary>
+        /// <param name="userId">The identifier of the admin which performs this call.</param>
+        /// <param name="requested">The requested user id.</param>
+        /// <returns>The user information for the requested user.</returns>
         [HttpGet]
         [Route("getuserinfo")]
         public ActionResult<ExtendedUser> GetUserInfo([FromQuery] Guid userId, [FromQuery] Guid requested)

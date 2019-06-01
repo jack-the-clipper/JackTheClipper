@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using JackTheClipperCommon;
 using JackTheClipperCommon.BusinessObjects;
@@ -379,36 +380,7 @@ namespace JackTheClipperData.MariaDb
         /// <returns>The superset feed filter.</returns>
         public Filter GetSuperSetFeed()
         {
-            using (new PerfTracer(nameof(GetSuperSetFeed), 20))
-            {
-                try
-                {
-                    using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
-                    {
-                        conn.Open();
-                        var superset = new HashSet<string>();
-                        using (var cmd = new MySqlCommand(MariaDbStatements.SelectSuperSetFeed, conn))
-                        {
-                            using (var reader = cmd.ExecuteReader())
-                            {
-                                while (reader != null && reader.Read())
-                                {
-                                    var keyWords = reader.GetStringFromNullable(0).ConvertToStringList();
-                                    var blackList = reader.GetStringFromNullable(1).ConvertToStringList();
-                                    superset.UnionWith(keyWords.Except(blackList));
-                                }
-                            }
-                        }
-
-                        return new Filter(Guid.Empty, superset, null, null);
-                    }
-                }
-                catch (Exception error)
-                {
-                    Console.WriteLine(error);
-                    return null;
-                }
-            }
+            return SupersetFeedCronJob.GetSuperSetFeedFilter();
         }
         #endregion
 
@@ -952,6 +924,7 @@ namespace JackTheClipperData.MariaDb
         #endregion
 
         #region AddUserAsync
+
         /// <summary>
         /// Adds a user.
         /// </summary>
@@ -960,6 +933,7 @@ namespace JackTheClipperData.MariaDb
         /// <param name="password">The password.</param>
         /// <param name="role">The role.</param>
         /// <param name="principalUnit">The principalUnit.</param>
+        /// <param name="initialUnit">The initial unit.</param>
         /// <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
         /// <param name="valid">A value whether the user is valid or not.</param>
         /// <returns>The user object of the new user.</returns>
@@ -2039,6 +2013,7 @@ namespace JackTheClipperData.MariaDb
             return $"UUID_TO_BIN('{guid}')";
         }
 
+        #region OrganizationalUnitManager
         /// <summary>
         /// This class is inefficient, and should maybe be replaced by a better implementation (far in the future).
         /// Also it is not clear if this becomes a performance issue at all.
@@ -2177,5 +2152,102 @@ namespace JackTheClipperData.MariaDb
 
             #endregion
         }
+        #endregion
+
+        #region SupersetFeedCronJob
+        /// <summary>
+        /// Cron job which periodically updates the superset feed.
+        /// Introduced due to performance reasons, as the superset feed is used (very) often depending on the indexed sources.
+        /// </summary>
+        private static class SupersetFeedCronJob
+        {
+            private static readonly Timer Scheduler;
+            private static Filter filter;
+
+            #region SupersetFeedCronJob
+            /// <summary>
+            /// static ctor. May initializes the scheduler.
+            /// </summary>
+            static SupersetFeedCronJob()
+            {
+                if (AppConfiguration.UseSuperSetFeedCronJob)
+                {
+                    Scheduler = new Timer(RefreshFilter, null, AppConfiguration.SuperSetFeedCronJobInterval * 1000, Timeout.Infinite);
+                    filter = GetSuperSetFeed();
+                }
+            }
+            #endregion
+
+            #region GetSuperSetFeedFilter
+            /// <summary>
+            /// Gets the superset filter.
+            /// Note: The returned value might be cached and therefore not up to date.
+            /// </summary>
+            /// <returns>The superset feed filter</returns>
+            public static Filter GetSuperSetFeedFilter()
+            {
+                return AppConfiguration.UseSuperSetFeedCronJob ? filter : GetSuperSetFeed();
+            }
+            #endregion
+
+            #region RefreshFilter
+            /// <summary>
+            /// The scheduled method.
+            /// </summary>
+            /// <param name="timerState">The timer state object. Not used.</param>
+            private static void RefreshFilter(object timerState)
+            {
+                var value = GetSuperSetFeed();
+                if (value != null)
+                {
+                    Interlocked.Exchange(ref filter, value);
+                }
+
+                Scheduler.Change(AppConfiguration.SuperSetFeedCronJobInterval * 1000, Timeout.Infinite);
+            }
+            #endregion
+
+            #region GetSuperSetFeed
+            /// <summary>
+            /// Gets the superset feed filter.
+            /// This is a feed filter which contains all relevant keywords form any feed within the system.
+            /// </summary>
+            /// <returns>The superset feed filter.</returns>
+            private static Filter GetSuperSetFeed()
+            {
+                using (new PerfTracer(nameof(GetSuperSetFeed), 5))
+                {
+                    try
+                    {
+                        using (var conn = new MySqlConnection(AppConfiguration.SqlServerConnectionString))
+                        {
+                            conn.Open();
+                            var superset = new HashSet<string>();
+                            using (var cmd = new MySqlCommand(MariaDbStatements.SelectSuperSetFeed, conn))
+                            {
+                                using (var reader = cmd.ExecuteReader())
+                                {
+                                    while (reader != null && reader.Read())
+                                    {
+                                        var keyWords = reader.GetStringFromNullable(0).ConvertToStringList();
+                                        var blackList = reader.GetStringFromNullable(1).ConvertToStringList();
+                                        superset.UnionWith(keyWords.Except(blackList));
+                                    }
+                                }
+                            }
+
+                            return new Filter(Guid.Empty, superset, null, null);
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        Console.WriteLine(error);
+                        return null;
+                    }
+                }
+            }
+            #endregion
+        }
+        #endregion
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 
 namespace JackTheClipperCommon.Configuration
 {
@@ -8,17 +9,12 @@ namespace JackTheClipperCommon.Configuration
     public class AppConfiguration
     {
         /// <summary>
-        ///     The logging level to use for the application
-        /// </summary>
-        public static string LoggingLogLevelDefault { get; private set; }
-
-        /// <summary>
         ///     Which hosts are allowed to access this application
         /// </summary>
         public static string AllowedHosts { get; private set; }
 
         /// <summary>
-        /// 
+        ///     The url for use within kestrel.
         /// </summary>
         public static string KestrelEndPointsHTTPUrl { get; private set; }
 
@@ -143,6 +139,30 @@ namespace JackTheClipperCommon.Configuration
         public static string UserAgent { get; private set; }
 
         /// <summary>
+        /// Gets or sets the maximum degree of parallelism for notification job processing.
+        /// Default: CPU-cores * 0.75
+        /// Cant exceed <code>Environment.ProcessorCount * 2</code>
+        /// </summary>
+        public static int MaxNotificationJobDegreeOfParallelism { get; set; }
+
+        /// <summary>
+        /// Gets or sets the amount of last RSS last items which should be cached.
+        /// Default: 5000
+        /// </summary>
+        public static int RssLastItemCacheSize { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the superset feed should be updated periodically by a cron job
+        /// (this should improve performance in most scenarios).
+        /// </summary>
+        public static bool UseSuperSetFeedCronJob { get; set; }
+
+        /// <summary>
+        /// Gets or sets the super set feed cron job interval. Only takes effect if <see cref="UseSuperSetFeedCronJob"/> is set to <code>true</code>.
+        /// </summary>
+        public static int SuperSetFeedCronJobInterval { get; set; }
+
+        /// <summary>
         ///     Set the default configuration settings for the connection.
         /// </summary>
         /// <param name="config">The current config.</param>
@@ -150,7 +170,6 @@ namespace JackTheClipperCommon.Configuration
         {
             var configuration = config;
 
-            LoggingLogLevelDefault = configuration["Logging:LogLevel:Default"];
             AllowedHosts = configuration["AllowedHosts"];
 
             //CUSTOM PREFERENCES - Kestrel (Raspberry): SET
@@ -176,12 +195,19 @@ namespace JackTheClipperCommon.Configuration
             ElasticUri = configuration["ServerConfiguration:ElasticUri"];
             ElasticClearIndex = bool.Parse(configuration["ServerConfiguration:ClearElasticIndexes"] ?? "false");
             PerformanceTraceActive = bool.Parse(configuration["ServerConfiguration:PerfTrace"] ?? "false");
+            MaxNotificationJobDegreeOfParallelism =
+                int.Parse(configuration["ServerConfiguration:MaxNotificationJobDegreeOfParallelism"] ??
+                          Convert.ToInt32(Math.Ceiling(Environment.ProcessorCount * 0.75)).ToString());
+            MaxNotificationJobDegreeOfParallelism = Math.Min(Environment.ProcessorCount * 2, MaxNotificationJobDegreeOfParallelism);
+            RssLastItemCacheSize = int.Parse(configuration["ServerConfiguration:RssLastItemCacheSize"] ?? "5000");
+            UseSuperSetFeedCronJob = bool.Parse(configuration["ServerConfiguration:UseSuperSetFeedCronJob"] ?? "true");
 
             var tempInterval = int.Parse(configuration["CrawlingConfiguration:WebsiteInterval"] ?? "120");
             WebsiteCrawlInterval = tempInterval >= 10 ? tempInterval : 10;
             tempInterval = int.Parse(configuration["CrawlingConfiguration:RssInterval"] ?? "45");
             RssCrawlInterval = tempInterval >= 10 ? tempInterval : 10;
             UserAgent = configuration["CrawlingConfiguration:UserAgent"] ?? "Mozilla/5.0";
+            SuperSetFeedCronJobInterval = int.Parse(configuration["ServerConfiguration:SuperSetFeedCronJobInterval"] ?? Math.Min(WebsiteCrawlInterval, RssCrawlInterval).ToString());
 
             var tempLength = int.Parse(configuration["CrawlingConfiguration:ShortTextLength"] ?? "200");
             ShortTextLength = tempLength > 3 ? tempLength : 3;

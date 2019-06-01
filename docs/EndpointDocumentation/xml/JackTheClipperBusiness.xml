@@ -118,6 +118,8 @@
             <param name="item">The item to index</param>
             <param name="rssKey">The belonging rss key.</param>
             <param name="source">The source.</param>
+            <returns>If indexing is required: a task with the corresponding indexing job.
+            <para>Otherwise: a completed Task</para></returns>
         </member>
         <member name="M:JackTheClipperBusiness.CrawlerManagement.CrawlerController.NotifyNewWebPageContentFoundThreadSafe(System.String,System.String,System.String,System.DateTime,JackTheClipperCommon.SharedClasses.Source)">
             <summary>
@@ -129,7 +131,8 @@
             <param name="link">The link.</param>
             <param name="published">The published date.</param>
             <param name="source">The source.</param>
-            <returns>Method result, indicating success.</returns>
+            <returns>If indexing is required: a task with the corresponding indexing job.
+            <para>Otherwise: a completed Task</para></returns>
         </member>
         <member name="M:JackTheClipperBusiness.CrawlerManagement.CrawlerController.NotifyNewImageContentFoundThreadSafe(System.String,System.String,System.String,System.String,System.DateTime,JackTheClipperCommon.SharedClasses.Source)">
             <summary>
@@ -142,7 +145,8 @@
             <param name="imageLink">The link of the image.</param>
             <param name="published">The published date.</param>
             <param name="source">The source.</param>
-            <returns>Method result, indicating success.</returns>
+            <returns>If indexing is required: a task with the corresponding indexing job.
+            <para>Otherwise: a completed Task</para></returns>
         </member>
         <member name="M:JackTheClipperBusiness.CrawlerManagement.CrawlerController.Start">
             <summary>
@@ -223,6 +227,8 @@
             <param name="item">The item to index</param>
             <param name="rssKey">The belonging rss key.</param>
             <param name="source">The source.</param>
+            <returns>If indexing is required: a task with the corresponding indexing job.
+            <para>Otherwise: a completed Task</para></returns>
         </member>
         <member name="M:JackTheClipperBusiness.CrawlerManagement.ICrawlerObserver.NotifyNewWebPageContentFoundThreadSafe(System.String,System.String,System.String,System.DateTime,JackTheClipperCommon.SharedClasses.Source)">
             <summary>
@@ -234,7 +240,8 @@
             <param name="link">The link.</param>
             <param name="published">The published date.</param>
             <param name="source">The source.</param>
-            <returns>Method result, indicating success.</returns>
+            <returns>If indexing is required: a task with the corresponding indexing job.
+            <para>Otherwise: a completed Task</para></returns>
         </member>
         <member name="M:JackTheClipperBusiness.CrawlerManagement.ICrawlerObserver.NotifyNewImageContentFoundThreadSafe(System.String,System.String,System.String,System.String,System.DateTime,JackTheClipperCommon.SharedClasses.Source)">
             <summary>
@@ -247,16 +254,12 @@
             <param name="imageLink">The link of the image.</param>
             <param name="published">The published date.</param>
             <param name="source">The source.</param>
-            <returns>Method result, indicating success.</returns>
+            <returns>If indexing is required: a task with the corresponding indexing job.
+            <para>Otherwise: a completed Task</para></returns>
         </member>
         <member name="T:JackTheClipperBusiness.CrawlerManagement.RssCrawler">
             <summary>
             A crawler which observes an RSS-source.
-            </summary>
-        </member>
-        <member name="F:JackTheClipperBusiness.CrawlerManagement.RssCrawler.CacheThreshold">
-            <summary>
-            Number of cached last rss feeds.
             </summary>
         </member>
         <member name="F:JackTheClipperBusiness.CrawlerManagement.RssCrawler.lastIndexed">
@@ -365,7 +368,7 @@
             <summary>
             Returns an instance of the requested interface.
             </summary>
-            <typeparam name="T">The type oof the requested interface.</typeparam>
+            <typeparam name="T">The type of the requested interface.</typeparam>
             <returns>An instance of the requested interface.</returns>
         </member>
         <member name="M:JackTheClipperBusiness.Factory.GetObjectInstanceById``1(System.Guid)">
@@ -378,28 +381,34 @@
         </member>
         <member name="T:JackTheClipperBusiness.MailController">
             <summary>
-            Mails the users with new News if mail notification is wanted.
+            Mails the users with new news if mail notification is wanted.
             </summary>
         </member>
-        <member name="M:JackTheClipperBusiness.MailController.QuerySendMailAsync(JackTheClipperCommon.SharedClasses.User,System.String,System.String,System.IO.MemoryStream,System.String)">
+        <member name="M:JackTheClipperBusiness.MailController.QuerySendMailAsync(JackTheClipperCommon.Interfaces.IMailNotifiable,System.String,System.String,System.IO.MemoryStream,System.String)">
             <summary>
             Queries the send of a mail asynchronous.
             </summary>
-            <param name="user">The user to send the mail to.</param>
+            <param name="toNotify">The notifiable object to send the mail to.</param>
             <param name="subject">The subject.</param>
             <param name="content">The content.</param>
             <param name="pdfStream">The PDF stream (optional).</param>
             <param name="pdfName">Name of the PDF (optional).</param>
         </member>
-        <member name="T:JackTheClipperBusiness.MailControllerBAD">
-            <summary>
-            Mails the Users with new News if the Mail is wanted.
-            </summary>
-        </member>
-        <member name="T:JackTheClipperBusiness.NotificationControllerBAD">
+        <member name="T:JackTheClipperBusiness.NotificationController">
             <summary>
             Check if Notification is wanted/necessary
             </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.NotificationController.Start">
+            <summary>
+            Starts the time interval for notifications.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.NotificationController.CheckForNotifications(System.Object)">
+            <summary>
+            Checks if new feeds available and if notification and what kind of notification is wanted.
+            </summary>
+            <param name="timerState">The timer state.</param>
         </member>
         <member name="T:JackTheClipperBusiness.Notification.INotificationController">
             <summary>
@@ -413,19 +422,72 @@
         </member>
         <member name="T:JackTheClipperBusiness.Notification.NotificationControllerWrapper">
             <summary>
-            Class which implements <see cref="T:JackTheClipperBusiness.Notification.INotificationController"/> and wraps around the real <see cref="T:JackTheClipperBusiness.NotificationControllerBAD"/>.
-            Mainly created to avoid merge conflicts as <see cref="T:JackTheClipperBusiness.NotificationControllerBAD"/> is actively refactored at the moment.
+            Class which implements <see cref="T:JackTheClipperBusiness.Notification.INotificationController"/> and wraps around the real <see cref="T:JackTheClipperBusiness.NotificationController"/>.
+            Mainly created to avoid merge conflicts as <see cref="T:JackTheClipperBusiness.NotificationController"/> is actively refactored at the moment.
             </summary>
         </member>
         <member name="M:JackTheClipperBusiness.Notification.NotificationControllerWrapper.StartNotificationProcessing">
             <summary>
-            Starts the notification processing pipeline of the <see cref="T:JackTheClipperBusiness.NotificationControllerBAD"/>.
+            Starts the notification processing pipeline of the <see cref="T:JackTheClipperBusiness.NotificationController"/>.
             </summary>
         </member>
         <member name="T:JackTheClipperBusiness.OrganizationalUnitManagement.OrganizationalUnitController">
             <summary>
-            Settings for the OragnizationalUnit
+            A class that encapsulates every request concerning the <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/> class
             </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.OrganizationalUnitManagement.OrganizationalUnitController.GetOrganizationalUnits(JackTheClipperCommon.SharedClasses.User)">
+            <summary>
+            Gets the organizational units of the given user.
+            </summary>
+            <param name="user">The user to obtain its organizational units.</param>
+            <returns>
+            List of accessable Organizational units.
+            </returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.OrganizationalUnitManagement.OrganizationalUnitController.GetOrganizationalUnitSettings(System.Guid)">
+            <summary>
+            Gets the organizational unit settings.
+            </summary>
+            <param name="unitId">The organizational unit id.</param>
+            <returns>The requested settings.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.OrganizationalUnitManagement.OrganizationalUnitController.SaveOrganizationalUnitSettings(JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings)">
+            <summary>
+            Saves the organizational unit settings.
+            </summary>
+            <param name="toSave">The settings to save.</param>
+            <returns>MethodResult indicating success</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.OrganizationalUnitManagement.OrganizationalUnitController.AddOrganizationalUnit(System.String,System.Guid)">
+            <summary>
+            Adds a new unit.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="parentUnitId">The parent unit id.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.OrganizationalUnitManagement.OrganizationalUnitController.DeleteOrganizationalUnit(System.Guid)">
+            <summary>
+            Deletes an organizational unit.
+            </summary>
+            <param name="unitId">The unit identifier.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.OrganizationalUnitManagement.OrganizationalUnitController.UpdateOrganizationalUnit(JackTheClipperCommon.SharedClasses.OrganizationalUnit)">
+            <summary>
+            Updates an existing organizational unit to the given values.
+            </summary>
+            <param name="updatedUnit">The updated unit.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.OrganizationalUnitManagement.OrganizationalUnitController.SetUserOrganizationalUnits(JackTheClipperCommon.SharedClasses.User,System.Collections.Generic.IReadOnlyList{System.Guid})">
+            <summary>
+            Sets the organizational units of a user.
+            </summary>
+            <param name="user">The user to be changed.</param>
+            <param name="units">The organizational units.</param>
+            <returns>MethodResult indicating success.</returns>
         </member>
         <member name="T:JackTheClipperBusiness.PasswordGenerator">
             <summary>
@@ -438,10 +500,55 @@
             </summary>
             <returns>Password as string.</returns>
         </member>
-        <member name="T:JackTheClipperBusiness.PdfGeneratorBAD">
+        <member name="T:JackTheClipperBusiness.PdfGenerator">
+             <summary>
+            Generates a PDF file.
+             </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.PdfGenerator.GeneratePdf(System.Collections.Generic.IEnumerable{JackTheClipperCommon.SharedClasses.ShortArticle},System.String)">
             <summary>
-            See classname
+            Generates a user specific PDF file with its name and the specific articles.
             </summary>
+            <param name="content">The user specific articles.</param>
+            <param name="userName">The users full name.</param>
+            <returns>A (memory) stream build out of the PDF file.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.PdfGenerator.CreateWelcomeTitle(System.Double,System.Double,PdfSharpCore.Drawing.XGraphics,System.String,PdfSharpCore.Drawing.XFont,PdfSharpCore.Drawing.XFont,PdfSharpCore.Drawing.XStringFormat)">
+            <summary>
+            Generates a new welcome title.
+            </summary>
+            <param name="y">The y position.</param>
+            <param name="x">The x position.</param>
+            <param name="gfx">The used graphic object.</param>
+            <param name="userName">The specific username</param>
+            <param name="titleFont">The font for the title.</param>
+            <param name="bigFont">The font for the secondary title.</param>
+            <param name="format">The used string format.</param>
+        </member>
+        <member name="M:JackTheClipperBusiness.PdfGenerator.CheckIfNewPageIsNeeded(System.Double,PdfSharpCore.Pdf.PdfPage)">
+            <summary>
+            Checks if a new page is needed.
+            </summary>
+            <param name="usedPageHeight">The actual used page size.</param>
+            <param name="page">Actual page.</param>
+            <returns>True if new page is needed, false otherwise.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.PdfGenerator.GetLineCounter(System.String,System.Double)">
+            <summary>
+            Gets the number of lines needed.
+            </summary>
+            <param name="contentLength">String who should be calculated.</param>
+            <param name="divisor">Specific number for specific text fonts.</param>
+            <returns>The calculated number of lines.</returns>
+        </member>
+        <member name="P:JackTheClipperBusiness.FontResolver.DefaultFontName">
+            <summary>
+            Generates preset fonts with specific characteristics.
+            </summary>
+            <param name="familyName">The name of the font family.</param>
+            <param name="isBold">If the font is bold or not.</param>
+            <param name="isItalic">If the font is italic or not.</param>
+            <returns>A FontResolverInfo with the specific font.</returns>
         </member>
         <member name="T:JackTheClipperBusiness.StatusController">
             <summary>
@@ -454,11 +561,18 @@
             </summary>
             <returns>MethodResult indicating the status.</returns>
         </member>
-        <member name="M:JackTheClipperBusiness.StatusController.GetPrincipalUnits">
+        <member name="M:JackTheClipperBusiness.StatusController.GetPrincipalUnitBasicInformation">
             <summary>
             Gets the principal units.
             </summary>
             <returns>List of principal units.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.StatusController.GetPrincipalUnitChildren(System.Guid)">
+            <summary>
+            Gets the children of a principal unit.
+            </summary>
+            <param name="principalUnitId">The principal unit identifier.</param>
+            <returns>List of children of given principal unit.</returns>
         </member>
         <member name="T:JackTheClipperBusiness.UserManagement.UserController">
             <summary>
@@ -482,12 +596,12 @@
             <param name="user">The user.</param>
             <returns>Collection of feeds for the given user.</returns>
         </member>
-        <member name="M:JackTheClipperBusiness.UserManagement.UserController.GetFeed(JackTheClipperCommon.SharedClasses.User,JackTheClipperCommon.SharedClasses.Feed,System.Int32,System.Boolean)">
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.GetFeed(System.Guid,System.Guid,System.Int32,System.Boolean)">
             <summary>
             Gets the feed data.
             </summary>
-            <param name="user">The user.</param>
-            <param name="feed">The feed.</param>
+            <param name="userId">The user id.</param>
+            <param name="feedId">The feed id.</param>
             <param name="page">The requested page.</param>
             <param name="showArchived">A value indicating whether the archived articles should be shown or not.</param>
             <returns>List of <see cref="T:JackTheClipperCommon.SharedClasses.ShortArticle"/>s within the feed.</returns>
@@ -499,11 +613,11 @@
             <param name="articleId">The article id.</param>
             <returns>The (full) <see cref="T:JackTheClipperCommon.SharedClasses.Article"/>.</returns>
         </member>
-        <member name="M:JackTheClipperBusiness.UserManagement.UserController.GetUserSettings(JackTheClipperCommon.SharedClasses.User)">
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.GetUserSettings(System.Guid)">
             <summary>
             Gets the user settings.
             </summary>
-            <param name="user">The user.</param>
+            <param name="userId">The user id.</param>
             <returns>The settings of the given user.</returns>
         </member>
         <member name="M:JackTheClipperBusiness.UserManagement.UserController.ResetPassword(System.String)">
@@ -529,25 +643,12 @@
             <param name="newUserMail">The new mail address.</param>
             <returns>MethodResult indicating success.</returns>
         </member>
-        <member name="M:JackTheClipperBusiness.UserManagement.UserController.GetAvailableSources(JackTheClipperCommon.SharedClasses.User)">
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.GetAvailableSources(System.Guid)">
             <summary>
             Gets the available sources for a given user.
             </summary>
             <param name="user">The user.</param>
             <returns>List of available sources.</returns>
-        </member>
-        <member name="M:JackTheClipperBusiness.UserManagement.UserController.AddUser(System.String,System.String,System.String,JackTheClipperCommon.Enums.Role,System.Guid,System.Boolean,System.Boolean)">
-            <summary>
-            Adds a user.
-            </summary>
-            <param name="userMail">The new users mail.</param>
-            <param name="userName">The new users username.</param>
-            <param name="password">The new users password.</param>
-            <param name="role">The new users role.</param>
-            <param name="principalUnit">The new users principal unit.</param>
-            <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
-            <param name="valid">A value whether the user is valid or not.</param>
-            <returns>The new users <see cref="T:JackTheClipperCommon.SharedClasses.User"/>object</returns>
         </member>
         <member name="M:JackTheClipperBusiness.UserManagement.UserController.SaveUserSettings(System.Guid,System.Int32,JackTheClipperCommon.Enums.NotificationSetting,System.Int32)">
             <summary>
@@ -594,14 +695,89 @@
             <param name="toDelete">The source to delete.</param>
             <returns>MethodResult indicating success</returns>
         </member>
-        <member name="M:JackTheClipperBusiness.UserManagement.UserController.ChangeSource(JackTheClipperCommon.SharedClasses.User,System.Guid,JackTheClipperCommon.SharedClasses.Source)">
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.ChangeSource(JackTheClipperCommon.SharedClasses.User,JackTheClipperCommon.SharedClasses.Source)">
             <summary>
             Changes the source.
             </summary>
             <param name="user">The user.</param>
-            <param name="toChange">Id of the source, which should be changed</param>
-            <param name="newSource">The new source.</param>
-            <returns>MethodResult</returns>
+            <param name="updatedSource">The updated source.</param>
+            <returns>MethodResult indicating success</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.AddPrincipalUnit(JackTheClipperCommon.SharedClasses.User,System.String,System.String)">
+            <summary>
+            Adds the client.
+            </summary>
+            <param name="user">The user.</param>
+            <param name="name">The name.</param>
+            <param name="pbMail">The pb mail.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.GetPrincipalUnits">
+            <summary>
+            Gets all principal units.
+            </summary>
+            <returns>The principal units</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.DeleteUser(System.Guid)">
+            <summary>
+            Deletes the User
+            </summary>
+            <param name="userId">The userId of the User to delete</param>
+            <returns>MethodResult if successful</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.AdministrativelyAddUser(JackTheClipperCommon.SharedClasses.User,System.Collections.Generic.IReadOnlyList{System.Guid})">
+            <summary>
+            Administratively adds a user.
+            </summary>
+            <param name="toAdd">The user to add.</param>
+            <param name="userUnits">The users units.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.ModifyUser(JackTheClipperCommon.SharedClasses.User,System.Collections.Generic.IReadOnlyList{System.Guid})">
+            <summary>
+            Modifies the user.
+            </summary>
+            <param name="toModify">The user to modify.</param>
+            <param name="userUnits">The users units.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.GetManageableUsers(System.Guid)">
+            <summary>
+            Gets the minimal information of the users a staffchief can manage
+            </summary>
+            <param name="userId">The id of the staffchief</param>
+            <returns>A list of <see cref="T:JackTheClipperCommon.SharedClasses.BasicUserInformation"/> if the given id actually belonged to a staffchief</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.GetUserInfo(System.Guid)">
+            <summary>
+            Gets all information on a user 
+            </summary>
+            <param name="requested">The id of the user whose information is requested</param>
+            <returns>All the information on a user like the <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/>s he belongs to</returns>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.InnerResetPassword(System.String)">
+            <summary>
+            Resets a given users password
+            </summary>
+            <param name="userMail">The mail of the of which the pw should be reset.</param>
+            <returns>MethodResult containing generated password.</returns>
+        </member>
+        <member name="P:JackTheClipperBusiness.UserManagement.UserController.Notifiable.UserMailAddress">
+            <summary>
+            The email address of the notifiable object
+            </summary>
+        </member>
+        <member name="P:JackTheClipperBusiness.UserManagement.UserController.Notifiable.UserName">
+            <summary>
+            The name of the notifiable object
+            </summary>
+        </member>
+        <member name="M:JackTheClipperBusiness.UserManagement.UserController.Notifiable.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperBusiness.UserManagement.UserController.Notifiable"/> class.
+            </summary>
+            <param name="userMailAddress">The mail address</param>
+            <param name="userName">The username</param>
         </member>
     </members>
 </doc>

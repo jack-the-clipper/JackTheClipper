@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ServiceModel.Syndication;
+using System.Threading.Tasks;
 using JackTheClipperCommon.BusinessObjects;
 using JackTheClipperCommon.SharedClasses;
+using JetBrains.Annotations;
 
 namespace JackTheClipperBusiness.CrawlerManagement
 {
@@ -17,7 +19,10 @@ namespace JackTheClipperBusiness.CrawlerManagement
         /// <param name="item">The item to index</param>
         /// <param name="rssKey">The belonging rss key.</param>
         /// <param name="source">The source.</param>
-        void NotifyNewRssFeedFoundThreadSave(SyndicationItem item, RssKey rssKey, Source source);
+        /// <returns>If indexing is required: a task with the corresponding indexing job.
+        /// <para>Otherwise: a completed Task</para></returns>
+        [NotNull]
+        Task NotifyNewRssFeedFoundThreadSave(SyndicationItem item, RssKey rssKey, Source source);
 
         /// <summary>
         /// Notifies the Observer that (probably) new web page content has been detected by a crawler.
@@ -28,8 +33,10 @@ namespace JackTheClipperBusiness.CrawlerManagement
         /// <param name="link">The link.</param>
         /// <param name="published">The published date.</param>
         /// <param name="source">The source.</param>
-        /// <returns>Method result, indicating success.</returns>
-        void NotifyNewWebPageContentFoundThreadSafe(string title, string content, string link, DateTime published, Source source);
+        /// <returns>If indexing is required: a task with the corresponding indexing job.
+        /// <para>Otherwise: a completed Task</para></returns>
+        [NotNull]
+        Task NotifyNewWebPageContentFoundThreadSafe(string title, string content, string link, DateTime published, Source source);
 
         /// <summary>
         /// Notifies the Observer that (probably) new web page content has been detected by a crawler.
@@ -41,7 +48,9 @@ namespace JackTheClipperBusiness.CrawlerManagement
         /// <param name="imageLink">The link of the image.</param>
         /// <param name="published">The published date.</param>
         /// <param name="source">The source.</param>
-        /// <returns>Method result, indicating success.</returns>
-        void NotifyNewImageContentFoundThreadSafe(string title, string description, string imageLink, string link, DateTime published, Source source);
+        /// <returns>If indexing is required: a task with the corresponding indexing job.
+        /// <para>Otherwise: a completed Task</para></returns>
+        [NotNull]
+        Task NotifyNewImageContentFoundThreadSafe(string title, string description, string imageLink, string link, DateTime published, Source source);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ServiceModel.Syndication;
 using System.Xml;
 using System.Linq;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using JackTheClipperCommon;
 using JackTheClipperCommon.BusinessObjects;
@@ -19,13 +20,9 @@ namespace JackTheClipperBusiness.CrawlerManagement
     {
         #region Member
         /// <summary>
-        /// Number of cached last rss feeds.
-        /// </summary>
-        private const int CacheThreshold = 5000;
-
-        /// <summary>
         /// Cache, containing the last indexed keys
         /// </summary>
+        [NotNull]
         private readonly HashSet<RssKey> lastIndexed;
 
         /// <summary>
@@ -75,6 +72,7 @@ namespace JackTheClipperBusiness.CrawlerManagement
                         reader.Close();
 
                         var alreadyIndexed = this.lastIndexed;
+                        var jobList = new List<Task>();
                         foreach (var item in feed.Items)
                         {
                             if (item != null)
@@ -83,7 +81,7 @@ namespace JackTheClipperBusiness.CrawlerManagement
                                 {
                                     var html = new HtmlDocument();
                                     html.LoadHtml(item.Summary.Text);
-                                    this.websiteCrawler.HandleDocument(html, item.Title?.Text);
+                                    jobList.AddRange(this.websiteCrawler.HandleDocument(html, item.Title?.Text));
                                     continue;
                                 }
 
@@ -91,15 +89,23 @@ namespace JackTheClipperBusiness.CrawlerManagement
                                 if (!alreadyIndexed.Contains(key))
                                 {
                                     alreadyIndexed.Add(key);
-                                    if (alreadyIndexed.Count > CacheThreshold)
+                                    if (alreadyIndexed.Count > AppConfiguration.RssLastItemCacheSize)
                                     {
-                                        alreadyIndexed.ExceptWith(alreadyIndexed.Take(CacheThreshold / 20));
+                                        alreadyIndexed.ExceptWith(alreadyIndexed.Take(AppConfiguration.RssLastItemCacheSize / 20));
                                     }
 
-                                    Observer.NotifyNewRssFeedFoundThreadSave(item, key, Source);
+                                    jobList.Add(Observer.NotifyNewRssFeedFoundThreadSave(item, key, Source));
                                     var content = item.Content == null ? item.Summary?.Text : (item.Content as TextSyndicationContent)?.Text;
-                                    HandleImages(content, item.Title?.Text, key);
+                                    jobList.AddRange(HandleImages(content, item.Title?.Text, key));
                                 }
+                            }
+                        }
+
+                        if (jobList.Count > 0)
+                        {
+                            using (new PerfTracer(nameof(PerformObservation) + Source.Name + "_WAIT"))
+                            {
+                                Task.WaitAll(jobList.Where(x => x != null).ToArray());
                             }
                         }
                     }

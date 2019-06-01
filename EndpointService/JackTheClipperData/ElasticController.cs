@@ -184,7 +184,7 @@ namespace JackTheClipperData
 
                     //Take twice the amount of requested articles cause of possible duplicates
                     var searchResult =
-                        await client.SearchAsync(GetFeedSelector(relevantFeed, page * articlesPerPage, articlesPerPage * 2, since, blackList));
+                        await client.SearchAsync(GetFeedSelector(relevantFeed, page * articlesPerPage, Math.Min(10000, articlesPerPage * 2), since, blackList));
                     return searchResult.Documents.Distinct(ArticleComparer.FullArticleComparer).Take(articlesPerPage).ToList();
                 }
             }

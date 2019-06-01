@@ -16,6 +16,10 @@ namespace JackTheClipperRequestHandler
     /// </summary>
     public class Program
     {
+        /// <summary>
+        /// Defines the entry point of the application.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
         public static void Main(string[] args)
         {
             CreateWebHostBuilder(args).Build().Run();
@@ -57,7 +61,7 @@ namespace JackTheClipperRequestHandler
             Factory.GetControllerInstance<ICrawlerController>().Restart();
             Task.Run(() =>
             {
-                Thread.Sleep(5000);
+                Thread.Sleep(60*1000);
                 Factory.GetControllerInstance<INotificationController>().StartNotificationProcessing();
             });
         }

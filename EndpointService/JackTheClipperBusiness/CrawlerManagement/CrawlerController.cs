@@ -85,7 +85,9 @@ namespace JackTheClipperBusiness.CrawlerManagement
         /// <param name="item">The item to index</param>
         /// <param name="rssKey">The belonging rss key.</param>
         /// <param name="source">The source.</param>
-        public void NotifyNewRssFeedFoundThreadSave(SyndicationItem item, RssKey rssKey, Source source)
+        /// <returns>If indexing is required: a task with the corresponding indexing job.
+        /// <para>Otherwise: a completed Task</para></returns>
+        public Task NotifyNewRssFeedFoundThreadSave(SyndicationItem item, RssKey rssKey, Source source)
         {
             var plainText = item.Summary?.Text?.GetTextFromHtml() ?? string.Empty;
             var plainTitle = item.Title?.Text.GetTextFromHtml() ?? source.Name;
@@ -99,9 +101,12 @@ namespace JackTheClipperBusiness.CrawlerManagement
                                           new DateTime(rssKey.Updated),
                                           DateTime.UtcNow,
                                           source.Id);
-                DatabaseAdapterFactory.GetControllerInstance<IIndexerService>()
+                var job = DatabaseAdapterFactory.GetControllerInstance<IIndexerService>()
                                       .IndexRssFeedItemThreadSafeAsync(article, rssKey);
+                return job ?? Task.CompletedTask;
             }
+
+            return Task.CompletedTask;
         }
         #endregion
 
@@ -115,8 +120,9 @@ namespace JackTheClipperBusiness.CrawlerManagement
         /// <param name="link">The link.</param>
         /// <param name="published">The published date.</param>
         /// <param name="source">The source.</param>
-        /// <returns>Method result, indicating success.</returns>
-        public void NotifyNewWebPageContentFoundThreadSafe(string title, string content, string link,
+        /// <returns>If indexing is required: a task with the corresponding indexing job.
+        /// <para>Otherwise: a completed Task</para></returns>
+        public Task NotifyNewWebPageContentFoundThreadSafe(string title, string content, string link,
             DateTime published, Source source)
         {
             if (DoesNotViolateBlackList(source, title) && DoesNotViolateBlackList(source, content))
@@ -129,8 +135,11 @@ namespace JackTheClipperBusiness.CrawlerManagement
                                           published,
                                           DateTime.UtcNow,
                                           source.Id);
-                DatabaseAdapterFactory.GetControllerInstance<IIndexerService>().IndexArticleThreadSafeAsync(article);
+                var job = DatabaseAdapterFactory.GetControllerInstance<IIndexerService>().IndexArticleThreadSafeAsync(article);
+                return job ?? Task.CompletedTask;
             }
+
+            return Task.CompletedTask;
         }
         #endregion
 
@@ -145,8 +154,9 @@ namespace JackTheClipperBusiness.CrawlerManagement
         /// <param name="imageLink">The link of the image.</param>
         /// <param name="published">The published date.</param>
         /// <param name="source">The source.</param>
-        /// <returns>Method result, indicating success.</returns>
-        public void NotifyNewImageContentFoundThreadSafe(string title, string description, string imageLink, string link,
+        /// <returns>If indexing is required: a task with the corresponding indexing job.
+        /// <para>Otherwise: a completed Task</para></returns>
+        public Task NotifyNewImageContentFoundThreadSafe(string title, string description, string imageLink, string link,
             DateTime published, Source source)
         {
             if (DoesNotViolateBlackList(source, title) && DoesNotViolateBlackList(source, description))
@@ -159,8 +169,11 @@ namespace JackTheClipperBusiness.CrawlerManagement
                                           published,
                                           DateTime.UtcNow,
                                           source.Id);
-                DatabaseAdapterFactory.GetControllerInstance<IIndexerService>().IndexArticleThreadSafeAsync(article);
+                var job = DatabaseAdapterFactory.GetControllerInstance<IIndexerService>().IndexArticleThreadSafeAsync(article);
+                return job ?? Task.CompletedTask;
             }
+
+            return Task.CompletedTask;
         }
         #endregion
 

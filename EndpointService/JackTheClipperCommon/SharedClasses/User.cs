@@ -42,8 +42,14 @@ namespace JackTheClipperCommon.SharedClasses
         /// </summary>
         [NotNull]
         [DataMember(Name = "UserMail")]
-        public string MailAddress { get; private set; }
+        public string MailAddress
+        {
+            get; private set;
+        }
 
+        /// <summary>
+        /// The email address of the notifiable object
+        /// </summary>
         [IgnoreDataMember]
         public string UserMailAddress => MailAddress;
 

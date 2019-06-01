@@ -4,22 +4,158 @@
         <name>JackTheClipperRequestHandler</name>
     </assembly>
     <members>
+        <member name="T:JackTheClipperRequestHandler.Controllers.ClipperAdminController">
+            <summary>
+            Controller for services that require a <see cref="F:JackTheClipperCommon.Enums.Role.SystemAdministrator"/>
+            </summary>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperAdminController.AddSource(System.Guid,JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Adds a new source.
+            </summary>
+            <param name="userId">The user identifier.</param>
+            <param name="toAdd">The source to add.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
         <member name="M:JackTheClipperRequestHandler.Controllers.ClipperAdminController.DeleteSource(System.Guid,System.Guid)">
             <summary>
             Deletes the source.
             </summary>
             <param name="userId">The user identifier.</param>
             <param name="sourceId">The source identifier.</param>
-            <returns>200 if succesfull, BadRequest if not</returns>
+            <returns>MethodResult indicating success.</returns>
         </member>
-        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperAdminController.ChangeSource(System.Guid,System.Guid,JackTheClipperCommon.SharedClasses.Source)">
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperAdminController.ChangeSource(System.Guid,JackTheClipperCommon.SharedClasses.Source)">
             <summary>
-            Endpoint to Change the Source
+            Changes the source.
             </summary>
             <param name="userId">The user identifier.</param>
-            <param name="tochange">The source to change.</param>
-            <param name="newsource">New Source</param>
-            <returns>200 if succesfull, BadRequest if not</returns>
+            <param name="updatedSource">The updated source.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperAdminController.AddPrincipalUnit(System.Guid,System.String,System.String)">
+            <summary>
+            Adds a new principal unit.
+            </summary>
+            <param name="userId">The user identifier of the user which calls the api.</param>
+            <param name="name">The name of the new principal unit.</param>
+            <param name="principalUnitMail">The mail of the principal unit.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperAdminController.GetPrincipalUnits(System.Guid)">
+            <summary>
+            Gets all principal units.
+            </summary>
+            <param name="userId">The user identifier of the requesting admin.</param>
+            <returns>List of principal units.</returns>
+        </member>
+        <member name="T:JackTheClipperRequestHandler.Controllers.ClipperOrganizationalUnitController">
+            <summary>
+            Controller for services concerning <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/>s
+            </summary>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperOrganizationalUnitController.GetOrganizationalUnits(System.Guid)">
+            <summary>
+            Gets the organizational units a user is allowed to see
+            </summary>
+            <param name="userId">The id of the requesting user</param>
+            <returns>List of <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/> that the user is allowed to see</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperOrganizationalUnitController.GetOrganizationalUnitSettings(System.Guid,System.Guid)">
+            <summary>
+            Gets the settings of an <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/>
+            </summary>
+            <param name="userId">The id of the user requesting the settings</param>
+            <param name="unitId">The id of the unit whose settings are requested</param>
+            <returns>The <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings"/> of the specified unit</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperOrganizationalUnitController.SaveOrganizationalUnitSettings(System.Guid,JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings)">
+            <summary>
+            Saves the <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings"/> 
+            </summary>
+            <param name="userId">The user requesting this action</param>
+            <param name="unitSettings">The updated version of already existing settings</param>
+            <returns>MethodResult indicating success</returns>
+        </member>
+        <member name="T:JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController">
+            <summary>
+            Controller for the StaffChief
+            </summary>
+            <seealso cref="T:Microsoft.AspNetCore.Mvc.Controller" />
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.AddOrganizationalUnit(System.Guid,System.String,System.Guid)">
+            <summary>
+            Adds a new unit.
+            </summary>
+            <param name="userId">The user identifier.</param>
+            <param name="name">The name of the new unit.</param>
+            <param name="parentUnitId">The parent unit id.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.DeleteOrganizationalUnit(System.Guid,System.Guid)">
+            <summary>
+            Deletes the principal unit.
+            </summary>
+            <param name="userId">The user identifier.</param>
+            <param name="unitId">The unit identifier.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.UpdateOrganizationalUnit(System.Guid,JackTheClipperCommon.SharedClasses.OrganizationalUnit)">
+            <summary>
+            Updates a unit.
+            </summary>
+            <param name="userId">The user identifier.</param>
+            <param name="updatedUnit">The updated unit.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.SetUserOrganizationalUnits(System.Guid,System.Collections.Generic.IReadOnlyList{System.Guid})">
+            <summary>
+            Sets the organizational units of a user.
+            </summary>
+            <param name="userId">The user identifier.</param>
+            <param name="units">The organizational units.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.GetManageableUsers(System.Guid)">
+            <summary>
+            Gets the manageable users.
+            </summary>
+            <param name="userId">The user identifier ot he current admin or staff chief.</param>
+            <returns>List of manageable users.</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.GetUserInfo(System.Guid,System.Guid)">
+            <summary>
+            Gets the user information.
+            </summary>
+            <param name="userId">The identifier of the admin which performs this call.</param>
+            <param name="requested">The requested user id.</param>
+            <returns>The user information for the requested user.</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.AdministrativelyAddUser(System.Guid,System.Tuple{JackTheClipperCommon.SharedClasses.User,System.Collections.Generic.IReadOnlyList{System.Guid}})">
+            <summary>
+            Adds a user as an admin
+            </summary>
+            <param name="staffChiefId">The id of the staffchief adding the user</param>
+            <param name="toAdd">A tuple specifying the <see cref="T:JackTheClipperCommon.SharedClasses.User"/> to add and
+            a List of <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/>s he should belong to</param>
+            <returns>MethodResult indicating success</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.DeleteUser(System.Guid,System.Guid)">
+            <summary>
+            Deletes a user
+            </summary>
+            <param name="staffChiefId">The id of the staffchief requesting the deletion</param>
+            <param name="userId">The id of the user that should be deleted</param>
+            <returns>MethodResult indicating success</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.ModifyUser(System.Guid,System.Tuple{JackTheClipperCommon.SharedClasses.User,System.Collections.Generic.IReadOnlyList{System.Guid}})">
+            <summary>
+            Updates an existing user
+            </summary>
+            <param name="staffChiefId">The id of the staffchief adding the user</param>
+            <param name="toModify">A tuple holding the updated <see cref="T:JackTheClipperCommon.SharedClasses.User"/> and
+            a List of <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/>s he should belong to</param>
+            <returns>MethodResult indicating success</returns>
         </member>
         <member name="T:JackTheClipperRequestHandler.Controllers.ClipperServiceController">
             <summary>
@@ -32,11 +168,69 @@
             </summary>
             <returns>MethodResult with status.</returns>
         </member>
-        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperServiceController.GetPrincipalUnits">
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperServiceController.GetPrincipalUnitBasicInformation">
             <summary>
             Gets the principal units.
             </summary>
             <returns>List of principal units.</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperServiceController.GetPrincipalUnitChildren(System.Guid)">
+            <summary>
+            Gets the children of a principal unit.
+            </summary>
+            <param name="principalUnitId">The principal unit identifier.</param>
+            <returns>List of children of principal units.</returns>
+        </member>
+        <member name="T:JackTheClipperRequestHandler.Controllers.ClipperUserController">
+            <summary>
+            Controller for services that any user can access
+            </summary>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperUserController.TryAuthenticateUser(System.String,System.String,System.Guid)">
+            <summary>
+            Authenticates a user
+            </summary>
+            <param name="userMailOrName">user name or email by which the user to authenticate can be identified</param>
+            <param name="userPassword">The password trying to authenticate the user</param>
+            <param name="principalUnit">The id of the principal unit the user should belong to.
+            This is needed since a username need only be unique within one principal unit</param>
+            <returns>The authenticated user or <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestResult"/> if the authentication failed</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperUserController.GetFeedDefinitions(System.Guid)">
+            <summary>
+            Returns the feeds a user has
+            </summary>
+            <param name="userId">The user whose feeds are queried</param>
+            <returns>List of <see cref="T:JackTheClipperCommon.SharedClasses.Feed"/>s belonging to the user</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperUserController.GetFeed(System.Guid,System.Guid,System.Int32,System.Boolean)">
+            <summary>
+            Gets the articles belonging to a feed of an user
+            </summary>
+            <param name="userId">The user wanting to see the articles</param>
+            <param name="feedId">The feed that is requested</param>
+            <param name="page">The index of the page that should be returned. The size of the page is set
+            in the user's <see cref="P:JackTheClipperCommon.SharedClasses.UserSettings.ArticlesPerPage"/></param>
+            <param name="showArchived">Whether to consider all articles matching the feed criteria or only
+            those indexed after the user's last login</param>
+            <returns>List of <see cref="T:JackTheClipperCommon.SharedClasses.ShortArticle"/> matching the supplied feeds criteria. The size of the
+            list is less than or equal to <see cref="P:JackTheClipperCommon.SharedClasses.UserSettings.ArticlesPerPage"/></returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperUserController.GetArticle(System.Guid,System.Guid)">
+            <summary>
+            Gets a single article
+            </summary>
+            <param name="userId">The user requesting the article</param>
+            <param name="articleId">The id of the requested article</param>
+            <returns>The requested article, it is a <see cref="T:JackTheClipperCommon.SharedClasses.Article"/> unlike <see cref="M:JackTheClipperRequestHandler.Controllers.ClipperUserController.GetFeed(System.Guid,System.Guid,System.Int32,System.Boolean)"/> which
+            only returns <see cref="T:JackTheClipperCommon.SharedClasses.ShortArticle"/>s</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperUserController.GetUserSettings(System.Guid)">
+            <summary>
+            Gets the UserSettings of the requesting user
+            </summary>
+            <param name="userId">The id of the user requesting his settings</param>
+            <returns><see cref="T:JackTheClipperCommon.SharedClasses.UserSettings"/> belonging to the user</returns>
         </member>
         <member name="M:JackTheClipperRequestHandler.Controllers.ClipperUserController.SaveUserSettings(System.Guid,System.Int32,JackTheClipperCommon.Enums.NotificationSetting,System.Int32)">
             <summary>
@@ -66,6 +260,114 @@
             Deletes the feed.
             </summary>
             <param name="feedId">The feed id.</param>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperUserController.ResetPassword(System.String)">
+            <summary>
+            Resets the password of the user
+            </summary>
+            This implies that the user forgot his password
+            <param name="userMail">The mail belonging to the user whose password will be reset</param>
+            <returns><see cref="T:Microsoft.AspNetCore.Mvc.OkResult"/> if successful, <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestResult"/> otherwise</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperUserController.ChangePassword(System.Guid,System.String)">
+            <summary>
+            Changes the password of a user.
+            </summary>
+            Compared to <see cref="M:JackTheClipperRequestHandler.Controllers.ClipperUserController.ResetPassword(System.String)"/> this implies that the user still knows his password
+            and simply wants to change it
+            <param name="userId">The id of the user wanting to change his password </param>
+            <param name="newPassword">The new password the user wants</param>
+            <returns><see cref="T:Microsoft.AspNetCore.Mvc.OkResult"/> if successful, <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestResult"/> otherwise</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperUserController.ChangeMailAddress(System.Guid,System.String)">
+            <summary>
+            Changes the mail address of a user.
+            </summary>
+            <param name="userId">The id of the user wanting to change his password </param>
+            <param name="newUserMail">The new mail address the user wants</param>
+            <returns><see cref="T:Microsoft.AspNetCore.Mvc.OkResult"/> if successful, <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestResult"/> otherwise</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperUserController.GetAvailableSources(System.Guid)">
+            <summary>
+            The <see cref="T:JackTheClipperCommon.SharedClasses.Source"/>s available to an user
+            </summary>
+            <param name="userId">The user requesting the sources available to him</param>
+            <returns>List of all <see cref="T:JackTheClipperCommon.SharedClasses.Source"/>s available to the user</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperUserController.AddUser(JackTheClipperCommon.SharedClasses.User,System.String,System.Guid)">
+            <summary>
+            Registers a user
+            </summary>
+            Compared to <see cref="M:JackTheClipperRequestHandler.Controllers.ClipperStaffChiefController.AdministrativelyAddUser(System.Guid,System.Tuple{JackTheClipperCommon.SharedClasses.User,System.Collections.Generic.IReadOnlyList{System.Guid}})"/> this implies
+            that the user is registering himself. Which is why he cannot use the application right away
+            <param name="toAdd">The user to register</param>
+            <param name="password">The password of the user</param>
+            <param name="selectedUnit">The id of the <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/> the user wants to belong
+            to</param>
+            <returns>MethodResult indicating success</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Controllers.ClipperUserController.Get``1(System.Guid)">
+            <summary>
+            Gets the corresponding object by its id.
+            </summary>
+            <typeparam name="T">The type of the requested object.</typeparam>
+            <param name="id">The id of the requested object.</param>
+            <returns>The requested object (if exists).</returns>
+        </member>
+        <member name="T:JackTheClipperRequestHandler.Program">
+            <summary>
+                Class responsible for starting the application
+            </summary>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Program.Main(System.String[])">
+            <summary>
+            Defines the entry point of the application.
+            </summary>
+            <param name="args">The arguments.</param>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Program.CreateWebHostBuilder(System.String[])">
+            <summary>
+                Configures the WebHostBuilder for this application
+            </summary>
+            <param name="args">Commandline parameters (if present)</param>
+            <returns>IWebHostBuilder used to build the application</returns>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Program.StartInternalServices">
+            <summary>
+                Starts all the services needed by the application like the <see cref="T:JackTheClipperBusiness.CrawlerManagement.ICrawlerController" />
+                implementation
+            </summary>
+        </member>
+        <member name="T:JackTheClipperRequestHandler.Startup">
+            <summary>
+            Class responsible for initializing certain settings on application startup
+            </summary>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperRequestHandler.Startup"/> class
+            </summary>
+            <param name="configuration">The configuration to user</param>
+        </member>
+        <member name="P:JackTheClipperRequestHandler.Startup.Configuration">
+            <summary>
+            Gets the configuration.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Configures the services.
+            This method gets called by the runtime. Use this method to add services to the container.
+            </summary>
+            <param name="services">The services.</param>
+        </member>
+        <member name="M:JackTheClipperRequestHandler.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
+            <summary>
+            Configures the application.
+            This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+            </summary>
+            <param name="app">The application.</param>
+            <param name="env">The hosting env.</param>
         </member>
     </members>
 </doc>

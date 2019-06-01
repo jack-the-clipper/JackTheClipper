@@ -152,7 +152,9 @@ public class SysAdminController {
             populateDefaultRedirectAttributes(redirectAttributes, true, "Quelle konnte nicht " +
                     "aktualisiert werden");
         }
-        return "redirect:/admin/sources";
+        String redirectQuery = source.getId() != null ? "?sourceId=" + source.getId().toString()
+                : "";
+        return "redirect:/admin/sources" + redirectQuery;
     }
 
     /**
@@ -180,7 +182,7 @@ public class SysAdminController {
             }
         }
         clients.remove(system);
-        if (clientId == null && clients.size() > 0 ) {
+        if (clientId == null && clients.size() > 0) {
             currentClient = clients.get(0);
         }
         if (currentClient != null) {
@@ -271,8 +273,8 @@ public class SysAdminController {
                     "aktualisiert");
         } catch (BackendException ex) {
             log.info("Failed to update principal [{}]", unit.getId());
-            populateDefaultRedirectAttributes(redirectAttributes, true, "Mandant konnte nicht " +
-                    "aktualisiert werden");
+            populateDefaultRedirectAttributes(redirectAttributes, true,
+                    "Mandant konnte nicht aktualisiert werden");
         }
         return "redirect:/admin/editclients?clientId=" + unit.getId();
     }

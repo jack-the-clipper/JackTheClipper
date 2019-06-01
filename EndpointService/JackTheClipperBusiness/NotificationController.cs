@@ -27,7 +27,6 @@ namespace JackTheClipperBusiness
         public static void Start()
         {
             Scheduler.Change(0, 60 * 1000);
-            CheckForNotifications(DateTime.Now);
         }
 
         /// <summary>
@@ -44,7 +43,7 @@ namespace JackTheClipperBusiness
                     var notifiableUserSettings = Factory.GetControllerInstance<IClipperDatabase>().GetNotifiableUserSettings();
                     var parallelOpts = new ParallelOptions
                     {
-                        MaxDegreeOfParallelism = Convert.ToInt32(Math.Ceiling(Environment.ProcessorCount * 0.75))
+                        MaxDegreeOfParallelism = AppConfiguration.MaxNotificationJobDegreeOfParallelism
                     };
                     Parallel.ForEach(notifiableUserSettings, parallelOpts, (notifiable) =>
                     {
@@ -71,8 +70,12 @@ namespace JackTheClipperBusiness
                                     // which determine nothing is relevant at all.
                                     var blackList = DatabaseAdapterFactory.GetControllerInstance<IClipperDatabase>()
                                                                           .GetUnitInheritedBlackList(notifiable.UserId);
-                                    feeds = notifiable.Settings.Feeds.AsParallel()
-                                                      .Select(f => indexer.GetFeedAsync(f, lastFetched, 10000, 0, blackList).Result)
+
+                                    //These can run in parallel aswell, as the main amount of time is waiting for elastic
+                                    feeds = notifiable.Settings.Feeds
+                                                      .AsParallel()
+                                                      .WithDegreeOfParallelism(AppConfiguration.MaxNotificationJobDegreeOfParallelism)
+                                                      .Select(f => indexer.GetFeedAsync(f, lastFetched, 100000, 0, blackList).Result)
                                                       .SelectMany(s => s)
                                                       .Distinct(ArticleComparer.ShortArticleComparer).ToList();
                                     if (feeds.Any())

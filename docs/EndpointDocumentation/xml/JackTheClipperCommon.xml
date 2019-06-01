@@ -14,6 +14,11 @@
             The full article comparer
             </summary>
         </member>
+        <member name="F:JackTheClipperCommon.ArticleComparer.ShortArticleComparer">
+            <summary>
+            The short article comparer
+            </summary>
+        </member>
         <member name="M:JackTheClipperCommon.ArticleComparer.Equals(JackTheClipperCommon.SharedClasses.ShortArticle,JackTheClipperCommon.SharedClasses.ShortArticle)">
             <summary>Determines whether the specified objects are equal.</summary>
             <param name="x">The first object of type T to compare.</param>
@@ -37,6 +42,52 @@
             <param name="obj">The <see cref="T:System.Object"></see> for which a hash code is to be returned.</param>
             <returns>A hash code for the specified object.</returns>
             <exception cref="T:System.ArgumentNullException">The type of <paramref name="obj">obj</paramref> is a reference type and <paramref name="obj">obj</paramref> is null.</exception>
+        </member>
+        <member name="T:JackTheClipperCommon.BusinessObjects.NotifiableUserSettings">
+            <summary>
+            Implements <see cref="T:JackTheClipperCommon.Interfaces.IMailNotifiable"/> for users
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.BusinessObjects.NotifiableUserSettings.UserId">
+            <summary>
+            The Id of the user this settings belong to
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.BusinessObjects.NotifiableUserSettings.UserMailAddress">
+            <summary>
+            The mail address of the notifiable object
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.BusinessObjects.NotifiableUserSettings.UserName">
+            <summary>
+            The name of the notifiable object
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.BusinessObjects.NotifiableUserSettings.LastLoginTime">
+            <summary>
+            The last time the user logged in
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.BusinessObjects.NotifiableUserSettings.Settings">
+            <summary>
+            The other settings the user has
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.BusinessObjects.NotifiableUserSettings.PrincipalUnitName">
+            <summary>
+            The name of the client the user belongs to
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.BusinessObjects.NotifiableUserSettings.#ctor(System.Guid,System.String,System.String,JackTheClipperCommon.SharedClasses.UserSettings,System.DateTime,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperCommon.BusinessObjects.NotifiableUserSettings"/> class.
+            </summary>
+            <param name="userId">The id of the user this settings should belong to</param>
+            <param name="userMailAddress">The mail address of the user</param>
+            <param name="userName">The username of the user</param>
+            <param name="settings">The other settings</param>
+            <param name="lastLoginTime">The last time the user logged in</param>
+            <param name="principalUnitName">The name of the principal unit the user belongs to</param>
         </member>
         <member name="T:JackTheClipperCommon.BusinessObjects.RssKey">
             <summary>
@@ -107,12 +158,166 @@
         </member>
         <member name="T:JackTheClipperCommon.Configuration.AppConfiguration">
             <summary>
-            Private set of the default configuration properties from appsettings.json
+                Private set of the default configuration properties from appsettings.json
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.AllowedHosts">
+            <summary>
+                Which hosts are allowed to access this application
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.KestrelEndPointsHTTPUrl">
+            <summary>
+                The url for use within kestrel.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.SiteConfigIP">
+            <summary>
+                The ip address the application should bind to
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.SiteConfigPort">
+            <summary>
+                The port the application should bind to
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.SiteConfigSSL">
+            <summary>
+                Whether the application should use Https over Http
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationFrom">
+            <summary>
+                The name of the user the mails are sent from
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationPassword">
+            <summary>
+                The password to access the mail server
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationHost">
+            <summary>
+                Host of the mail server
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationPort">
+            <summary>
+                Port of the mail server
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationSSL">
+            <summary>
+                Whether the mail server uses Https
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationFELoginLink">
+            <summary>
+                The login link of the frontend
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.MailConfigurationTimeout">
+            <summary>
+                Timeout for the mail server. Default is 10000. This is in Milliseconds
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.SqlServerConnectionString">
+            <summary>
+                The url of the SQL server
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.ElasticClearIndex">
+            <summary>
+                Whether to clear existing indexes of ElasticSearch on application start.
+                Default is false
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.ElasticPermanentIndexName">
+            <summary>
+                The name of the permanent index. This is where all articles are saved in
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.ElasticTemporaryIndexName">
+            <summary>
+                The name of the temporary index. Articles are only saved for a short amount of time in here.
+                They are either discarded if deemed uninteresting for all users of the application or saved to
+                permanent index otherwise
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.ElasticRssSpeedIndexName">
+            <summary>
+                The name of the index to compare rss articles. This is a different one that allows for better
+                performance since articles can be compared by something else than their entire content
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.ElasticUri">
+            <summary>
+                Uri to communicate with the Elastic Search Server
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.PerformanceTraceActive">
+            <summary>
+                Whether performance should be traced for this application.
+                Default is false
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.WebsiteCrawlInterval">
+            <summary>
+                In which intervals websites should be crawled. This is in seconds.
+                Minimum value is 10. Default is 120
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.RssCrawlInterval">
+            <summary>
+                In which intervals rss feeds should be crawled. This is in seconds.
+                Minimum value is 10. Default is 45
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.PasswordLength">
+            <summary>
+                How long the autogenerated passwords should be. Must be greater than
+                0. Default value is 8
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.ShortTextLength">
+            <summary>
+                How long the short text of a ShortArticle is. Minimum value of 3.
+                Default is 200
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.UserAgent">
+            <summary>
+                Which user agent to use when crawling website. Some sites deliver
+                their content based on the user agent. Defaults to Mozilla/5.0
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.MaxNotificationJobDegreeOfParallelism">
+            <summary>
+            Gets or sets the maximum degree of parallelism for notification job processing.
+            Default: CPU-cores * 0.75
+            Cant exceed <code>Environment.ProcessorCount * 2</code>
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.RssLastItemCacheSize">
+            <summary>
+            Gets or sets the amount of last RSS last items which should be cached.
+            Default: 5000
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.UseSuperSetFeedCronJob">
+            <summary>
+            Gets or sets a value indicating whether the superset feed should be updated periodically by a cron job
+            (this should improve performance in most scenarios).
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Configuration.AppConfiguration.SuperSetFeedCronJobInterval">
+            <summary>
+            Gets or sets the super set feed cron job interval. Only takes effect if <see cref="P:JackTheClipperCommon.Configuration.AppConfiguration.UseSuperSetFeedCronJob"/> is set to <code>true</code>.
             </summary>
         </member>
         <member name="M:JackTheClipperCommon.Configuration.AppConfiguration.RegisterConfig(Microsoft.Extensions.Configuration.IConfigurationRoot)">
             <summary>
-            Set the default configuration settings for the connection.
+                Set the default configuration settings for the connection.
             </summary>
             <param name="config">The current config.</param>
         </member>
@@ -134,6 +339,31 @@
         <member name="F:JackTheClipperCommon.Enums.ContentType.Rss">
             <summary>
             Source is a Rss-Feed
+            </summary>
+        </member>
+        <member name="T:JackTheClipperCommon.Enums.DatabaseErrors">
+            <summary>
+            The possible well known database errors.
+            </summary>
+        </member>
+        <member name="F:JackTheClipperCommon.Enums.DatabaseErrors.ERROR999991">
+            <summary>
+            Duplicate principal unit name
+            </summary>
+        </member>
+        <member name="F:JackTheClipperCommon.Enums.DatabaseErrors.ERROR999992">
+            <summary>
+            Duplicate user name
+            </summary>
+        </member>
+        <member name="F:JackTheClipperCommon.Enums.DatabaseErrors.ERROR999993">
+            <summary>
+            Duplicate mail
+            </summary>
+        </member>
+        <member name="F:JackTheClipperCommon.Enums.DatabaseErrors.ERROR999994">
+            <summary>
+            Staff chief of principal unit cannot delete himself.
             </summary>
         </member>
         <member name="T:JackTheClipperCommon.Enums.NotificationSetting">
@@ -212,7 +442,7 @@
         </member>
         <member name="M:JackTheClipperCommon.Extensions.GeneralExtensions.TryGetOrAddIfNotPresentOrNull``2(System.Collections.Generic.IDictionary{``0,``1},``0)">
             <summary>
-            Tries the get an item by the given key or adds it if no item is present or null.
+            Tries to get an item by the given key or adds it if no item is present or null.
             </summary>
             <typeparam name="K">Type of key.</typeparam>
             <typeparam name="T">Tye of value</typeparam>
@@ -233,29 +463,11 @@
             <param name="user">The user to obtain its organizational units.</param>
             <returns>List of accessable Organizational units.</returns>
         </member>
-        <member name="M:JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.AddOrganizationalUnit(JackTheClipperCommon.SharedClasses.User,JackTheClipperCommon.SharedClasses.OrganizationalUnit,JackTheClipperCommon.SharedClasses.OrganizationalUnit)">
-            <summary>
-            Adds a given organizational unit.
-            </summary>
-            <param name="user">The user who requests the addition.</param>
-            <param name="parent">The parent of the new organizational unit.</param>
-            <param name="toAdd">To unit add.</param>
-            <returns>MethodResult indicating success</returns>
-        </member>
-        <member name="M:JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.DeleteOrganizationalUnit(JackTheClipperCommon.SharedClasses.User,JackTheClipperCommon.SharedClasses.OrganizationalUnit)">
-            <summary>
-            Deletes the organizational unit.
-            </summary>
-            <param name="user">The user who requests the deletion.</param>
-            <param name="toDelete">The unit to delete.</param>
-            <returns>MethodResult indicating success</returns>
-        </member>
-        <member name="M:JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.GetOrganizationalUnitSettings(JackTheClipperCommon.SharedClasses.User,JackTheClipperCommon.SharedClasses.OrganizationalUnit)">
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.GetOrganizationalUnitSettings(System.Guid)">
             <summary>
             Gets the organizational unit settings.
             </summary>
-            <param name="user">The user who requests the settings.</param>
-            <param name="unit">The unit.</param>
+            <param name="unitId">The organizational unit id.</param>
             <returns>The requested settings.</returns>
         </member>
         <member name="M:JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.SaveOrganizationalUnitSettings(JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings)">
@@ -264,6 +476,36 @@
             </summary>
             <param name="toSave">The settings to save.</param>
             <returns>MethodResult indicating success</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.AddOrganizationalUnit(System.String,System.Guid)">
+            <summary>
+            Adds a new unit.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="parentUnitId">The parent unit id.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.DeleteOrganizationalUnit(System.Guid)">
+            <summary>
+            Deletes an organizational unit.
+            </summary>
+            <param name="unitId">The unit identifier.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.UpdateOrganizationalUnit(JackTheClipperCommon.SharedClasses.OrganizationalUnit)">
+            <summary>
+            Updates an existing organizational unit to the given values.
+            </summary>
+            <param name="updatedUnit">The updated unit.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI.SetUserOrganizationalUnits(JackTheClipperCommon.SharedClasses.User,System.Collections.Generic.IReadOnlyList{System.Guid})">
+            <summary>
+            Sets the organizational units of a user.
+            </summary>
+            <param name="user">The user to be changed.</param>
+            <param name="units">The organizational units.</param>
+            <returns>MethodResult indicating success.</returns>
         </member>
         <member name="T:JackTheClipperCommon.Interfaces.IClipperService">
             <summary>
@@ -276,17 +518,61 @@
             </summary>
             <returns>MethodResult indicating the status.</returns>
         </member>
-        <member name="M:JackTheClipperCommon.Interfaces.IClipperService.GetPrincipalUnits">
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperService.GetPrincipalUnitBasicInformation">
             <summary>
             Gets the principal units.
             </summary>
             <returns>List of principal units.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperService.GetPrincipalUnitChildren(System.Guid)">
+            <summary>
+            Gets the children of a principal unit.
+            </summary>
+            <param name="principalUnitId">The principal unit identifier.</param>
+            <returns>List of children of principal units.</returns>
         </member>
         <member name="T:JackTheClipperCommon.Interfaces.IClipperStaffChiefAPI">
             <summary>
             Interface of the API for a staff chief.
             </summary>
             <seealso cref="T:JackTheClipperCommon.Interfaces.IClipperOrganizationalUnitAPI" />
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperStaffChiefAPI.GetManageableUsers(System.Guid)">
+            <summary>
+            Gets the minimal information of the users a staffchief can manage
+            </summary>
+            <param name="userId">The id of the staffchief</param>
+            <returns>A list of <see cref="T:JackTheClipperCommon.SharedClasses.BasicUserInformation"/> if the given id actually belonged to a staffchief</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperStaffChiefAPI.GetUserInfo(System.Guid)">
+            <summary>
+            Gets all information on a user 
+            </summary>
+            <param name="requested">The id of the user whose information is requested</param>
+            <returns>All the information on a user like the <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/>s he belongs to</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperStaffChiefAPI.DeleteUser(System.Guid)">
+            <summary>
+            Deletes the user.
+            </summary>
+            <param name="userId">The user identifier.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperStaffChiefAPI.AdministrativelyAddUser(JackTheClipperCommon.SharedClasses.User,System.Collections.Generic.IReadOnlyList{System.Guid})">
+            <summary>
+            Administratively adds a user.
+            </summary>
+            <param name="toAdd">The user to add.</param>
+            <param name="userUnits">The users units.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperStaffChiefAPI.ModifyUser(JackTheClipperCommon.SharedClasses.User,System.Collections.Generic.IReadOnlyList{System.Guid})">
+            <summary>
+            Modifies the user.
+            </summary>
+            <param name="toModify">The user to modify.</param>
+            <param name="userUnits">The users units.</param>
+            <returns>MethodResult indicating success.</returns>
         </member>
         <member name="T:JackTheClipperCommon.Interfaces.IClipperSystemAdministratorAPI">
             <summary>
@@ -309,14 +595,28 @@
             <param name="toAdd">The source to add.</param>
             <returns>MethodResult indicating success</returns>
         </member>
-        <member name="M:JackTheClipperCommon.Interfaces.IClipperSystemAdministratorAPI.ChangeSource(JackTheClipperCommon.SharedClasses.User,System.Guid,JackTheClipperCommon.SharedClasses.Source)">
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperSystemAdministratorAPI.ChangeSource(JackTheClipperCommon.SharedClasses.User,JackTheClipperCommon.SharedClasses.Source)">
             <summary>
             Changes the source.
             </summary>
             <param name="user">The user.</param>
-            <param name="toChange">Id of the source, which should be changed</param>
-            <param name="newSource">The new source.</param>
+            <param name="updatedSource">The updated source.</param>
             <returns>MethodResult indicating success</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperSystemAdministratorAPI.AddPrincipalUnit(JackTheClipperCommon.SharedClasses.User,System.String,System.String)">
+            <summary>
+            Adds the client.
+            </summary>
+            <param name="user">The user.</param>
+            <param name="name">The name.</param>
+            <param name="pbMail">The pb mail.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperSystemAdministratorAPI.GetPrincipalUnits">
+            <summary>
+            Gets all principal units.
+            </summary>
+            <returns>The principal units</returns>
         </member>
         <member name="T:JackTheClipperCommon.Interfaces.IClipperUserAPI">
             <summary>
@@ -330,7 +630,7 @@
             <param name="userMailOrName">The user email or name.</param>
             <param name="userPassword">The password of the user.</param>
             <param name="principalUnit">The principal unit.</param>
-            <returns>The <see cref="T:JackTheClipperCommon.SharedClasses.User"/>; if authenticated successfully</returns>
+            <returns>The user (if existing).</returns>
         </member>
         <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.GetFeedDefinitions(JackTheClipperCommon.SharedClasses.User)">
             <summary>
@@ -339,12 +639,12 @@
             <param name="user">The user.</param>
             <returns>Collection of feeds for the given user.</returns>
         </member>
-        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.GetFeed(JackTheClipperCommon.SharedClasses.User,JackTheClipperCommon.SharedClasses.Feed,System.Int32,System.Boolean)">
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.GetFeed(System.Guid,System.Guid,System.Int32,System.Boolean)">
             <summary>
             Gets the feed data.
             </summary>
-            <param name="user">The user.</param>
-            <param name="feed">The feed.</param>
+            <param name="userId">The user id.</param>
+            <param name="feedId">The feed id.</param>
             <param name="page">The requested page.</param>
             <param name="showArchived">A value indicating whether the archived articles should be shown or not.</param>
             <returns>List of <see cref="T:JackTheClipperCommon.SharedClasses.ShortArticle"/>s within the feed.</returns>
@@ -356,11 +656,11 @@
             <param name="articleId">The article id.</param>
             <returns>The (full) <see cref="T:JackTheClipperCommon.SharedClasses.Article"/>.</returns>
         </member>
-        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.GetUserSettings(JackTheClipperCommon.SharedClasses.User)">
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.GetUserSettings(System.Guid)">
             <summary>
             Gets the user settings.
             </summary>
-            <param name="user">The user.</param>
+            <param name="userId">The user id.</param>
             <returns>The settings of the given user.</returns>
         </member>
         <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.ResetPassword(System.String)">
@@ -386,25 +686,21 @@
             <param name="newUserMail">The new mail address.</param>
             <returns>MethodResult indicating success.</returns>
         </member>
-        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.GetAvailableSources(JackTheClipperCommon.SharedClasses.User)">
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.GetAvailableSources(System.Guid)">
             <summary>
             Gets the available sources for a given user.
             </summary>
             <param name="user">The user.</param>
             <returns>List of available sources.</returns>
         </member>
-        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.AddUser(System.String,System.String,System.String,JackTheClipperCommon.Enums.Role,System.Guid,System.Boolean,System.Boolean)">
+        <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.AddUser(JackTheClipperCommon.SharedClasses.User,System.String,System.Guid)">
             <summary>
             Adds a user.
             </summary>
-            <param name="userMail">The new users mail.</param>
-            <param name="username">The new users username.</param>
-            <param name="password">The new users password.</param>
-            <param name="role">The new users role.</param>
-            <param name="principalUnit">The new users principal unit.</param>
-            <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
-            <param name="valid">A value whether the user is valid or not.</param>
-            <returns>The new users <see cref="T:JackTheClipperCommon.SharedClasses.User"/>object</returns>
+            <param name="toAdd">The new user to add.</param>
+            <param name="password">The password.</param>
+            <param name="selectedUnit">The selected requested unit.</param>
+            <returns>MethodResult indicating success.</returns>
         </member>
         <member name="M:JackTheClipperCommon.Interfaces.IClipperUserAPI.SaveUserSettings(System.Guid,System.Int32,JackTheClipperCommon.Enums.NotificationSetting,System.Int32)">
             <summary>
@@ -435,6 +731,21 @@
             </summary>
             <param name="feedId">The feed id.</param>
         </member>
+        <member name="T:JackTheClipperCommon.Interfaces.IMailNotifiable">
+            <summary>
+            Interface for an object that can be notified by email
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Interfaces.IMailNotifiable.UserMailAddress">
+            <summary>
+            The email address of the notifiable object
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Interfaces.IMailNotifiable.UserName">
+            <summary>
+            The name of the notifiable object
+            </summary>
+        </member>
         <member name="T:JackTheClipperCommon.Localization.ClipperTexts">
             <summary>
               Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.
@@ -451,6 +762,26 @@
               Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
             </summary>
         </member>
+        <member name="P:JackTheClipperCommon.Localization.ClipperTexts.AccountCreatedMailBody">
+             <summary>
+               Sucht eine lokalisierte Zeichenfolge, die ... wurde für sie angelegt.
+            
+            Sie können sich mittels folgender Angaben einloggen:
+            Benutzername: {0}
+            Passwort: {1}
+            
+            Bitte beachten Sie, dass das Passwort beim nächsten Login geändert werden muss.
+            
+            Mit freundlichen Grüßen,
+            
+            Jack the Clipper ähnelt.
+             </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Localization.ClipperTexts.AccountCreatedMailSubject">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Ihr Account bei &quot;Jack the Clipper&quot;... ähnelt.
+            </summary>
+        </member>
         <member name="P:JackTheClipperCommon.Localization.ClipperTexts.DefaultMailSubject">
             <summary>
               Sucht eine lokalisierte Zeichenfolge, die Es gibt Neuigkeiten bei &quot;Jack the Clipper&quot;... ähnelt.
@@ -460,7 +791,7 @@
              <summary>
                Sucht eine lokalisierte Zeichenfolge, die ... wurde geändert.
             
-            Sollten Sie nicht die Änderung Ihrer E-Mailadresse veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten.
+            Sollten Sie nicht die Änderung Ihrer E-Mailadresse veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten oder Systemadministrator.
             
             Mit freundlichen Grüßen,
             
@@ -472,11 +803,33 @@
               Sucht eine lokalisierte Zeichenfolge, die Ihre E-Mailadresse bei &quot;Jack the Clipper&quot;... ähnelt.
             </summary>
         </member>
+        <member name="P:JackTheClipperCommon.Localization.ClipperTexts.NewlyGeneratedPasswordOnMailReset">
+             <summary>
+               Sucht eine lokalisierte Zeichenfolge, die 
+            
+            PS: In diesem Zuge wurde ihnen eines neues Passwort vergeben. Es lautet: {0} ähnelt.
+             </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Localization.ClipperTexts.NewPendingUserMailBody">
+             <summary>
+               Sucht eine lokalisierte Zeichenfolge, die ... beitreten.
+            
+            Sie müssen die Registrierungsanfrage von {0} (E-Mail:{1}) genehmigen.
+            Mit freundlichen Grüßen,
+            
+            Jack the Clipper ähnelt.
+             </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.Localization.ClipperTexts.NewPendingUserMailSubject">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Ein Benutzer möchte &quot;Jack the Clipper&quot;... ähnelt.
+            </summary>
+        </member>
         <member name="P:JackTheClipperCommon.Localization.ClipperTexts.PasswordChangedMailBody">
              <summary>
                Sucht eine lokalisierte Zeichenfolge, die ... wurde geändert.
             
-            Sollten Sie nicht die Änderung Ihres Passworts veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten.
+            Sollten Sie nicht die Änderung Ihres Passworts veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten oder Systemadministrator.
             
             Mit freundlichen Grüßen,
             
@@ -492,10 +845,10 @@
              <summary>
                Sucht eine lokalisierte Zeichenfolge, die ... wurde zurückgesetzt. 
             
-            Ihr neues Passwort lautet: {0}.
+            Ihr neues Passwort lautet: {0}
             Dass Passwort muss beim nächsten Login geändert werden.
             
-            Sollten Sie nicht die Änderung Ihres Passworts veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten.
+            Sollten Sie nicht die Änderung Ihres Passworts veranlasst haben, kontaktieren Sie bitte umgehend ihren Personalbeauftragten oder Systemadministrator.
             
             Mit freundlichen Grüßen,
             
@@ -522,11 +875,17 @@
             The stop watch
             </summary>
         </member>
-        <member name="M:JackTheClipperCommon.PerfTracer.#ctor(System.String)">
+        <member name="F:JackTheClipperCommon.PerfTracer.minimumMillis">
+            <summary>
+            The minimum amount of milliseconds which must be exceeded before logging occurs (default:0)
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.PerfTracer.#ctor(System.String,System.Int32)">
             <summary>
             Initializes a new instance of the <see cref="T:JackTheClipperCommon.PerfTracer"/> class.
             </summary>
             <param name="name">The name.</param>
+            <param name="minimumMillis">The minimum amount of milliseconds which must be exceeded before logging occurs (default:0)</param>
         </member>
         <member name="M:JackTheClipperCommon.PerfTracer.Dispose">
             <summary>
@@ -557,6 +916,67 @@
             <param name="published">The published date.</param>
             <param name="indexed">The indexed date.</param>
             <param name="indexingSourceId">The indexing source identifier.</param>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.Article.Truncate(System.String)">
+            <summary>
+            Truncates the length of <see cref="P:JackTheClipperCommon.SharedClasses.Article.Text"/> to the length specified by <see cref="P:JackTheClipperCommon.Configuration.AppConfiguration.ShortTextLength"/>
+            </summary>
+            <param name="input">The text to truncate</param>
+            <returns>The truncated text</returns>
+        </member>
+        <member name="T:JackTheClipperCommon.SharedClasses.BasicUserInformation">
+            <summary>
+            Basic user information
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.BasicUserInformation.Id">
+            <summary>
+            Gets the identifier.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.BasicUserInformation.UserName">
+            <summary>
+            Gets the name of the user.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.BasicUserInformation.IsValid">
+             <summary>
+            Gets a value indicating whether the user is valid or not.
+             </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.BasicUserInformation.#ctor(System.Guid,System.String,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperCommon.SharedClasses.BasicUserInformation"/> class.
+            </summary>
+            <param name="id">The identifier.</param>
+            <param name="userName">Name of the user.</param>
+            <param name="isValid">if set to <c>true</c> the user is valid.</param>
+        </member>
+        <member name="T:JackTheClipperCommon.SharedClasses.ExtendedUser">
+            <summary>
+            A class covering all the information this application can now about a single, generic user
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.ExtendedUser.OrganizationalUnits">
+            <summary>
+            The <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/>s a user belongs to
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.ExtendedUser.#ctor(System.Guid,System.String,JackTheClipperCommon.Enums.Role,System.String,System.Guid,System.Boolean,System.DateTime,System.Boolean,System.String,System.Guid,System.Collections.Generic.IReadOnlyList{JackTheClipperCommon.SharedClasses.OrganizationalUnit})">
+            <summary>
+            Initializes a new instance of the <see cref="T:JackTheClipperCommon.SharedClasses.ExtendedUser"/> class
+            </summary>
+            <param name="id">The id of the user</param>
+            <param name="mailAddress">The email address of the user</param>
+            <param name="role">The role of the user</param>
+            <param name="name">The name of the user</param>
+            <param name="settingsId">The id of the settings that belong to this user</param>
+            <param name="mustChangePassword">Whether the user needs to change his password</param>
+            <param name="lastLoginTime">The time of the user's last login</param>
+            <param name="isValid">Whether the user can use the application</param>
+            <param name="principalUnitName">The name of the client the user belongs to</param>
+            <param name="principalUnitId">The id of the client the user belongs to</param>
+            <param name="organizationalUnits">The <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/>s the user belongs to</param>
         </member>
         <member name="T:JackTheClipperCommon.SharedClasses.Feed">
             <summary>
@@ -684,6 +1104,31 @@
             Initializes a new instance of the <see cref="T:JackTheClipperCommon.SharedClasses.MethodResult"/> class.
             </summary>
         </member>
+        <member name="T:JackTheClipperCommon.SharedClasses.MethodResult`1">
+            <summary>
+            Used to return whether a method was successful or not. If successful the result of the method is included
+            </summary>
+            <typeparam name="T">The result of the method</typeparam>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.MethodResult`1.Result">
+            <summary>
+            The result of the method
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.MethodResult`1.#ctor(`0)">
+            <summary>
+            Instantiates a new instance of the <see cref="T:JackTheClipperCommon.SharedClasses.MethodResult`1"/> class
+            </summary>
+            <param name="result">The result of the method</param>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.MethodResult`1.#ctor(JackTheClipperCommon.Enums.SuccessState,System.String,`0)">
+            <summary>
+            Instantiates a new instance of the <see cref="T:JackTheClipperCommon.SharedClasses.MethodResult`1"/> class
+            </summary>
+            <param name="status">The status</param>
+            <param name="userMessage">The user message</param>
+            <param name="result">The result of the method</param>
+        </member>
         <member name="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit">
             <summary>
             Contains the definition of an Organization
@@ -705,25 +1150,56 @@
             Gets the belonging admin's mail address.
             </summary>
         </member>
-        <member name="P:JackTheClipperCommon.SharedClasses.OrganizationalUnit.CustomerRoot">
+        <member name="P:JackTheClipperCommon.SharedClasses.OrganizationalUnit.ParentId">
             <summary>
-            Gets a value indicating whether this unit is a customer root (="mandant") unit.
+            Gets the parent unit.
             </summary>
         </member>
-        <member name="P:JackTheClipperCommon.SharedClasses.OrganizationalUnit.DefaultSettings">
+        <member name="P:JackTheClipperCommon.SharedClasses.OrganizationalUnit.Children">
             <summary>
-            Gets the default settings of the unit.
+            Gets or sets the children.
             </summary>
         </member>
-        <member name="M:JackTheClipperCommon.SharedClasses.OrganizationalUnit.#ctor(System.Guid,System.String,System.Boolean,JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings,System.String)">
+        <member name="P:JackTheClipperCommon.SharedClasses.OrganizationalUnit.IsPrincipalUnit">
+            <summary>
+            Gets a value indicating whether this unit is a principal (="mandant") unit.
+            </summary>
+        </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.OrganizationalUnit.SettingsId">
+            <summary>
+            Gets the identifier of the belonging <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings"/>.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.OrganizationalUnit.GetAllChildren">
+            <summary>
+            Flattens the tree hierarchy of an <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/> and its <see cref="P:JackTheClipperCommon.SharedClasses.OrganizationalUnit.Children"/>
+            </summary>
+            <returns>List of all <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/>s below this unit</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.OrganizationalUnit.#ctor(System.Guid,System.String,System.Boolean,System.String,System.Guid,System.Guid)">
             <summary>
             Initializes a new instance of the <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/> class.
             </summary>
             <param name="id">The identifier.</param>
             <param name="name">The name.</param>
-            <param name="customerRoot">Flag, indicating whether mandant.</param>
-            <param name="parentOrganizationalUnit">The parent organizational unit.</param>
-            <param name="defaultSettings">The default settings.</param>
+            <param name="isPrincipalUnit">Flag, indicating whether this unit is a client or not.</param>
+            <param name="parentId">The id of the parent organizational unit.</param>
+            <param name="adminMailAddress">The email address of the staffchief for this unit</param>
+            <param name="settingsId">The id of default settings.</param>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.OrganizationalUnit.Equals(JackTheClipperCommon.SharedClasses.OrganizationalUnit)">
+            <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+            <param name="other">An object to compare with this object.</param>
+            <returns>true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.OrganizationalUnit.Equals(System.Object)">
+            <summary>Determines whether the specified object is equal to the current object.</summary>
+            <param name="obj">The object to compare with the current object.</param>
+            <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.OrganizationalUnit.GetHashCode">
+            <summary>Serves as the default hash function.</summary>
+            <returns>A hash code for the current object.</returns>
         </member>
         <member name="T:JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings">
             <inheritdoc />
@@ -736,18 +1212,21 @@
             Gets the generally available sources.
             </summary>
         </member>
-        <member name="M:JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings.#ctor(System.Guid,System.Collections.Generic.IReadOnlyCollection{JackTheClipperCommon.SharedClasses.Feed},System.Collections.Generic.IReadOnlyCollection{JackTheClipperCommon.SharedClasses.Source},JackTheClipperCommon.Enums.NotificationSetting,System.Int32)">
+        <member name="P:JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings.BlackList">
+            <summary>
+            Gets the black list.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings.#ctor(System.Guid,System.Collections.Generic.IReadOnlyCollection{JackTheClipperCommon.SharedClasses.Feed},System.Collections.Generic.IReadOnlyCollection{JackTheClipperCommon.SharedClasses.Source},JackTheClipperCommon.Enums.NotificationSetting,System.Int32,System.Collections.Generic.IReadOnlyCollection{System.String})">
             <summary>
             Initializes a new instance of the <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings"/> class.
             </summary>
+            <param name="id">The identifier.</param>
             <param name="feeds">The feeds.</param>
             <param name="availableSources">The available sources.</param>
-        </member>
-        <member name="M:JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings.AddSource(JackTheClipperCommon.SharedClasses.Source)">
-            <summary>
-            Adds a source.
-            </summary>
-            <param name="toAdd">The source to add.</param>
+            <param name="notification">The notification settings.</param>
+            <param name="notificationInterval">The notification interval.</param>
+            <param name="blackList">The black list.</param>
         </member>
         <member name="T:JackTheClipperCommon.SharedClasses.ShortArticle">
             <summary>
@@ -897,16 +1376,6 @@
             It also has a reference to its UserSettings
             </summary>
         </member>
-        <member name="P:JackTheClipperCommon.SharedClasses.User.Id">
-            <summary>
-            Gets the identifier.
-            </summary>
-        </member>
-        <member name="P:JackTheClipperCommon.SharedClasses.User.UserName">
-            <summary>
-            Gets the name of the user.
-            </summary>
-        </member>
         <member name="P:JackTheClipperCommon.SharedClasses.User.Role">
             <summary>
             Gets the role(s).
@@ -927,6 +1396,11 @@
             Gets the mail address.
             </summary>
         </member>
+        <member name="P:JackTheClipperCommon.SharedClasses.User.UserMailAddress">
+            <summary>
+            The email address of the notifiable object
+            </summary>
+        </member>
         <member name="P:JackTheClipperCommon.SharedClasses.User.PrincipalUnitName">
             <summary>
             Gets the name of the principal unit.
@@ -942,17 +1416,12 @@
             Gets the last login time.
             </summary>
         </member>
-        <member name="P:JackTheClipperCommon.SharedClasses.User.IsValid">
-             <summary>
-            Gets a value indicating whether the user is valid or not.
-             </summary>
-        </member>
-        <member name="P:JackTheClipperCommon.SharedClasses.User.Settings">
+        <member name="P:JackTheClipperCommon.SharedClasses.User.SettingsId">
             <summary>
-            Gets or sets the settings.
+            Gets the settings id.
             </summary>
         </member>
-        <member name="M:JackTheClipperCommon.SharedClasses.User.#ctor(System.Guid,System.String,JackTheClipperCommon.Enums.Role,System.String,JackTheClipperCommon.SharedClasses.UserSettings,System.Boolean,System.DateTime,System.Boolean,System.String,System.Guid)">
+        <member name="M:JackTheClipperCommon.SharedClasses.User.#ctor(System.Guid,System.String,JackTheClipperCommon.Enums.Role,System.String,System.Guid,System.Boolean,System.DateTime,System.Boolean,System.String,System.Guid)">
             <summary>
             Initializes a new instance of the <see cref="T:JackTheClipperCommon.SharedClasses.User"/> class.
             </summary>
@@ -960,20 +1429,13 @@
             <param name="mailAddress">The mail address.</param>
             <param name="role">The role.</param>
             <param name="name">The name.</param>
-            <param name="settings">The users settings.</param>
+            <param name="settingsId">The users settings id.</param>
             <param name="mustChangePassword">Specifies if user has to reset his password</param>
             <param name="lastLoginTime">The last login time.</param>
             <param name="isValid">A value indicating whether the user is valid and therefore may login.</param>
             <param name="principalUnitName">The name of the principal unit.</param>
             <param name="principalUnitId">The id of the principal unit.</param>
             <exception cref="T:System.ArgumentNullException">mailAddress is null</exception>
-        </member>
-        <member name="M:JackTheClipperCommon.SharedClasses.User.GetFeed(System.Guid)">
-            <summary>
-            Gets the feed by id.
-            </summary>
-            <param name="id">The identifier.</param>
-            <returns>The feed.</returns>
         </member>
         <member name="T:JackTheClipperCommon.SharedClasses.UserSettings">
             <summary>

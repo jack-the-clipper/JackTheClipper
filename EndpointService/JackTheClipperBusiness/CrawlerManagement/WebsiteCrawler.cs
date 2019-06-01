@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using JackTheClipperCommon;
 using JackTheClipperCommon.BusinessObjects;
@@ -76,7 +79,14 @@ namespace JackTheClipperBusiness.CrawlerManagement
                     var doc = web.Load(Source.Uri);
                     if (web.StatusCode == HttpStatusCode.OK)
                     {
-                        HandleDocument(doc);
+                        var jobs = HandleDocument(doc);
+                        if (jobs != null && jobs.Count() > 0)
+                        {
+                            using (new PerfTracer(nameof(PerformObservation) + Source.Name + "_WAIT"))
+                            {
+                                Task.WaitAll(jobs.Where(x => x != null).ToArray());
+                            }
+                        }
                     }
                     else
                     {
@@ -102,11 +112,11 @@ namespace JackTheClipperBusiness.CrawlerManagement
         /// <param name="doc">The doc to handle.</param>
         /// <param name="title">The title (optional).</param>
         /// <param name="rssKey">The rss key (optional).</param>
-        internal void HandleDocument(HtmlDocument doc, string title = null, RssKey rssKey = null)
+        internal IEnumerable<Task> HandleDocument(HtmlDocument doc, string title = null, RssKey rssKey = null)
         {
             if (string.Equals(doc.Text, this.lastFetchedContent, StringComparison.Ordinal))
             {
-                return;
+                return new Task[0];
             }
 
             this.lastFetchedContent = doc.Text;
@@ -116,18 +126,19 @@ namespace JackTheClipperBusiness.CrawlerManagement
             var published = rssKey != null ? new DateTime(rssKey.Updated) : DateTime.UtcNow;
             var noXPath = string.IsNullOrEmpty(Source.XPath);
             var noRegex = this.regex == null;
+            var jobList = new List<Task>();
             if (noRegex && noXPath)
             {
                 title = title ?? GetTitle(doc);
-                Observer.NotifyNewWebPageContentFoundThreadSafe(title, doc.GetTextFromHtml(), link, published, Source);
-                HandleImages(doc, title, rssKey);
-                return;
+                jobList.Add(Observer.NotifyNewWebPageContentFoundThreadSafe(title, doc.GetTextFromHtml(), link, published, Source));
+                jobList.AddRange(HandleImages(doc, title, rssKey));
+                return jobList;
             }
 
             if (noXPath)
             {
                 title = title ?? GetTitle(doc);
-                HandleRegex(doc.Text, title, link, published);
+                jobList.AddRange(HandleRegex(doc.Text, title, link, published));
             }
             else
             {
@@ -137,18 +148,20 @@ namespace JackTheClipperBusiness.CrawlerManagement
                     if (noRegex)
                     {
                         title = title ?? GetTitle(doc);
-                        Observer.NotifyNewWebPageContentFoundThreadSafe(title,
-                                                                             node.InnerHtml.GetTextFromHtml(),
-                                                                             link, published, Source);
-                        HandleImages(node.InnerHtml, title, rssKey);
+                        jobList.Add(Observer.NotifyNewWebPageContentFoundThreadSafe(title,
+                                                                                    node.InnerHtml.GetTextFromHtml(),
+                                                                                    link, published, Source));
+                        jobList.AddRange(HandleImages(node.InnerHtml, title, rssKey));
                     }
                     else
                     {
                         title = title ?? GetTitle(doc);
-                        HandleRegex(node.InnerHtml, title, link, published);
+                        jobList.AddRange(HandleRegex(node.InnerHtml, title, link, published));
                     }
                 }
             }
+
+            return jobList;
         }
         #endregion
 
@@ -160,18 +173,21 @@ namespace JackTheClipperBusiness.CrawlerManagement
         /// <param name="title">The title.</param>
         /// <param name="link">The link.</param>
         /// <param name="published">the published date.</param>
-        private void HandleRegex(string content, string title, string link, DateTime published)
+        private List<Task> HandleRegex(string content, string title, string link, DateTime published)
         {
+            var jobList = new List<Task>();
             var matches = this.regex.Matches(content);
             foreach (Match match in matches)
             {
                 if (match != null && !string.IsNullOrEmpty(match.Value))
                 {
-                    Observer.NotifyNewWebPageContentFoundThreadSafe(title, match.Value.GetTextFromHtml(),
-                                                                    link, published, Source);
-                    HandleImages(match.Value, title, new RssKey(published.Ticks, link));
+                    jobList.Add(Observer.NotifyNewWebPageContentFoundThreadSafe(title, match.Value.GetTextFromHtml(),
+                                                                                link, published, Source));
+                    jobList.AddRange(HandleImages(match.Value, title, new RssKey(published.Ticks, link)));
                 }
             }
+
+            return jobList;
         }
         #endregion
 

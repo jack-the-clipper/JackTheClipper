@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using JackTheClipperCommon.BusinessObjects;
 using JackTheClipperCommon.SharedClasses;
@@ -85,14 +87,16 @@ namespace JackTheClipperBusiness.CrawlerManagement
         /// <param name="content">The content.</param>
         /// <param name="title">The title.</param>
         /// <param name="rssKey">The RSS key.</param>
-        protected void HandleImages(string content, string title, RssKey rssKey = null)
+        protected IEnumerable<Task> HandleImages(string content, string title, RssKey rssKey = null)
         {
             if (content != null && title != null)
             {
                 var html = new HtmlDocument();
                 html.LoadHtml(content);
-                HandleImages(html, title, rssKey);
+                return HandleImages(html, title, rssKey);
             }
+
+            return new Task[0];
         }
 
         /// <summary>
@@ -101,19 +105,25 @@ namespace JackTheClipperBusiness.CrawlerManagement
         /// <param name="doc">The document.</param>
         /// <param name="title">The title.</param>
         /// <param name="rssKey">The RSS key.</param>
-        protected void HandleImages(HtmlDocument doc, string title, RssKey rssKey = null)
+        protected IEnumerable<Task> HandleImages(HtmlDocument doc, string title, RssKey rssKey = null)
         {
+            var jobList = new List<Task>();
             if (doc != null && title != null)
             {
                 var images = doc.GetAllImages();
                 var link = rssKey != null ? rssKey.Link : Source.Uri;
                 var published = rssKey != null ? new DateTime(rssKey.Updated) : DateTime.UtcNow;
-                foreach (var image in images)
+                if (images != null)
                 {
-                    Observer.NotifyNewImageContentFoundThreadSafe(title, image.Item2, image.Item1, link, 
-                                                                  published, Source);
+                    foreach (var image in images)
+                    {
+                        jobList.Add(Observer.NotifyNewImageContentFoundThreadSafe(title, image.Item2, image.Item1, link,
+                                                                                  published, Source));
+                    }
                 }
             }
+
+            return jobList;
         }
         #endregion
 

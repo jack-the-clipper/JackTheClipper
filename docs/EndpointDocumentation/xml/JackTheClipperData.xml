@@ -154,21 +154,22 @@
             Proceed with Caution
             </summary>
         </member>
-        <member name="M:JackTheClipperData.ElasticController.GetFeedAsync(JackTheClipperCommon.SharedClasses.User,System.Guid,System.DateTime,System.Int32)">
+        <member name="M:JackTheClipperData.ElasticController.GetFeedAsync(JackTheClipperCommon.SharedClasses.Feed,System.DateTime,System.Int32,System.Int32,System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             Gets the requested feed
             </summary>
-            <param name="user">The User for which the feed is requested.</param>
-            <param name="feedId">The Id to the feed which should be generated.</param>
+            <param name="feed">The requested feed.</param>
             <param name="since">The date from which on articles should be considered.</param>
+            <param name="articlesPerPage">The amount of articles per page.</param>
             <param name="page">The requested page.</param>
+            <param name="unitBlackList">The unit black list.</param>
             <returns>List of articles within the feed</returns>
         </member>
-        <member name="M:JackTheClipperData.ElasticController.GetCompleteFeedAsync(JackTheClipperCommon.SharedClasses.User,System.DateTime)">
+        <member name="M:JackTheClipperData.ElasticController.GetCompleteFeedAsync(JackTheClipperCommon.SharedClasses.UserSettings,System.DateTime)">
             <summary>
-            Gets the complete feed (= all relevant articles in any feed) of a given user.
+            Gets the complete feed (= all relevant articles in any feed) of a given user setting.
             </summary>
-            <param name="user">The User for which the complete feed is requested</param>
+            <param name="userSettings">The user settings for which the complete feed is requested</param>
             <param name="since">The date from which on articles should be considered.</param>
             <returns>List of articles within any feed of the user.</returns>
         </member>
@@ -226,7 +227,7 @@
             <param name="index">The index to use.</param>
             <param name="articleId">The article id to delete.</param>
         </member>
-        <member name="M:JackTheClipperData.ElasticController.GetFeedSelector(System.Collections.Generic.IEnumerable{JackTheClipperCommon.SharedClasses.Feed},System.Int32,System.Int32,System.DateTime)">
+        <member name="M:JackTheClipperData.ElasticController.GetFeedSelector(System.Collections.Generic.IEnumerable{JackTheClipperCommon.SharedClasses.Feed},System.Int32,System.Int32,System.DateTime,System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             Builds and returns the feed selector.
             </summary>
@@ -234,22 +235,16 @@
             <param name="from">Starting index for return value (paging).</param>
             <param name="size">Number of items to return (paging).</param>
             <param name="since">The time from which on feeds should be queried.</param>
+            <param name="blacklist">The blacklist</param>
             <returns>Function, representing the feed selector.</returns>
         </member>
-        <member name="M:JackTheClipperData.ElasticController.GetFeedQuery(System.Collections.Generic.IEnumerable{JackTheClipperCommon.SharedClasses.Feed})">
+        <member name="M:JackTheClipperData.ElasticController.GetFeedQuery(System.Collections.Generic.IEnumerable{JackTheClipperCommon.SharedClasses.Feed},System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             Gets the elastic query for the given feeds.
             </summary>
             <param name="relevantFeeds">The relevant feeds to determine their query.</param>
+            <param name="blackList">The blacklist to not violate.</param>
             <returns>The query for the feed.</returns>
-        </member>
-        <member name="M:JackTheClipperData.ElasticController.GetDistinctNoBlackListViolations(System.Collections.Generic.IReadOnlyCollection{JackTheClipperCommon.SharedClasses.Feed},System.Collections.Generic.IEnumerable{JackTheClipperCommon.SharedClasses.Article})">
-            <summary>
-            Distincts the input and checks whether the input doesnt violates any black list.
-            </summary>
-            <param name="feeds">The relevant feeds.</param>
-            <param name="value">The value.</param>
-            <returns>True if no violation occured.</returns>
         </member>
         <member name="T:JackTheClipperData.ElasticController.TemporaryIndexCleanUp">
             <summary>
@@ -307,6 +302,13 @@
             <param name="id">The identifier.</param>
             <returns>The user (if found)</returns>
         </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.GetUserByMailAddress(System.String)">
+            <summary>
+            Gets the user by mail address.
+            </summary>
+            <param name="mailAddress">The mail address.</param>
+            <returns>The user (if found)</returns>
+        </member>
         <member name="M:JackTheClipperData.IClipperDatabase.GetOrganizationalUnitById(System.Guid)">
             <summary>
             Gets the organizational unit by identifier.
@@ -330,27 +332,28 @@
             </summary>
             <returns>List of all sources.</returns>
         </member>
-        <member name="M:JackTheClipperData.IClipperDatabase.GetAllUsers">
+        <member name="M:JackTheClipperData.IClipperDatabase.GetNotifiableUserSettings">
             <summary>
-            Gets all users.
+            Gets all notifiable user settings
+            ("notifiable" = only those which have set <see cref="P:JackTheClipperCommon.SharedClasses.UserSettings.NotificationSettings"/> != <see cref="F:JackTheClipperCommon.Enums.NotificationSetting.None"/>).
             </summary>
-            <returns>List of all users.</returns>
+            <returns>List of all notifiable user settings.</returns>
         </member>
-        <member name="M:JackTheClipperData.IClipperDatabase.GetAvailableSources(JackTheClipperCommon.SharedClasses.User)">
+        <member name="M:JackTheClipperData.IClipperDatabase.GetAvailableSources(System.Guid)">
             <summary>
             Gets the available sources.
             </summary>
-            <param name="user">The user.</param>
+            <param name="userId">The user.</param>
             <returns>List of available sources.</returns>
         </member>
-        <member name="M:JackTheClipperData.IClipperDatabase.GetOrganizationalUnits(JackTheClipperCommon.SharedClasses.User)">
+        <member name="M:JackTheClipperData.IClipperDatabase.GetOrganizationalUnits(System.Guid)">
             <summary>
             Gets the available organizational units.
             </summary>
-            <param name="user">The user.</param>
+            <param name="userId">The user id.</param>
             <returns>List of available units.</returns>
         </member>
-        <member name="M:JackTheClipperData.IClipperDatabase.AddUser(System.String,System.String,System.String,JackTheClipperCommon.Enums.Role,System.Guid,System.Boolean,System.Boolean)">
+        <member name="M:JackTheClipperData.IClipperDatabase.AddUser(System.String,System.String,System.String,JackTheClipperCommon.Enums.Role,System.Guid,System.Guid,System.Boolean,System.Boolean)">
             <summary>
             Adds a user.
             </summary>
@@ -359,9 +362,17 @@
             <param name="password">The password.</param>
             <param name="role">The role.</param>
             <param name="principalUnit">The principal unit.</param>
+            <param name="initialUnit">The initial unit of the user.</param>
             <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
             <param name="valid">A value whether the user is valid or not.</param>
             <returns>The user object of the new user.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.DeleteUser(System.Guid)">
+            <summary>
+            Deletes the user.
+            </summary>
+            <param name="userId">The user identifier.</param>
+            <returns>MethodResult, indicates success</returns>
         </member>
         <member name="M:JackTheClipperData.IClipperDatabase.AddSource(JackTheClipperCommon.SharedClasses.Source)">
             <summary>
@@ -376,6 +387,13 @@
             </summary>
             <param name="source">The source.</param>
             <returns>succesfull bool</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.UpdateSource(JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Updates the source.
+            </summary>
+            <param name="updatedSource">The updated source.</param>
+            <returns>MethodResult indicating success</returns>
         </member>
         <member name="M:JackTheClipperData.IClipperDatabase.ResetPassword(System.String,System.String)">
             <summary>
@@ -408,7 +426,7 @@
              </summary>
              <returns>The superset feed filter.</returns>
         </member>
-        <member name="M:JackTheClipperData.IClipperDatabase.GetPrincipalUnits">
+        <member name="M:JackTheClipperData.IClipperDatabase.GetPrincipalUnitBasicInformation">
             <summary>
             Gets the principal units.
             </summary>
@@ -443,6 +461,132 @@
             </summary>
             <param name="feedId">The feed id.</param>
         </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.AddPrincipalUnit(System.String,System.String,System.String)">
+            <summary>
+            Adds a principal unit.
+            </summary>
+            <param name="unitName">Name of the unit.</param>
+            <param name="adminMailAddress">The admin mail address.</param>
+            <param name="adminPassword">The admin password.</param>
+            <returns>Tuple of new values.
+            <para>Item1 = Id of new principal unit.</para>
+            <para>Item2 = Id of new <see cref="F:JackTheClipperCommon.Enums.Role.StaffChief"/>-user.</para>
+            </returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.AddUnit(System.String,System.Guid)">
+            <summary>
+            Adds a new unit unit.
+            </summary>
+            <param name="unitName">Name of the unit.</param>
+            <param name="parentUnit">The id of the parent unit.</param>
+            <returns>The id of the new unit.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.DeleteOrganizationalUnit(System.Guid)">
+            <summary>
+            Deletes an organizational unit.
+            </summary>
+            <param name="unitId">The unit identifier.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.RenameOrganizationalUnit(System.Guid,System.String)">
+            <summary>
+            Renames an organizational unit.
+            </summary>
+            <param name="toChange">The id of the unit to change.</param>
+            <param name="name">The new name.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.SaveOrganizationalUnitSettings(JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings)">
+            <summary>
+            Changes the organizational unit settings to the given ones.
+            </summary>
+            <param name="changed">The changed settings to persist.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.SetUserOrganizationalUnits(System.Guid,System.Collections.Generic.IEnumerable{System.Guid})">
+            <summary>
+            Sets the organizational units of a user.
+            </summary>
+            <param name="userId">The user id of the changed user.</param>
+            <param name="units">The organizational units.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.GetPrincipalUnitChildren(System.Guid)">
+            <summary>
+            Gets the children of a principal unit.
+            </summary>
+            <param name="principalUnitId">The principal unit identifier.</param>
+            <returns>List of children of given principal unit.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.GetPrincipalUnits">
+            <summary>
+            Gets all principal units.
+            </summary>
+            <returns>The principal units</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.GetOrganizationalUnitSettings(System.Guid)">
+            <summary>
+            Gets the organizational unit settings.
+            </summary>
+            <param name="unitId">The organizational unit id.</param>
+            <returns>The requested settings.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.GetUserSettingsByUserId(System.Guid)">
+            <summary>
+            Gets the user settings.
+            </summary>
+            <param name="userId">The settings id.</param>
+            <returns>The requested settings.</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.GetManageableUsers(System.Guid)">
+            <summary>
+            Returns the basic information of the users the supplied user can manage
+            </summary>
+            <param name="userId">The id of the user requesting the information</param>
+            <returns>List of basic information like the id and username of the manageable users</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.GetUserInfo(System.Guid)">
+            <summary>
+            Gets all the information on a requested user
+            </summary>
+            <param name="requested">The id of the user whose information is requested</param>
+            <returns>An <see cref="T:JackTheClipperCommon.SharedClasses.ExtendedUser"/> containing all the information</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.GetFeedRequestData(System.Guid,System.Guid)">
+            <summary>
+            Prepares a request to see the articles of the given feed
+            </summary>
+            <param name="userId">The user owning the feed</param>
+            <param name="feedId">The id of the feed</param>
+            <returns>A tuple containing the fully instantiated <see cref="T:JackTheClipperCommon.SharedClasses.Feed"/>, the
+            last login time of the user and how many articles he wants to see on a single
+            page</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.ModifyUser(System.Guid,System.String,JackTheClipperCommon.Enums.Role,System.Boolean,System.Collections.Generic.IEnumerable{System.Guid})">
+            <summary>
+            Modifies a user
+            </summary>
+            <param name="userId">The id of the user to modify</param>
+            <param name="userName">The new username of the user</param>
+            <param name="role">The new role of the user</param>
+            <param name="valid">Whether the user is allowed to use the application</param>
+            <param name="userUnits">The <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/>s the user should belong to</param>
+            <returns>A <see cref="T:JackTheClipperCommon.SharedClasses.MethodResult"/> indicating success</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.GetUnitInheritedBlackList(System.Guid)">
+            <summary>
+            Gets the blacklist that a user has by belonging to certain <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/>s
+            </summary>
+            <param name="userId">The id of the user</param>
+            <returns>List of all blacklisted keywords for this user</returns>
+        </member>
+        <member name="M:JackTheClipperData.IClipperDatabase.GetEligibleStaffChiefs(System.Guid)">
+            <summary>
+            Gets the user that are allowed to manage the unit
+            </summary>
+            <param name="affectedUnit">The id of the unit</param>
+            <returns>List of users that can manage the unit</returns>
+        </member>
         <member name="T:JackTheClipperData.IIndexerService">
             <summary>
             Interface for any indexer service 
@@ -468,21 +612,22 @@
             </summary>
             <param name="article">The article.</param>
         </member>
-        <member name="M:JackTheClipperData.IIndexerService.GetFeedAsync(JackTheClipperCommon.SharedClasses.User,System.Guid,System.DateTime,System.Int32)">
+        <member name="M:JackTheClipperData.IIndexerService.GetFeedAsync(JackTheClipperCommon.SharedClasses.Feed,System.DateTime,System.Int32,System.Int32,System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             Gets the requested feed
             </summary>
-            <param name="user">The User for which the feed is requested.</param>
-            <param name="feedId">The Id to the feed which should be generated.</param>
+            <param name="feed">The requested feed.</param>
             <param name="since">The date from which on articles should be considered.</param>
+            <param name="articlesPerPage">The amount of articles per page.</param>
             <param name="page">The requested page.</param>
+            <param name="unitBlackList"></param>
             <returns>List of articles within the feed</returns>
         </member>
-        <member name="M:JackTheClipperData.IIndexerService.GetCompleteFeedAsync(JackTheClipperCommon.SharedClasses.User,System.DateTime)">
+        <member name="M:JackTheClipperData.IIndexerService.GetCompleteFeedAsync(JackTheClipperCommon.SharedClasses.UserSettings,System.DateTime)">
             <summary>
-            Gets the complete feed (= all relevant articles in any feed) of a given user.
+            Gets the complete feed (= all relevant articles in any feed) of a given user setting.
             </summary>
-            <param name="user">The User for which the complete feed is requested</param>
+            <param name="userSettings">The user settings for which the complete feed is requested</param>
             <param name="since">The date from which on articles should be considered.</param>
             <returns>List of articles within any feed of the user.</returns>
         </member>
@@ -527,27 +672,28 @@
             </summary>
             <returns>List of all sources.</returns>
         </member>
-        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetAllUsers">
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetNotifiableUserSettings">
             <summary>
-            Gets all users.
+            Gets all notifiable user settings
+            ("notifiable" = only those which have set <see cref="P:JackTheClipperCommon.SharedClasses.UserSettings.NotificationSettings"/> != <see cref="F:JackTheClipperCommon.Enums.NotificationSetting.None"/>).
             </summary>
-            <returns>List of all users.</returns>
+            <returns>List of all notifiable user settings.</returns>
         </member>
-        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetAvailableSources(JackTheClipperCommon.SharedClasses.User)">
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetAvailableSources(System.Guid)">
             <summary>
             Gets the available sources.
             </summary>
-            <param name="user">The user.</param>
+            <param name="userId">The user.</param>
             <returns>List of available sources.</returns>
         </member>
-        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetOrganizationalUnits(JackTheClipperCommon.SharedClasses.User)">
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetOrganizationalUnits(System.Guid)">
             <summary>
             Gets the available organizational units.
             </summary>
-            <param name="user">The user.</param>
+            <param name="userId">The user id.</param>
             <returns>List of available units.</returns>
         </member>
-        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.AddUser(System.String,System.String,System.String,JackTheClipperCommon.Enums.Role,System.Guid,System.Boolean,System.Boolean)">
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.AddUser(System.String,System.String,System.String,JackTheClipperCommon.Enums.Role,System.Guid,System.Guid,System.Boolean,System.Boolean)">
             <summary>
             Adds a user.
             </summary>
@@ -556,9 +702,16 @@
             <param name="password">The password.</param>
             <param name="role">The role.</param>
             <param name="principalUnit">The principal unit.</param>
+            <param name="initialUnit">The initial unit of the user.</param>
             <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
             <param name="valid">A value whether the user is valid or not.</param>
             <returns>The user object of the new user.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.DeleteUser(System.Guid)">
+            <summary>
+            Deletes the given user.
+            </summary>
+            <param name="userId">The user identifier.</param>
         </member>
         <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.AddSource(JackTheClipperCommon.SharedClasses.Source)">
             <summary>
@@ -575,6 +728,13 @@
             <returns>
             True if successful
             </returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.UpdateSource(JackTheClipperCommon.SharedClasses.Source)">
+            <summary>
+            Updates the source.
+            </summary>
+            <param name="updatedSource">The updated source.</param>
+            <returns>MethodResult indicating success</returns>
         </member>
         <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.SaveUserSettings(System.Guid,System.Int32,JackTheClipperCommon.Enums.NotificationSetting,System.Int32)">
             <summary>
@@ -636,24 +796,145 @@
             </summary>
             <returns>The superset feed filter.</returns>
         </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.AddPrincipalUnit(System.String,System.String,System.String)">
+            <summary>
+            Adds a principal unit.
+            </summary>
+            <param name="unitName">Name of the unit.</param>
+            <param name="adminMailAddress">The admin mail address.</param>
+            <param name="adminPassword">The admin password.</param>
+            <returns>Tuple of new values.
+            <para>Item1 = Id of new principal unit.</para>
+            <para>Item2 = Id of new <see cref="F:JackTheClipperCommon.Enums.Role.StaffChief"/>-user.</para>
+            </returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.AddUnit(System.String,System.Guid)">
+            <summary>
+            Adds a new unit unit.
+            </summary>
+            <param name="unitName">Name of the unit.</param>
+            <param name="parentUnit">The id of the parent unit.</param>
+            <returns>The id of the new unit.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.RenameOrganizationalUnit(System.Guid,System.String)">
+            <summary>
+            Renames an organizational unit.
+            </summary>
+            <param name="toChange">The id of the unit to change.</param>
+            <param name="name">The new name.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.DeleteOrganizationalUnit(System.Guid)">
+            <summary>
+            Deletes an organizational unit.
+            </summary>
+            <param name="unitId">The unit identifier.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.SaveOrganizationalUnitSettings(JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings)">
+            <summary>
+            Changes the organizational unit settings to the given ones.
+            </summary>
+            <param name="changed">The changed settings to persist.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetPrincipalUnitChildren(System.Guid)">
+            <summary>
+            Gets the children of a principal unit.
+            </summary>
+            <param name="principalUnitId">The principal unit identifier.</param>
+            <returns>List of children of given principal unit.</returns>
+        </member>
         <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetPrincipalUnits">
+            <summary>
+            Gets all principal units.
+            </summary>
+            <returns>The principal units</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetOrganizationalUnitSettings(System.Guid)">
+            <summary>
+            Gets the organizational unit settings.
+            </summary>
+            <param name="unitId">The organizational unit id.</param>
+            <returns>The requested settings.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetUserSettingsByUserId(System.Guid)">
+            <summary>
+            Gets the user settings.
+            </summary>
+            <param name="userId">The settings id.</param>
+            <returns>The requested settings.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetManageableUsers(System.Guid)">
+            <summary>
+            Returns the basic information of the users the supplied user can manage
+            </summary>
+            <param name="userId">The id of the user requesting the information</param>
+            <returns>List of basic information like the id and username of the manageable users</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetUserInfo(System.Guid)">
+            <summary>
+            Gets all the information on a requested user
+            </summary>
+            <param name="requested">The id of the user whose information is requested</param>
+            <returns>An <see cref="T:JackTheClipperCommon.SharedClasses.ExtendedUser"/> containing all the information</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetFeedRequestData(System.Guid,System.Guid)">
+            <summary>
+            Prepares a request to see the articles of the given feed
+            </summary>
+            <param name="userId">The user owning the feed</param>
+            <param name="feedId">The id of the feed</param>
+            <returns>A tuple containing the fully instantiated <see cref="T:JackTheClipperCommon.SharedClasses.Feed"/>, the
+            last login time of the user and how many articles he wants to see on a single
+            page</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.ModifyUser(System.Guid,System.String,JackTheClipperCommon.Enums.Role,System.Boolean,System.Collections.Generic.IEnumerable{System.Guid})">
+            <summary>
+            Modifies a user
+            </summary>
+            <param name="userId">The id of the user to modify</param>
+            <param name="userName">The new username of the user</param>
+            <param name="role">The new role of the user</param>
+            <param name="valid">Whether the user is allowed to use the application</param>
+            <param name="userUnits">The <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/>s the user should belong to</param>
+            <returns>A <see cref="T:JackTheClipperCommon.SharedClasses.MethodResult"/> indicating success</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetUnitInheritedBlackList(System.Guid)">
+            <summary>
+            Gets the blacklist that a user has by belonging to certain <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/>s
+            </summary>
+            <param name="userId">The id of the user</param>
+            <returns>List of all blacklisted keywords for this user</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetEligibleStaffChiefs(System.Guid)">
+            <summary>
+            Gets the user that are allowed to manage the unit
+            </summary>
+            <param name="affectedUnit">The id of the unit</param>
+            <returns>List of users that can manage the unit</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetPrincipalUnitBasicInformation">
             <summary>
             Gets the principal units.
             </summary>
             <returns>List of principal units.</returns>
         </member>
-        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetUserSettingsAsync(System.Guid)">
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.SetUserOrganizationalUnits(System.Guid,System.Collections.Generic.IEnumerable{System.Guid})">
             <summary>
-            Gets the <see cref="T:JackTheClipperCommon.SharedClasses.UserSettings"/> by id.
+            Sets the organizational units of a user.
             </summary>
-            <param name="id">The id of the user settings.</param>
-            <returns>The determined <see cref="T:JackTheClipperCommon.SharedClasses.UserSettings"/>.</returns>
+            <param name="userId">The user id of the changed user.</param>
+            <param name="units">The organizational units.</param>
+            <returns>MethodResult indicating success.</returns>
         </member>
-        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetOrganizationalUnitSettingsAsync(System.Guid)">
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetUserSettingsAsync(System.Boolean,System.String,MySql.Data.MySqlClient.MySqlParameter[])">
             <summary>
             Gets the <see cref="T:JackTheClipperCommon.SharedClasses.UserSettings"/> by id.
             </summary>
-            <param name="id">The id of the user settings.</param>
+            <param name="unitSettings">A value indicating whether <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnitSettings"/> are requested or not.</param>
+            <param name="stmt">The statement to execute.</param>
+            <param name="parameters">The parameters.</param>
             <returns>The determined <see cref="T:JackTheClipperCommon.SharedClasses.UserSettings"/>.</returns>
         </member>
         <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetSourcesAsync(System.String,MySql.Data.MySqlClient.MySqlParameter[])">
@@ -678,15 +959,7 @@
             </summary>
             <param name="userId">The user id.</param>
         </member>
-        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetOrganizationalUnitsAsync(System.String,MySql.Data.MySqlClient.MySqlParameter[])">
-            <summary>
-            Gets all units by executing the given command
-            </summary>
-            <param name="command">The command to execute.</param>
-            <param name="parameters">The query parameters.</param>
-            <returns>List of returned units.</returns>
-        </member>
-        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.AddUserAsync(System.String,System.String,System.String,JackTheClipperCommon.Enums.Role,System.Guid,System.Boolean,System.Boolean)">
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.AddUserAsync(System.String,System.String,System.String,JackTheClipperCommon.Enums.Role,System.Guid,System.Guid,System.Boolean,System.Boolean)">
             <summary>
             Adds a user.
             </summary>
@@ -695,6 +968,7 @@
             <param name="password">The password.</param>
             <param name="role">The role.</param>
             <param name="principalUnit">The principalUnit.</param>
+            <param name="initialUnit">The initial unit.</param>
             <param name="mustChangePassword">A value indicating whether the user must change the pw.</param>
             <param name="valid">A value whether the user is valid or not.</param>
             <returns>The user object of the new user.</returns>
@@ -706,12 +980,60 @@
             <param name="source">The source.</param>
             <returns>The object of the new source.</returns>
         </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.AddPrincipalUnitAsync(System.String,System.String,System.String)">
+            <summary>
+            Adds a principal unit.
+            </summary>
+            <param name="unitName">Name of the unit.</param>
+            <param name="adminMailAddress">The admin mail address.</param>
+            <param name="adminPassword">The admin password.</param>
+            <returns>Tuple of new values.
+            <para>Item1 = Id of new principal unit.</para>
+            <para>Item2 = Id of new <see cref="F:JackTheClipperCommon.Enums.Role.StaffChief"/>-user.</para>
+            </returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.AddUnitAsync(System.String,System.Guid)">
+            <summary>
+            Adds a new unit asynchronously.
+            </summary>
+            <param name="unitName">Name of the unit.</param>
+            <param name="parentUnit">The parent of the new unit.</param>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.ModifyUnitAsync(System.Guid,System.String)">
+            <summary>
+            Renames an organizational unit.
+            </summary>
+            <param name="toChange">The id of the unit to change.</param>
+            <param name="name">The new name.</param>
+            <returns>MethodResult indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.DeleteUnitAsync(System.Guid)">
+            <summary>
+            Deletes the given unit asynchronously.
+            </summary>
+            <param name="unitId">The unit identifier.</param>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.EnableOrDisableSourceForUnitAsync(System.Guid,System.Guid,System.Boolean)">
+            <summary>
+            Enables the or disables a source for a unit asynchronously.
+            </summary>
+            <param name="unitSettingsId">The unit settings identifier.</param>
+            <param name="sourceId">The source identifier.</param>
+            <param name="disable">A value indicating whether the source should be disabled (=true) or enabled.</param>
+        </member>
         <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.DeleteSourceAsync(System.Guid)">
             <summary>
             Deletes the source asynchronous.
             </summary>
             <param name="sourceId">The source id.</param>
             <returns>True if successful false otherwise</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.DeleteUserAsync(System.Guid)">
+            <summary>
+            Deletes a user asynchronous.
+            </summary>
+            <param name="userId">The user id.</param>
+            <returns>MethodResult indicating success</returns>
         </member>
         <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.SaveUserSettingsAsync(System.Guid,System.Int32,JackTheClipperCommon.Enums.NotificationSetting,System.Int32)">
             <summary>
@@ -722,6 +1044,13 @@
             <param name="notificationSetting">The notification setting.</param>
             <param name="articlesPerPage">The articles per page.</param>
             <returns></returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.SetOrganizationalUnitBlackListAsync(System.Guid,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Sets the organizational unit black list asynchronously.
+            </summary>
+            <param name="settingsId">The settings identifier.</param>
+            <param name="blackList">The black list.</param>
         </member>
         <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.AddFeedAsync(System.Guid,JackTheClipperCommon.SharedClasses.Feed)">
             <summary>
@@ -794,11 +1123,148 @@
             </summary>
             <returns>The superset feed.</returns>
         </member>
-        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetPrincipalUnitsAsync">
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetStringGuidTupleList(System.String,MySql.Data.MySqlClient.MySqlParameter[])">
             <summary>
-            Gets the principal units.
+            Gets a list of <see cref="T:System.Tuple`2"/>s from the database.
             </summary>
-            <returns>List of principal units.</returns>
+            <param name="command">The command.</param>
+            <param name="parameters">The parameters.</param>
+            <returns>Obtained list of <see cref="T:System.Tuple`2"/>s.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetBasicUserInfo(System.String)">
+            <summary>
+            Returns the basic information of users by executing the command
+            </summary>
+            <param name="command">SQL query to execute</param>
+            <returns>List of basic information like the id and username of the manageable users</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.PerformUserSourceInheritance(System.Guid)">
+            <summary>
+            Performs the user source inheritance.
+            </summary>
+            <param name="userId">The user identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetFeedRequestDataAsync(System.Guid,System.Guid)">
+            <summary>
+            Prepares a request to see the articles of the given feed
+            </summary>
+            <param name="userId">The user owning the feed</param>
+            <param name="feedId">The id of the feed</param>
+            <returns>A tuple containing the fully instantiated <see cref="T:JackTheClipperCommon.SharedClasses.Feed"/>, the
+            last login time of the user and how many articles he wants to see on a single
+            page</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.SetUserOrganizationalUnitsAsync(System.Guid,System.Collections.Generic.IEnumerable{System.Guid})">
+            <summary>
+            Sets the organizational units of a user.
+            </summary>
+            <param name="userId">The user id of the changed user.</param>
+            <param name="units">The organizational units the user should now belong to.</param>
+            <returns><see cref="T:JackTheClipperCommon.SharedClasses.MethodResult"/> indicating success.</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.ModifyUserAsync(System.Guid,System.String,JackTheClipperCommon.Enums.Role,System.Boolean,System.Collections.Generic.IEnumerable{System.Guid})">
+            <summary>
+            Modifies a user
+            </summary>
+            <param name="userId">The id of the user to modify</param>
+            <param name="userName">The new username of the user</param>
+            <param name="role">The new role of the user</param>
+            <param name="valid">Whether the user is allowed to use the application</param>
+            <param name="userUnits">The <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/>s the user should belong to</param>
+            <returns>A <see cref="T:JackTheClipperCommon.SharedClasses.MethodResult"/> indicating success</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GetUnitInheritedBlackListAsync(System.Guid)">
+            <summary>
+            Gets the blacklist that a user has by belonging to certain <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/>s
+            </summary>
+            <param name="userId">The id of the user</param>
+            <returns>List of all blacklisted keywords for this user</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.GuidToDatabaseUuid(System.Guid)">
+            <summary>
+            Maps a <see cref="T:System.Guid"/> to a value that MariaDB can understand
+            </summary>
+            <param name="guid">The guid to map</param>
+            <returns>The mapped version of the supplied guid</returns>
+        </member>
+        <member name="T:JackTheClipperData.MariaDb.MariaDbAdapter.OrganizationalUnitManager">
+            <summary>
+            This class is inefficient, and should maybe be replaced by a better implementation (far in the future).
+            Also it is not clear if this becomes a performance issue at all.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.OrganizationalUnitManager.#ctor(JackTheClipperData.MariaDb.MariaDbAdapter.OrganizationalUnitManager@)">
+            <summary>
+            Initializes the <see cref="F:JackTheClipperData.MariaDb.MariaDbAdapter.cachedManager"/>
+            </summary>
+            <param name="cachedManager">The <see cref="T:JackTheClipperData.MariaDb.MariaDbAdapter.OrganizationalUnitManager"/> to initialize</param>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.OrganizationalUnitManager.GetOrganizationalUnit(System.Guid)">
+            <summary>
+            Gets a <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/> by its id
+            </summary>
+            <param name="unitId">The id of the unit</param>
+            <returns><see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/> that matches the supplied Guid</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.OrganizationalUnitManager.GetAllOrganizationalUnits">
+            <summary>
+            Gets all organizational units
+            </summary>
+            <returns>List with all organizational units</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.OrganizationalUnitManager.GetAllOrganizationalUnitsInTree(System.Guid)">
+            <summary>
+            Gets all <see cref="T:JackTheClipperCommon.SharedClasses.OrganizationalUnit"/>s that are lower in the hierarchy than the supplied unit
+            </summary>
+            <param name="startUnit">The id of the unit to start on</param>
+            <returns>List of all units below the supplied one</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.OrganizationalUnitManager.GetPrincipalUnit(System.Guid)">
+            <summary>
+            Gets the client unit the unit belongs to
+            </summary>
+            <param name="startUnit">The id of the unit whose client is searched</param>
+            <returns>The client unit the supplied unit belongs to</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.OrganizationalUnitManager.GetOrganizationalUnitsAsync(System.String,MySql.Data.MySqlClient.MySqlParameter[])">
+            <summary>
+            Gets all units by executing the given command
+            </summary>
+            <param name="command">The command to execute.</param>
+            <param name="parameters">The query parameters.</param>
+            <returns>List of returned units.</returns>
+        </member>
+        <member name="T:JackTheClipperData.MariaDb.MariaDbAdapter.SupersetFeedCronJob">
+            <summary>
+            Cron job which periodically updates the superset feed.
+            Introduced due to performance reasons, as the superset feed is used (very) often depending on the indexed sources.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.SupersetFeedCronJob.#cctor">
+            <summary>
+            static ctor. May initializes the scheduler.
+            </summary>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.SupersetFeedCronJob.GetSuperSetFeedFilter">
+            <summary>
+            Gets the superset filter.
+            Note: The returned value might be cached and therefore not up to date.
+            </summary>
+            <returns>The superset feed filter</returns>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.SupersetFeedCronJob.RefreshFilter(System.Object)">
+            <summary>
+            The scheduled method.
+            </summary>
+            <param name="timerState">The timer state object. Not used.</param>
+        </member>
+        <member name="M:JackTheClipperData.MariaDb.MariaDbAdapter.SupersetFeedCronJob.GetSuperSetFeed">
+            <summary>
+            Gets the superset feed filter.
+            This is a feed filter which contains all relevant keywords form any feed within the system.
+            </summary>
+            <returns>The superset feed filter.</returns>
         </member>
         <member name="T:JackTheClipperData.MariaDb.MariaDbSP">
             <summary>
@@ -870,11 +1336,6 @@
             SP_CREATE_UNIT(name, parent, OUT newUnitId
             </summary>
         </member>
-        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_CHANGE_UNIT_NAME">
-            <summary>
-            SP_CHANGE_UNIT_NAME(unitId, name)
-            </summary>
-        </member>
         <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_ADD_USER_UNIT">
             <summary>
             SP_ADD_USER_UNIT(IN userId VARCHAR(36), IN unitId VARCHAR(36))
@@ -925,6 +1386,11 @@
         <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_REMOVE_SOURCE_FEED">
             <summary>
             SP_REMOVE_SOURCE_FEED(IN feedId VARCHAR(36), IN sourceId VARCHAR(36))
+            </summary>
+        </member>
+        <member name="F:JackTheClipperData.MariaDb.MariaDbSP.SP_UPDATE_USER_AND_CLEAR_USERUNITS">
+            <summary>
+            SP_UPDATE_USER_AND_CLEAR_USERUNITS(IN userId VARCHAR(36), IN name TEXT, IN role BIT(4), IN valid BOOL)
             </summary>
         </member>
         <member name="T:JackTheClipperData.MariaDb.MariaDbStatements">
